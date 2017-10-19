@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>{{ 'LOGIN' | translate }}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding text-center>
+  
+  <img margin class="logo" src="assets/img/icon.png" width="120">
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+ 
+    <ion-item>
+      <ion-label stacked color="primary">{{ "EMAIL" | translate }}</ion-label>
+      <ion-input type="email" formControlName="email"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked color="primary">{{ "PASSWORD" | translate }}</ion-label>
+      <ion-input type="password" formControlName="password"></ion-input>
+    </ion-item>
+
+    <div padding>
+      <button type="submit" color="primary" ion-button block
+        [disabled]="!form.valid">
+        {{ "LOGIN" | translate }}
+      </button>
+    </div>
+    <div padding>
+      <button type="button" ion-button clear (click)="goToSignUp()">
+        {{ "NO_ACCOUNT_YET_CREATE_ONE" | translate }}
+      </button>
+    </div>
+
+  </form>
+</ion-content>

@@ -2,7 +2,8 @@ export class AppConfig {
 
   /* Parse Server URL */
    public static get SERVER_URL(): string {
-     return 'http://nearme.quanlabs.com/parse/';
+     return 'http://localhost:1337/parse/';
+     // return 'http://9c910c2c.ngrok.io/parse/';
    }
 
    /* Parse App ID  */

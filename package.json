@@ -74,5 +74,9 @@
       "locator": "ios"
     }
   ],
-  "description": "NearmeApp: A location based app"
+  "description": "NearmeApp: A location based app",
+  "config": {
+    "ionic_sass": "./scripts/sass.config.js",
+    "ionic_copy": "./scripts/copy.config.js"
+  }
 }

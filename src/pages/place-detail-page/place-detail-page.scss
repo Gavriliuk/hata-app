@@ -22,13 +22,22 @@ page-place-detail-page {
     }
 
   }
-  .vgPlayer{
-    height: 48px;
-    max-width: 100%;
-    background-color:#40f881;
+  .vgPlayer {
+    height: 50px;
+    //padding-top: 26px;
+    background-color: #4e6382;;
   }
-  .vgVideo{
-    min-width:100%;
+  .scrum-bar {
+    padding-top: 18px;
 
   }
+  vg-scrub-bar-current-time, vg-scrub-bar-buffering-time {
+    height: 20px;
+  }
+  vg-scrub-bar-current-time .background, vg-scrub-bar-buffering-time .background {
+    border-radius: 10px !important;
+    min-width: 20px !important;
+
+  }
+  @import "../../../node_modules/videogular2/fonts/videogular.css";
 }

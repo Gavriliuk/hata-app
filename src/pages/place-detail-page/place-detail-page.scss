@@ -20,5 +20,15 @@ page-place-detail-page {
     ion-card-content {
       font-size: 0.9em !important;
     }
+
+  }
+  .vgPlayer{
+    height: 48px;
+    max-width: 100%;
+    background-color:#40f881;
+  }
+  .vgVideo{
+    min-width:100%;
+
   }
 }

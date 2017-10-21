@@ -6,6 +6,27 @@
 
 <ion-content #container>
 
+  <vg-player class="vgPlayer">
+
+    <vg-controls [vgAutohide]="false">
+      <vg-play-pause color="#ffffff"></vg-play-pause>
+      <!--<vg-playback-button></vg-playback-button>-->
+      <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
+      <vg-scrub-bar style="pointer-events: none;"></vg-scrub-bar>
+      <vg-time-display vgProperty="left" vgFormat="mm:ss"></vg-time-display>
+      <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+      <!--<vg-track-selector></vg-track-selector>-->
+      <vg-mute></vg-mute>
+      <vg-volume></vg-volume>
+      <vg-fullscreen></vg-fullscreen>
+    </vg-controls>
+
+    <video class="vgVideo" [vgMedia]="media" #media id="singleVideo" preload="auto">
+      <!--<source src="http://static.videogular.com/assets/videos/videogular.mp4" type="video/mp4">-->
+      <source src="assets/img/klassic.mp3" type="audio/mp3">
+    </video>
+  </vg-player>
+
   <ion-slides pager>
     <ion-slide *ngFor="let image of images">
       <img src="assets/img/avatar.png" offset="100"

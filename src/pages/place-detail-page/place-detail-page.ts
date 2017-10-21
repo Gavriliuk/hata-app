@@ -13,6 +13,11 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { BasePage } from '../base-page/base-page';
 import { User } from '../../providers/user-service';
 
+import { VgCoreModule } from 'videogular2/core';
+import { VgControlsModule } from 'videogular2/controls';
+import { VgOverlayPlayModule } from 'videogular2/overlay-play';
+import { VgBufferingModule } from 'videogular2/buffering';
+
 @IonicPage()
 @Component({
   selector: 'page-place-detail-page',
@@ -36,7 +41,6 @@ export class PlaceDetailPage extends BasePage {
     private launchNavigator: LaunchNavigator,
     private socialSharing: SocialSharing,
     private events: Events) {
-
       super(injector);
 
       const options: GeolocationOptions = {
@@ -68,7 +72,6 @@ export class PlaceDetailPage extends BasePage {
         this.images.push(this.place.imageFour);
       }
   }
-
   enableMenuSwipe() {
     return false;
   }

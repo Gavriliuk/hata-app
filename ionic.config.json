@@ -1,5 +1,8 @@
 {
   "name": "NearmeApp v3",
   "app_id": "com.quanlabs.nearmeapp",
-  "type": "ionic-angular"
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
 }

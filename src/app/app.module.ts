@@ -3,6 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
+import { VgCoreModule } from 'videogular2/core';
+import { VgControlsModule } from 'videogular2/controls';
+import { VgOverlayPlayModule } from 'videogular2/overlay-play';
+import { VgBufferingModule } from 'videogular2/buffering';
+
 import { Category } from '../providers/categories';
 import { Place } from '../providers/place-service';
 import { Review } from '../providers/review-service';
@@ -54,7 +59,11 @@ export function HttpLoaderFactory(http: Http) {
     Ng2ImgFallbackModule,
     LazyLoadImageModule,
     Ionic2RatingModule,
-    HttpModule,    
+    HttpModule,
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

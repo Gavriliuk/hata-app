@@ -46,9 +46,9 @@ export class PlacesPage extends BasePage {
         isTesting: false,
         autoShow: true
       };
-      
+
       this.admobFree.banner.config(bannerConfig);
-      
+
       this.admobFree.banner.prepare().then(() => {
         // banner Ad is ready
         // if we set autoShow to false, then we will need to call the show method here

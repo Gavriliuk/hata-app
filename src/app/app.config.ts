@@ -2,8 +2,8 @@ export class AppConfig {
 
   /* Parse Server URL */
    public static get SERVER_URL(): string {
-     return 'http://localhost:1337/parse/';
-     // return 'http://9c910c2c.ngrok.io/parse/';
+     // return 'http://localhost:1337/parse/';
+     return 'http://734f868f.ngrok.io/parse/';
    }
 
    /* Parse App ID  */
@@ -28,7 +28,7 @@ export class AppConfig {
 
    /* Unit: km or mi  */
    public static get DEFAULT_UNIT(): string {
-     return 'mi';
+     return 'km';
    }
 
    /* Map style: satellite or roadmap */

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import Parse from 'parse';
 
 @Injectable()
@@ -29,12 +29,12 @@ export class Place extends Parse.Object {
   static like(place) {
 
     return new Promise((resolve, reject) => {
-      Parse.Cloud.run('likePlace', { placeId: place.id }).then(data => {
+      Parse.Cloud.run('likePlace', {placeId: place.id}).then(data => {
         resolve(data);
       }, error => {
         reject(error);
       });
-     });
+    });
   }
 
   static load(params): Promise<Place[]> {
@@ -197,6 +197,10 @@ export class Place extends Parse.Object {
 
   get imageFour() {
     return this.get('imageFour');
+  }
+
+  get audio() {
+    return this.get('audio');
   }
 
   get imageThumb() {

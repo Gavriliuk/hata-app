@@ -36,7 +36,7 @@ page-place-detail-page {
   }
   vg-scrub-bar-current-time .background, vg-scrub-bar-buffering-time .background {
     border-radius: 10px !important;
-    min-width: 20px !important;
+    min-width: 20px;
 
   }
   @import "../../../node_modules/videogular2/fonts/videogular.css";

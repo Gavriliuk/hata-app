@@ -6,51 +6,36 @@
 
 <ion-content #container>
 
-      <vg-player class="vgPlayer">
-        <vg-controls>
-          <vg-play-pause></vg-play-pause>
-          <vg-playback-button></vg-playback-button>
+  <vg-player class="vgPlayer">
+    <vg-controls>
+      <vg-play-pause [vgFor]="myAudio"></vg-play-pause>
+      <vg-playback-button [vgFor]="myAudio"></vg-playback-button>
 
-          <!--<vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>-->
+      <!--<vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>-->
 
-          <vg-scrub-bar class="scrum-bar">
-            <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
-            <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
-          </vg-scrub-bar>
+      <vg-scrub-bar class="scrum-bar">
+        <vg-scrub-bar-current-time [vgFor]="myAudio"></vg-scrub-bar-current-time>
+        <vg-scrub-bar-buffering-time [vgFor]="myAudio"></vg-scrub-bar-buffering-time>
+      </vg-scrub-bar>
 
-          <vg-time-display vgProperty="left" vgFormat="mm:ss"></vg-time-display>
-          <!--<vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>-->
+      <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
+      <!--<vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>-->
 
-          <!--<vg-mute></vg-mute>-->
+      <!--<vg-mute></vg-mute>-->
 
-          <!--<vg-fullscreen></vg-fullscreen>-->
-        </vg-controls>
+      <!--<vg-fullscreen></vg-fullscreen>-->
+    </vg-controls>
 
-        <audio #media [vgMedia]="media" id="myAudio" preload="auto">
-          <source src="assets/img/klassic.mp3" type="audio/mp3">
+    <audio #media [vgMedia]="media" id="myAudio" preload="auto">
+      <source src="{{audio}}" type="audio/mp3">
+      <!--<source src="http://localhost:1337/parse/files/myAppId/12fcdedac21795d5c40daa1975dd3b70_audio.mp3" type="audio/mp3">-->
+    <!--<audio #media [vgMedia]="media" id="myAudio" preload="auto">-->
+      <!--<source src="assets/img/klassic.mp3" type="audio/mp3">-->
+      <!--<source src="http://static.videogular.com/assets/audios/videogular.mp3" type="audio/mp3">-->
 
-        </audio>
-      </vg-player>
-  <!--<vg-player class="vgPlayer">-->
 
-  <!--<vg-controls [vgAutohide]="false">-->
-  <!--<vg-play-pause color="#ffffff"></vg-play-pause>-->
-  <!--&lt;!&ndash;<vg-playback-button></vg-playback-button>&ndash;&gt;-->
-  <!--<vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>-->
-  <!--<vg-scrub-bar style="pointer-events: none;"></vg-scrub-bar>-->
-  <!--<vg-time-display vgProperty="left" vgFormat="mm:ss"></vg-time-display>-->
-  <!--<vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>-->
-  <!--&lt;!&ndash;<vg-track-selector></vg-track-selector>&ndash;&gt;-->
-  <!--<vg-mute></vg-mute>-->
-  <!--<vg-volume></vg-volume>-->
-  <!--<vg-fullscreen></vg-fullscreen>-->
-  <!--</vg-controls>-->
-
-  <!--<video class="vgVideo" [vgMedia]="media" #media id="singleVideo" preload="auto">-->
-  <!--&lt;!&ndash;<source src="http://static.videogular.com/assets/videos/videogular.mp4" type="video/mp4">&ndash;&gt;-->
-  <!--<source src="assets/img/klassic.mp3" type="audio/mp3">-->
-  <!--</video>-->
-  <!--</vg-player>-->
+    </audio>
+  </vg-player>
 
   <ion-slides pager>
     <ion-slide *ngFor="let image of images">
@@ -110,15 +95,15 @@
       <p>{{ place.address }}</p>
     </ion-item>
 
-    <ion-item color="secondary">
-      <span class="bold" item-left ion-text color="primary" *ngIf="location">
-        <small>({{ place.distance(location, unit) }})</small>
-      </span>
-      <button ion-button item-right color="primary" (click)="goToMap()">
-        <ion-icon name="navigate"></ion-icon>
-        {{ "START" | translate }}
-      </button>
-    </ion-item>
+    <!--<ion-item color="secondary">-->
+      <!--<span class="bold" item-left ion-text color="primary" *ngIf="location">-->
+        <!--<small>({{ place.distance(location, unit) }})</small>-->
+      <!--</span>-->
+      <!--<button ion-button item-right color="primary" (click)="goToMap()">-->
+        <!--<ion-icon name="navigate"></ion-icon>-->
+        <!--{{ "START" | translate }}-->
+      <!--</button>-->
+    <!--</ion-item>-->
 
   </ion-card>
 
@@ -128,15 +113,15 @@
     </ion-card-header>
 
     <ion-list no-lines>
-      <button ion-item (click)="goToMap()">
-        <ion-icon name="map" item-left color="primary"></ion-icon>
-        {{ "GET_DIRECTIONS" | translate }}
-      </button>
+      <!--<button ion-item (click)="goToMap()">-->
+        <!--<ion-icon name="map" item-left color="primary"></ion-icon>-->
+        <!--{{ "GET_DIRECTIONS" | translate }}-->
+      <!--</button>-->
 
-      <button ion-item (click)="onCall()" *ngIf="place.phone">
-        <ion-icon name="call" item-left color="primary"></ion-icon>
-        {{ "PHONE" | translate }}
-      </button>
+      <!--<button ion-item (click)="onCall()" *ngIf="place.phone">-->
+        <!--<ion-icon name="call" item-left color="primary"></ion-icon>-->
+        <!--{{ "PHONE" | translate }}-->
+      <!--</button>-->
 
       <button ion-item (click)="openUrl()" *ngIf="place.website && place.website !== 'http://'">
         <ion-icon name="globe" item-left color="primary"></ion-icon>

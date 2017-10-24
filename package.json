@@ -28,7 +28,7 @@
     "@ionic-native/file": "^3.12.1",
     "@ionic-native/geolocation": "3.12.1",
     "@ionic-native/google-analytics": "3.12.1",
-    "@ionic-native/google-maps": "3.12.1",
+    "@ionic-native/google-maps": "^3.12.1",
     "@ionic-native/header-color": "^3.12.1",
     "@ionic-native/in-app-browser": "3.12.1",
     "@ionic-native/launch-navigator": "3.12.1",
@@ -40,6 +40,7 @@
     "@ngx-translate/core": "6.0.1",
     "@ngx-translate/http-loader": "0.0.3",
     "cordova-ios": "^4.4.0",
+    "cordova-plugin-googlemaps": "^1.4.0",
     "ionic-angular": "3.4.0",
     "ionic2-rating": "1.2.2",
     "ionicons": "3.0.0",
@@ -79,5 +80,15 @@
   "config": {
     "ionic_sass": "./scripts/sass.config.js",
     "ionic_copy": "./scripts/copy.config.js"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-googlemaps": {
+        "API_KEY_FOR_ANDROID": "AIzaSyANDYkROqmQQKL99ThZAQj5_u4wysUfPO8",
+        "API_KEY_FOR_IOS": "AIzaSyAR9kFaJD_Lp698tz2kLg67X9RwfYqR-Kw",
+        "NSLOCATIONWHENINUSEUSAGEDESCRIPTION": "Show your location on the map",
+        "NSLOCATIONALWAYSUSAGEDESCRIPTION": "Trace your location on the map"
+      }
+    }
   }
 }

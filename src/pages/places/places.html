@@ -36,12 +36,13 @@
           [lazyLoad]="place.imageThumb.url()"
           [scrollTarget]="container.getScrollElement()">
       </ion-thumbnail>
-      <h2 class="bold" ion-text color="primary">{{ place.title }}</h2>
+      <!--<h2 class="bold" ion-text color="primary">{{ place.title }}</h2>-->
+      <h2 class="bold" ion-text color="secondaru">{{ place.title }}</h2>
       <p>{{ place.description }}</p>
       <ion-note ion-text color="light" item-right>
         {{ place.distance(params.location, params.unit) }}
       </ion-note>
-      <rating *ngIf="place.rating" [(ngModel)]="place.rating" readOnly="true">
+      <rating color="ops" *ngIf="place.rating" [(ngModel)]="place.rating" readOnly="true">
       </rating>
     </ion-item>
   </ion-list>

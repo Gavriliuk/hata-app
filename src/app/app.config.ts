@@ -2,8 +2,10 @@ export class AppConfig {
 
   /* Parse Server URL */
    public static get SERVER_URL(): string {
-     // return 'http://localhost:1337/parse/';
-     return 'http://734f868f.ngrok.io/parse/';
+      return 'http://localhost:1337/parse/';
+   //----------Setting server tunel ngrok -----------------------------
+     //return 'http://4b129117.ngrok.io/parse/';
+
    }
 
    /* Parse App ID  */

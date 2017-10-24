@@ -102,7 +102,9 @@ export class MyApp {
       this.preference.lang = lang;
 
       this.storage.skipIntroPage.then((skipIntroPage) => {
-        this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
+         this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
+//--------Open First Page Map---------------
+        // this.rootPage = skipIntroPage ? 'MapPage' : 'WalkthroughPage';
       }).catch((e) => console.log(e));
 
       this.buildMenu();

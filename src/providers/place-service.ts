@@ -87,6 +87,58 @@ export class Place extends Parse.Object {
     });
   }
 
+  static loadNearPlace(params): Promise<Place> {
+
+    return new Promise((resolve, reject) => {
+
+      let page = params.page || 0;
+      let limit = params.limit || 1;
+      let distance = params.distance || 1;
+
+      let query = new Parse.Query(this);
+      var subQuery = new Parse.Query(this);
+      var subQueryTwo = new Parse.Query(this);
+
+      subQuery.greaterThan('expiresAt', new Date());
+      subQueryTwo.doesNotExist('expiresAt');
+
+      query = Parse.Query.or(subQuery, subQueryTwo);
+      // query.include('category');
+      query.equalTo('isApproved', true);
+
+      // if (params.category) {
+      //   query.equalTo('category', params.category);
+      // }
+      //
+      // if (params.search && params.search !== '') {
+      //   query.contains('canonical', params.search);
+      // }
+
+      if (params.location) {
+
+        var point = new Parse.GeoPoint({
+          latitude: params.location.latitude,
+          longitude: params.location.longitude
+        });
+
+        if (params.unit && params.unit === 'km') {
+          query.withinKilometers('location', point, distance);
+        } else {
+          query.withinMiles('location', point, distance);
+        }
+      }
+
+      // else {
+      //   query.descending('createdAt');
+      // }
+
+      query.skip(page * limit);
+      query.limit(limit);
+
+      query.find().then(data => resolve(data), error => reject(error));
+    });
+  }
+
   static loadFavorites(params): Promise<Place[]> {
 
     return new Promise((resolve, reject) => {

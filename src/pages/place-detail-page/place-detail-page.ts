@@ -4,7 +4,7 @@ import {ModalController, Events} from 'ionic-angular';
 import {Place} from '../../providers/place-service';
 import {Preference} from '../../providers/preference';
 import {LocalStorage} from '../../providers/local-storage';
-import {CallNumber} from '@ionic-native/call-number';
+// import {CallNumber} from '@ionic-native/call-number';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
 import {InAppBrowser} from '@ionic-native/in-app-browser';
 import {BrowserTab} from '@ionic-native/browser-tab';
@@ -31,7 +31,7 @@ export class PlaceDetailPage extends BasePage {
               private modalCtrl: ModalController,
               private storage: LocalStorage,
               private preference: Preference,
-              private callNumber: CallNumber,
+              // private callNumber: CallNumber,
               private geolocation: Geolocation,
               private inAppBrowser: InAppBrowser,
               private browserTab: BrowserTab,
@@ -113,7 +113,7 @@ export class PlaceDetailPage extends BasePage {
   }
 
   onCall() {
-    this.callNumber.callNumber(this.place.phone, true)
+    // this.callNumber.callNumber(this.place.phone, true)
   }
 
   openUrl() {

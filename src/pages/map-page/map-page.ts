@@ -1,14 +1,16 @@
-import { IonicPage } from 'ionic-angular';
-import { Component, Injector } from '@angular/core';
-import { Platform, Events } from 'ionic-angular';
-import { Place } from '../../providers/place-service';
-import { MapStyle } from '../../providers/map-style';
-import { BasePage } from '../base-page/base-page';
-import { LocalStorage } from '../../providers/local-storage';
-import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
-import { CameraPosition, GoogleMap, GoogleMapsEvent,
+import {IonicPage} from 'ionic-angular';
+import {Component, Injector} from '@angular/core';
+import {Platform, Events} from 'ionic-angular';
+import {Place} from '../../providers/place-service';
+import {MapStyle} from '../../providers/map-style';
+import {BasePage} from '../base-page/base-page';
+import {LocalStorage} from '../../providers/local-storage';
+import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
+import {
+  CameraPosition, GoogleMap, GoogleMapsEvent,
   LatLng, LatLngBounds, Geocoder, GeocoderRequest,
-  GeocoderResult, Marker } from '@ionic-native/google-maps';
+  GeocoderResult, Marker
+} from '@ionic-native/google-maps';
 
 @IonicPage()
 @Component({
@@ -21,12 +23,13 @@ export class MapPage extends BasePage {
   places: Place[];
   map: GoogleMap;
   isViewLoaded: boolean;
+  audio: any;
 
   constructor(public injector: Injector,
-    private events: Events,
-    private storage: LocalStorage,
-    private geolocation: Geolocation,
-    private platform: Platform) {
+              private events: Events,
+              private storage: LocalStorage,
+              private geolocation: Geolocation,
+              private platform: Platform) {
 
     super(injector);
 
@@ -53,7 +56,7 @@ export class MapPage extends BasePage {
 
     if (this.map) {
       this.map.clear();
-      this.map.setZoom(1);
+      this.map.setZoom(0.5);
       this.map.setCenter(new LatLng(0, 0));
     }
   }
@@ -74,7 +77,7 @@ export class MapPage extends BasePage {
       this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
 
         this.storage.unit.then(unit => {
-          
+
           this.params.unit = unit;
 
           const options: GeolocationOptions = {
@@ -91,7 +94,7 @@ export class MapPage extends BasePage {
             this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
             this.showErrorView();
           });
-      
+
         });
       });
 
@@ -146,10 +149,11 @@ export class MapPage extends BasePage {
           results[0].position.lat,
           results[0].position.lng
         );
-
+// code
         let position: CameraPosition = {
           target: target,
-          zoom: 10
+          zoom: 18,
+          tilt: 30
         };
 
         this.map.moveCamera(position);
@@ -169,6 +173,13 @@ export class MapPage extends BasePage {
   }
 
   loadData() {
+    let paramsClone = { ...this.params };
+    paramsClone.distance=0.5;
+
+    Place.loadNearPlace(paramsClone).then(place=> {
+      this.audio=place[0].audio.url();
+
+    });
 
     Place.load(this.params).then(places => {
       this.onPlacesLoaded(places);
@@ -187,7 +198,7 @@ export class MapPage extends BasePage {
 
     let points: Array<LatLng> = [];
 
-    for(let place of places) {
+    for (let place of places) {
 
       let target: LatLng = new LatLng(
         place.location.latitude,
@@ -242,7 +253,7 @@ export class MapPage extends BasePage {
 
     if (this.platform.is('cordova')) {
       this.map.getCameraPosition().then(camera => {
-        let position:LatLng = <LatLng> camera.target;
+        let position: LatLng = <LatLng> camera.target;
 
         this.params.location = {
           latitude: position.lat,

@@ -25,7 +25,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { File } from '@ionic-native/file';
 import { LaunchNavigator } from '@ionic-native/launch-navigator';
-import { CallNumber } from '@ionic-native/call-number';
+// import { CallNumber } from '@ionic-native/call-number';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { GoogleMaps } from '@ionic-native/google-maps';
@@ -83,7 +83,7 @@ export function HttpLoaderFactory(http: Http) {
     LocationAccuracy,
     Geolocation,
     LaunchNavigator,
-    CallNumber,
+    // CallNumber,
     InAppBrowser,
     SocialSharing,
     GoogleMaps,

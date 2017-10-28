@@ -17,10 +17,9 @@
       </vg-scrub-bar>
 
       <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
-      <!--<vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>-->
     </vg-controls>
-    <audio #media [vgMedia]="media" id="myAudio" preload="auto">
-      <source src="{{audio}}" type="audio/mp3" type="audio/mp3">
+    <audio #media [vgMedia]="media" id="myAudio" preload="auto" autoplay mote>
+      <source src="{{audio}}" type="audio/mp3">
       <!--<source src="http://localhost:1337/parse/files/myAppId/12fcdedac21795d5c40daa1975dd3b70_audio.mp3" type="audio/mp3">-->
     </audio>
   </vg-player>

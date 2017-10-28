@@ -18,6 +18,12 @@ export class PlacesPage extends BasePage {
   params: any = {};
   places: Place[];
   category: Category;
+  audio:any;
+
+  sources: Array<Object>;
+  place: Place;
+  placeData: any;
+  trek: any;
 
   constructor(injector: Injector,
     private geolocation: Geolocation,
@@ -32,7 +38,25 @@ export class PlacesPage extends BasePage {
     this.showLoadingView();
     this.onReload();
     this.prepareAd();
-  }
+
+
+    this.sources = [
+      {
+        src: "https://nearme-guide.s3.amazonaws.com/539e3dbca77102c8c726fb9d558f55dd_audio.mp3",
+      },
+      {
+        src: "https://nearme-guide.s3.amazonaws.com/1378fbf6f9fec50fd3a4fc3b52a17e72_audio.mp3",
+      },
+      {
+        src: "https://nearme-guide.s3.amazonaws.com/be21f14f1edf7f5e3ec8deeef5f6a34a_audio.mp3",
+      }
+    ];
+
+    Place.load(this.params).then(data => {
+      this.audio = data[0].audio.url();
+    });
+
+    }
 
   enableMenuSwipe() {
     return false;
@@ -63,6 +87,7 @@ export class PlacesPage extends BasePage {
   loadData() {
 
     Place.load(this.params).then(data => {
+      // this.audio = data[0].audio.url();
 
       for (let place of data) {
         this.places.push(place);

@@ -25,3 +25,34 @@
     <!--</button>-->
   <!--</ion-toolbar>-->
 <!--</ion-footer>-->
+
+<ion-footer>
+  <ion-toolbar color="secondary" text-center>
+
+    <vg-player class="vgPlayer">
+      <vg-controls>
+        <vg-play-pause [vgFor]="myAudio"></vg-play-pause>
+        <vg-playback-button [vgFor]="myAudio"></vg-playback-button>
+
+        <vg-scrub-bar class="scrum-bar">
+          <vg-scrub-bar-current-time [vgFor]="myAudio"></vg-scrub-bar-current-time>
+          <vg-scrub-bar-buffering-time [vgFor]="myAudio"></vg-scrub-bar-buffering-time>
+        </vg-scrub-bar>
+
+        <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
+      </vg-controls>
+      <audio #media [vgMedia]="media" id="myAudio" preload="auto" autoplay>
+        <!--<source src="{{audio}}" type="audio/mp3">-->
+
+        <!--<source src="{{sources.src}}" type="audio/mp3">-->
+        <source src="{{nextAudio}}" type="audio/mp3">
+
+        <!--<source [src]="sources[0].src" type="audio/mp3">-->
+
+
+        <!--<source src="http://localhost:1337/parse/files/myAppId/12fcdedac21795d5c40daa1975dd3b70_audio.mp3" type="audio/mp3">-->
+      </audio>
+    </vg-player>
+
+  </ion-toolbar>
+</ion-footer>

@@ -52,3 +52,35 @@
   </ion-infinite-scroll>
 
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar color="secondary" text-center>
+
+    <vg-player class="vgPlayer">
+      <vg-controls>
+        <vg-play-pause [vgFor]="myAudio"></vg-play-pause>
+        <vg-playback-button [vgFor]="myAudio"></vg-playback-button>
+
+        <vg-scrub-bar class="scrum-bar">
+          <vg-scrub-bar-current-time [vgFor]="myAudio"></vg-scrub-bar-current-time>
+          <vg-scrub-bar-buffering-time [vgFor]="myAudio"></vg-scrub-bar-buffering-time>
+        </vg-scrub-bar>
+
+        <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
+
+        <vg-track-selector [vgFor]="myAudio"></vg-track-selector>
+      </vg-controls>
+      <audio #media [vgMedia]="media" id="myAudio" preload="auto" autoplay mote>
+
+        <!--<source src="{{audio}}" type="audio/mp3">-->
+
+        <source *ngFor="let trek of sources" [src]="trek.src" type="audio/mp3">
+        <track label="English" src="http://static.videogular.com/assets/subs/pale-blue-dot.vtt" srclang="en" default>
+        <track label="Español" src="http://static.videogular.com/assets/subs/pale-blue-dot-es.vtt" srclang="es">
+
+
+      </audio>
+    </vg-player>
+
+  </ion-toolbar>
+</ion-footer>

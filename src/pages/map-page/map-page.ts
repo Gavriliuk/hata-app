@@ -1,14 +1,16 @@
-import { IonicPage } from 'ionic-angular';
-import { Component, Injector } from '@angular/core';
-import { Platform, Events } from 'ionic-angular';
-import { Place } from '../../providers/place-service';
-import { MapStyle } from '../../providers/map-style';
-import { BasePage } from '../base-page/base-page';
-import { LocalStorage } from '../../providers/local-storage';
-import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
-import { CameraPosition, GoogleMap, GoogleMapsEvent,
+import {IonicPage} from 'ionic-angular';
+import {Component, Injector} from '@angular/core';
+import {Platform, Events} from 'ionic-angular';
+import {Place} from '../../providers/place-service';
+import {MapStyle} from '../../providers/map-style';
+import {BasePage} from '../base-page/base-page';
+import {LocalStorage} from '../../providers/local-storage';
+import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
+import {
+  CameraPosition, GoogleMap, GoogleMapsEvent,
   LatLng, LatLngBounds, Geocoder, GeocoderRequest,
-  GeocoderResult, Marker } from '@ionic-native/google-maps';
+  GeocoderResult, Marker
+} from '@ionic-native/google-maps';
 
 @IonicPage()
 @Component({
@@ -22,11 +24,18 @@ export class MapPage extends BasePage {
   map: GoogleMap;
   isViewLoaded: boolean;
 
+  audio: any;
+  radius: any;
+  sources:Array<Object>;
+  myPlaces: Place[];
+  nextAudio:any;
+  nextRadius:any;
+
   constructor(public injector: Injector,
-    private events: Events,
-    private storage: LocalStorage,
-    private geolocation: Geolocation,
-    private platform: Platform) {
+              private events: Events,
+              private storage: LocalStorage,
+              private geolocation: Geolocation,
+              private platform: Platform) {
 
     super(injector);
 
@@ -41,7 +50,36 @@ export class MapPage extends BasePage {
         this.map.setClickable(true);
       }
     });
+
+    // this.myPlace = this.params
+
+
+    Place.load(this.params).then(places => {
+      this.myPlaces = places;
+      this.nextAudio= this.myPlaces[0].audio.url();
+       // alert('NextAudio:'+JSON.stringify(this.nextAudio));
+
+    })
+
+
+    this.sources = [
+      {
+        src: "https://nearme-guide.s3.amazonaws.com/539e3dbca77102c8c726fb9d558f55dd_audio.mp3",
+      },
+      {
+        src: "https://nearme-guide.s3.amazonaws.com/1378fbf6f9fec50fd3a4fc3b52a17e72_audio.mp3",
+      },
+      {
+        src: "https://nearme-guide.s3.amazonaws.com/be21f14f1edf7f5e3ec8deeef5f6a34a_audio.mp3",
+      }
+    ];
+
+
   }
+
+  // ionViewWillEnter() {
+  //   return this.service.getComments().then(data => this.comments = data);
+  // }
 
   enableMenuSwipe() {
     return true;
@@ -53,13 +91,12 @@ export class MapPage extends BasePage {
 
     if (this.map) {
       this.map.clear();
-      this.map.setZoom(1);
+      this.map.setZoom(0.5);
       this.map.setCenter(new LatLng(0, 0));
     }
   }
 
   ionViewDidLoad() {
-
     this.isViewLoaded = true;
 
     if (this.platform.is('cordova')) {
@@ -74,7 +111,7 @@ export class MapPage extends BasePage {
       this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
 
         this.storage.unit.then(unit => {
-          
+
           this.params.unit = unit;
 
           const options: GeolocationOptions = {
@@ -91,7 +128,7 @@ export class MapPage extends BasePage {
             this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
             this.showErrorView();
           });
-      
+
         });
       });
 
@@ -146,10 +183,11 @@ export class MapPage extends BasePage {
           results[0].position.lat,
           results[0].position.lng
         );
-
+// code
         let position: CameraPosition = {
           target: target,
-          zoom: 10
+          zoom: 18,
+          tilt: 30
         };
 
         this.map.moveCamera(position);
@@ -169,6 +207,29 @@ export class MapPage extends BasePage {
   }
 
   loadData() {
+    let paramsClone = { ...this.params };
+    paramsClone.distance = 0.5;
+
+    Place.loadNearPlace(paramsClone).then(place=> {
+
+      let myDistance = JSON.stringify(place[0].distance(this.params.location,'')).replace(' ','');
+      // alert("My Distance:"+ myDistance);
+
+      this.radius = place[0].attributes.radius;
+      // this.nextRadius = place[1].attributes.radius;
+      // alert("Radius Manumenta:"+JSON.stringify(place[0].attributes.radius));
+
+
+      if(myDistance < this.radius){
+        this.audio=place[0].audio.url();
+        this.nextAudio;
+      }
+      else if(myDistance == this.radius){
+              // alert("Slushat next trek (distancion=radius)");
+              // this.audio = place[1].audio.url();
+            }
+      // this.radius = place[0].attributes.radius;
+    });
 
     Place.load(this.params).then(places => {
       this.onPlacesLoaded(places);
@@ -187,7 +248,7 @@ export class MapPage extends BasePage {
 
     let points: Array<LatLng> = [];
 
-    for(let place of places) {
+    for (let place of places) {
 
       let target: LatLng = new LatLng(
         place.location.latitude,
@@ -242,7 +303,7 @@ export class MapPage extends BasePage {
 
     if (this.platform.is('cordova')) {
       this.map.getCameraPosition().then(camera => {
-        let position:LatLng = <LatLng> camera.target;
+        let position: LatLng = <LatLng> camera.target;
 
         this.params.location = {
           latitude: position.lat,

@@ -1,11 +1,13 @@
-import {IonicPage} from 'ionic-angular';
-import {Component, Injector} from '@angular/core';
-import {Platform, Events} from 'ionic-angular';
-import {Place} from '../../providers/place-service';
-import {MapStyle} from '../../providers/map-style';
-import {BasePage} from '../base-page/base-page';
-import {LocalStorage} from '../../providers/local-storage';
-import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
+import { IonicPage } from 'ionic-angular';
+import { Component, Injector } from '@angular/core';
+import { Platform, Events } from 'ionic-angular';
+import { Place } from '../../providers/place-service';
+import { MapStyle } from '../../providers/map-style';
+import { BasePage } from '../base-page/base-page';
+import { LocalStorage } from '../../providers/local-storage';
+import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
+import 'rxjs/add/operator/filter'
+
 import {
   CameraPosition, GoogleMap, GoogleMapsEvent,
   LatLng, LatLngBounds, Geocoder, GeocoderRequest,
@@ -25,17 +27,15 @@ export class MapPage extends BasePage {
   isViewLoaded: boolean;
 
   audio: any;
-  radius: any;
-  sources:Array<Object>;
-  myPlaces: Place[];
-  nextAudio:any;
-  nextRadius:any;
+  nearPlaces: Place[];
+  nearAudio: any[];
+  api: any;
 
   constructor(public injector: Injector,
-              private events: Events,
-              private storage: LocalStorage,
-              private geolocation: Geolocation,
-              private platform: Platform) {
+    private events: Events,
+    private storage: LocalStorage,
+    private geolocation: Geolocation,
+    private platform: Platform) {
 
     super(injector);
 
@@ -51,52 +51,38 @@ export class MapPage extends BasePage {
       }
     });
 
-    // this.myPlace = this.params
-
-
-    Place.load(this.params).then(places => {
-      this.myPlaces = places;
-      this.nextAudio= this.myPlaces[0].audio.url();
-       // alert('NextAudio:'+JSON.stringify(this.nextAudio));
-
-    })
-
-
-    this.sources = [
-      {
-        src: "https://nearme-guide.s3.amazonaws.com/539e3dbca77102c8c726fb9d558f55dd_audio.mp3",
-      },
-      {
-        src: "https://nearme-guide.s3.amazonaws.com/1378fbf6f9fec50fd3a4fc3b52a17e72_audio.mp3",
-      },
-      {
-        src: "https://nearme-guide.s3.amazonaws.com/be21f14f1edf7f5e3ec8deeef5f6a34a_audio.mp3",
-      }
-    ];
-
-
+    // Place.load(this.params).then(places => {
+    //   this.nearPlaces = places;
+    //   this.nearAudio = [this.nearPlaces[0].audio.url()];
+    //   this.api.getDefaultMedia().loadMedia();
+    // })
   }
 
-  // ionViewWillEnter() {
-  //   return this.service.getComments().then(data => this.comments = data);
-  // }
+  onPlayerReady(api) {
+    this.api = api;
+    this.api.getDefaultMedia().subscriptions.canPlay.subscribe(
+      () => {
+        this.api.play();
+      }
+    );
+  }
 
   enableMenuSwipe() {
     return true;
   }
 
-  ionViewWillUnload() {
+  ionViewDidLeave() {
 
     this.isViewLoaded = false;
 
-    if (this.map) {
-      this.map.clear();
-      this.map.setZoom(0.5);
-      this.map.setCenter(new LatLng(0, 0));
-    }
+    // if (this.map) {
+    //   this.map.clear();
+    //   this.map.setZoom(0.5);
+    //   this.map.setCenter(new LatLng(0, 0));
+    // }
   }
 
-  ionViewDidLoad() {
+  ionViewWillEnter() {
     this.isViewLoaded = true;
 
     if (this.platform.is('cordova')) {
@@ -128,7 +114,29 @@ export class MapPage extends BasePage {
             this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
             this.showErrorView();
           });
+          // Options: throw an error if no update is received every 30 seconds.
+          this.geolocation.watchPosition({ maximumAge: 3000, timeout: 3000, enableHighAccuracy: true }).filter((p) => p.coords !== undefined).subscribe(position => {
 
+            let paramsClone = { ...this.params };
+            //TODO add this to settings
+            //Autoplay Distance
+            paramsClone.distance = 0.5;
+            paramsClone.location = position.coords;
+
+            Place.loadNearPlace(paramsClone).then(place => {
+              if (place && place[0]) {
+                let myDistance = place[0].distance(paramsClone.location, 'none');
+                let radius = place[0].attributes.radius;
+
+                if (myDistance <= radius) {
+                  if (this.nearAudio[0] != place[0].audio.url()) {
+                    this.nearAudio = [place[0].audio.url()];
+                    this.api.getDefaultMedia().loadMedia();
+                  }
+                }
+              }
+            });
+          });
         });
       });
 
@@ -142,7 +150,7 @@ export class MapPage extends BasePage {
 
           this.map.getCameraPosition().then((camera: CameraPosition) => {
 
-            let target: LatLng = <LatLng> camera.target;
+            let target: LatLng = <LatLng>camera.target;
 
             this.params.location = {
               latitude: target.lat,
@@ -183,7 +191,7 @@ export class MapPage extends BasePage {
           results[0].position.lat,
           results[0].position.lng
         );
-// code
+        // code
         let position: CameraPosition = {
           target: target,
           zoom: 18,
@@ -208,27 +216,19 @@ export class MapPage extends BasePage {
 
   loadData() {
     let paramsClone = { ...this.params };
+    //TODO add this to settings
+    //Autoplay Distance
     paramsClone.distance = 0.5;
 
-    Place.loadNearPlace(paramsClone).then(place=> {
+    Place.loadNearPlace(paramsClone).then(place => {
+      if (place && place[0]) {
+        let myDistance = place[0].distance(this.params.location, 'none');
+        let radius = place[0].attributes.radius;
 
-      let myDistance = JSON.stringify(place[0].distance(this.params.location,'')).replace(' ','');
-      // alert("My Distance:"+ myDistance);
-
-      this.radius = place[0].attributes.radius;
-      // this.nextRadius = place[1].attributes.radius;
-      // alert("Radius Manumenta:"+JSON.stringify(place[0].attributes.radius));
-
-
-      if(myDistance < this.radius){
-        this.audio=place[0].audio.url();
-        this.nextAudio;
+        if (myDistance <= radius) {
+          this.nearAudio = [place[0].audio.url()];
+        }
       }
-      else if(myDistance == this.radius){
-              // alert("Slushat next trek (distancion=radius)");
-              // this.audio = place[1].audio.url();
-            }
-      // this.radius = place[0].attributes.radius;
     });
 
     Place.load(this.params).then(places => {
@@ -303,7 +303,7 @@ export class MapPage extends BasePage {
 
     if (this.platform.is('cordova')) {
       this.map.getCameraPosition().then(camera => {
-        let position: LatLng = <LatLng> camera.target;
+        let position: LatLng = <LatLng>camera.target;
 
         this.params.location = {
           latitude: position.lat,

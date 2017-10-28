@@ -103,8 +103,8 @@ export class MyApp {
 
       this.storage.skipIntroPage.then((skipIntroPage) => {
         //--------Open First Page Map---------------
-        //  this.rootPage = skipIntroPage ? 'MapPage' : 'WalkthroughPage';
-         this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
+         this.rootPage = skipIntroPage ? 'MapPage' : 'WalkthroughPage';
+        //  this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
       }).catch((e) => console.log(e));
 
       this.buildMenu();

@@ -1,13 +1,13 @@
 <ion-header>
   <ion-navbar color="primary">
-    <ion-segment [(ngModel)]="params.filter" color="secondary">
+    <!-- <ion-segment [(ngModel)]="params.filter" color="secondary">
       <ion-segment-button value="nearby" (ionSelect)="onFilter('nearby')">
         {{ "NEARBY" | translate }}
       </ion-segment-button>
       <ion-segment-button value="new" (ionSelect)="onFilter('new')">
         {{ "NEW" | translate }}
       </ion-segment-button>
-    </ion-segment>
+    </ion-segment> -->
   </ion-navbar>
 </ion-header>
 
@@ -56,7 +56,7 @@
 <ion-footer>
   <ion-toolbar color="secondary" text-center>
 
-    <vg-player class="vgPlayer">
+    <vg-player class="vgPlayer" (onPlayerReady)="onPlayerReady($event)">
       <vg-controls>
         <vg-play-pause [vgFor]="myAudio"></vg-play-pause>
         <vg-playback-button [vgFor]="myAudio"></vg-playback-button>
@@ -68,17 +68,9 @@
 
         <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
 
-        <vg-track-selector [vgFor]="myAudio"></vg-track-selector>
       </vg-controls>
-      <audio #media [vgMedia]="media" id="myAudio" preload="auto" autoplay mote>
-
-        <!--<source src="{{audio}}" type="audio/mp3">-->
-
-        <source *ngFor="let trek of sources" [src]="trek.src" type="audio/mp3">
-        <track label="English" src="http://static.videogular.com/assets/subs/pale-blue-dot.vtt" srclang="en" default>
-        <track label="Español" src="http://static.videogular.com/assets/subs/pale-blue-dot-es.vtt" srclang="es">
-
-
+      <audio #media [vgMedia]="media" id="myAudio">
+        <source [src]="audio" type="audio/mp3">
       </audio>
     </vg-player>
 

@@ -1,6 +1,6 @@
 <ion-menu [content]="content" (ionOpen)="onMenuOpened()" (ionClose)="onMenuClosed()">
   <ion-header>
-    <ion-toolbar class="menu-toolbar" color="dark">
+    <ion-toolbar class="menu-toolbar" color="primary">
       <ion-item no-lines *ngIf="user">
         <ion-avatar item-left>
           <img [src]="user.get('photo') ? user.get('photo').url() : ''" src-fallback="assets/img/avatar.png">

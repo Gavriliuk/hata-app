@@ -4,6 +4,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { VgCoreModule } from 'videogular2/core';
+// import { VgAPI } from 'videogular2/core';
 import { VgControlsModule } from 'videogular2/controls';
 import { VgOverlayPlayModule } from 'videogular2/overlay-play';
 import { VgBufferingModule } from 'videogular2/buffering';
@@ -25,7 +26,6 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { File } from '@ionic-native/file';
 import { LaunchNavigator } from '@ionic-native/launch-navigator';
-// import { CallNumber } from '@ionic-native/call-number';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { GoogleMaps } from '@ionic-native/google-maps';
@@ -61,6 +61,7 @@ export function HttpLoaderFactory(http: Http) {
     Ionic2RatingModule,
     HttpModule,
     VgCoreModule,
+    // VgAPI,
     VgControlsModule,
     VgOverlayPlayModule,
     VgBufferingModule,

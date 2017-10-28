@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import Parse from 'parse';
 
 @Injectable()
@@ -21,7 +21,9 @@ export class Place extends Parse.Object {
 
     if (unit === 'km') {
       return this.location.kilometersTo(geoPoint).toFixed(2) + ' ' + unit;
-    } else {
+    } else if (unit === 'none') {
+      return this.location.kilometersTo(geoPoint).toFixed(2);
+    }else {
       return this.location.milesTo(geoPoint).toFixed(2) + ' ' + unit;
     }
   }
@@ -29,7 +31,7 @@ export class Place extends Parse.Object {
   static like(place) {
 
     return new Promise((resolve, reject) => {
-      Parse.Cloud.run('likePlace', {placeId: place.id}).then(data => {
+      Parse.Cloud.run('likePlace', { placeId: place.id }).then(data => {
         resolve(data);
       }, error => {
         reject(error);

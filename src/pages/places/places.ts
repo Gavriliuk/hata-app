@@ -24,6 +24,7 @@ export class PlacesPage extends BasePage {
   place: Place;
   placeData: any;
   trek: any;
+  api:any;
 
   constructor(injector: Injector,
     private geolocation: Geolocation,
@@ -54,10 +55,19 @@ export class PlacesPage extends BasePage {
 
     Place.load(this.params).then(data => {
       this.audio = data[0].audio.url();
+      this.api.getDefaultMedia().loadMedia();
     });
 
     }
 
+    onPlayerReady(api) {
+      this.api=api;
+      this.api.getDefaultMedia().subscriptions.canPlay.subscribe(
+        () => {
+            this.api.play();
+        }
+    );
+  }
   enableMenuSwipe() {
     return false;
   }

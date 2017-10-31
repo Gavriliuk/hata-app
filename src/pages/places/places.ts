@@ -24,6 +24,7 @@ export class PlacesPage extends BasePage {
   place: Place;
   // placeData: any;
   // trek: any;
+
   api:any;
 
   constructor(injector: Injector,
@@ -38,7 +39,7 @@ export class PlacesPage extends BasePage {
 
     this.showLoadingView();
     this.onReload();
-    this.prepareAd();
+    // this.prepareAd();
 
     Place.load(this.params).then(data => {
       this.audio = data[0].audio.url();

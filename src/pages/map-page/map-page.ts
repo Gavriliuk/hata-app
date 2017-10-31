@@ -6,6 +6,7 @@ import { MapStyle } from '../../providers/map-style';
 import { BasePage } from '../base-page/base-page';
 import { LocalStorage } from '../../providers/local-storage';
 import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
+import {ChangeDetectorRef} from '@angular/core';
 import 'rxjs/add/operator/filter'
 
 import {
@@ -35,7 +36,8 @@ export class MapPage extends BasePage {
     private events: Events,
     private storage: LocalStorage,
     private geolocation: Geolocation,
-    private platform: Platform) {
+    private platform: Platform,
+    private cdr: ChangeDetectorRef) {
 
     super(injector);
 
@@ -300,6 +302,9 @@ export class MapPage extends BasePage {
     this.map.clear();
     this.places = [];
     this.loadData();
+  }
+  ngAfterViewChecked(): void {
+    this.cdr.detectChanges();
   }
 
   // onSearchButtonTapped() {

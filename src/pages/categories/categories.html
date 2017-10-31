@@ -1,10 +1,10 @@
 <ion-header>
-  <ion-navbar color="primary">
+  <ion-navbar color="primary" >
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>{{ 'ROUTES' | translate }}</ion-title>
-    <!--<ion-title>{{ 'CATEGORIES' | translate }}</ion-title>-->
+    <!-- <ion-title>{{ 'CATEGORIES' | translate }}</ion-title> -->
   </ion-navbar>
 </ion-header>
 
@@ -12,7 +12,6 @@
 
   <empty-view *ngIf="isErrorViewVisible" icon="alert"
     [text]="'ERROR_ROUTES' | translate">
-    <!--[text]="'ERROR_CATEGORIES' | translate">-->
   </empty-view>
 
   <empty-view *ngIf="isEmptyViewVisible" icon="bookmark"

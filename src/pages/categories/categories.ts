@@ -13,7 +13,6 @@ import { User } from '../../providers/user-service';
   templateUrl: 'categories.html'
 })
 export class CategoriesPage extends BasePage {
-
   private categories: Array<Category>;
 
   constructor(injector: Injector,

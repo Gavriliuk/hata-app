@@ -3,18 +3,20 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>{{ 'CATEGORIES' | translate }}</ion-title>
+    <ion-title>{{ 'ROUTES' | translate }}</ion-title>
+    <!--<ion-title>{{ 'CATEGORIES' | translate }}</ion-title>-->
   </ion-navbar>
 </ion-header>
 
 <ion-content padding #container>
 
   <empty-view *ngIf="isErrorViewVisible" icon="alert"
-    [text]="'ERROR_CATEGORIES' | translate">
+    [text]="'ERROR_ROUTES' | translate">
+    <!--[text]="'ERROR_CATEGORIES' | translate">-->
   </empty-view>
 
   <empty-view *ngIf="isEmptyViewVisible" icon="bookmark"
-    [text]="'EMPTY_CATEGORIES' | translate">
+    [text]="'EMPTY_ROUTES' | translate">
   </empty-view>
 
   <ion-refresher (ionRefresh)="onReload($event)">

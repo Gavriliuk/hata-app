@@ -9,7 +9,7 @@ page-place-detail-page {
 
   ion-card {
     position: relative;
-    top: -45px;
+    top: -34px;
     z-index: 999999;
 
     ion-card-header {
@@ -25,7 +25,8 @@ page-place-detail-page {
   .vgPlayer {
     height: 50px;
     //padding-top: 26px;
-    background-color: #4e6382;;
+    //background-color: #4e6382;
+    background-color: #656565;
   }
   .scrum-bar {
     padding-top: 18px;
@@ -46,8 +47,5 @@ page-place-detail-page {
     margin: 8px 8px 8px 0;
   }
 
-  //.mapObjectPlace{
-  //  margin-top: 23px;
-  //}
   @import "../../../node_modules/videogular2/fonts/videogular.css";
 }

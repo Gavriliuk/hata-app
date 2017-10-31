@@ -28,6 +28,7 @@ export class SettingsPage extends BasePage {
     this.preference = preference;
 
     this.storage.unit.then(unit => this.settings.unit = unit).catch((e) => console.log(e));
+    this.storage.radius.then(radius => this.settings.radius = radius).catch((e) => console.log(e));
     this.storage.mapStyle.then(mapStyle => this.settings.mapStyle = mapStyle).catch((e) => console.log(e));
     this.storage.distance.then(distance => this.settings.distance = distance).catch((e) => console.log(e));
     this.storage.lang.then(lang => this.settings.lang = lang).catch((e) => console.log(e));
@@ -39,6 +40,11 @@ export class SettingsPage extends BasePage {
 
   ionViewDidLoad() {
 
+  }
+
+  onChangeRadius() {
+    this.storage.radius = this.settings.radius;
+    this.preference.radius = this.settings.radius;
   }
 
   onChangeUnit() {

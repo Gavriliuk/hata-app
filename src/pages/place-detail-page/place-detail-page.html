@@ -18,7 +18,8 @@
 
       <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
     </vg-controls>
-    <audio #media [vgMedia]="media" id="myAudio" preload="auto" autoplay mote>
+    <audio #media [vgMedia]="media" id="myAudio" preload="auto">
+    <!--<audio #media [vgMedia]="media" id="myAudio" preload="auto" autoplay mote>-->
       <source src="{{audio}}" type="audio/mp3">
       <!--<source src="http://localhost:1337/parse/files/myAppId/12fcdedac21795d5c40daa1975dd3b70_audio.mp3" type="audio/mp3">-->
     </audio>
@@ -41,21 +42,21 @@
     </ion-card-content>
     <ion-grid>
       <ion-row no-padding>
-        <ion-col col-4>
+        <ion-col col-6>
           <button ion-button icon-left small round block
                   color="primary" (click)="onLike()">
             <ion-icon name="heart"></ion-icon>
             {{ "LIKE" | translate }}
           </button>
         </ion-col>
-        <ion-col col-4>
-          <button ion-button icon-left small round block
-                  color="primary" (click)="onRate()">
-            <ion-icon name="star"></ion-icon>
-            {{ "RATE" | translate }}
-          </button>
-        </ion-col>
-        <ion-col col-4>
+        <!--<ion-col col-4>-->
+          <!--<button ion-button icon-left small round block-->
+                  <!--color="primary" (click)="onRate()">-->
+            <!--<ion-icon name="star"></ion-icon>-->
+            <!--{{ "RATE" | translate }}-->
+          <!--</button>-->
+        <!--</ion-col>-->
+        <ion-col col-6>
           <button ion-button icon-left small round block
                   color="primary" (click)="onShare()">
             <ion-icon name="share"></ion-icon>
@@ -115,10 +116,10 @@
         {{ "WEBSITE" | translate }}
       </button>
 
-      <button ion-item (click)="goToReviews()">
-        <ion-icon name="star" item-left color="primary"></ion-icon>
-        {{ "REVIEWS" | translate }}
-      </button>
+      <!--<button ion-item (click)="goToReviews()">-->
+        <!--<ion-icon name="star" item-left color="primary"></ion-icon>-->
+        <!--{{ "REVIEWS" | translate }}-->
+      <!--</button>-->
 
     </ion-list>
   </ion-card>

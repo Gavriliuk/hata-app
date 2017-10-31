@@ -32,6 +32,10 @@ export class AppConfig {
    public static get DEFAULT_UNIT(): string {
      return 'km';
    }
+   /* Radius: */
+   public static get DEFAULT_RADIUS(): string {
+     return '0.5';
+   }
 
    /* Map style: satellite or roadmap */
    public static get DEFAULT_MAP_STYLE(): string {

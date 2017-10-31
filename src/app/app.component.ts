@@ -52,7 +52,7 @@ export class MyApp {
   buildMenu() {
 
     let trans = ['ROUTES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
-    'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
+      'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
 
     this.translate.get(trans).subscribe(values => {
 
@@ -104,7 +104,7 @@ export class MyApp {
 
       this.storage.skipIntroPage.then((skipIntroPage) => {
         //--------Open First Page Map---------------
-         this.rootPage = skipIntroPage ? 'MapPage' : 'WalkthroughPage';
+        this.rootPage = skipIntroPage ? 'MapPage' : 'WalkthroughPage';
         //  this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
       }).catch((e) => console.log(e));
 
@@ -116,6 +116,13 @@ export class MyApp {
 
       this.storage.unit = unit;
       this.preference.unit = unit;
+    }).catch((e) => console.log(e));
+
+    this.storage.radius.then(val => {
+      let radius = val || AppConfig.DEFAULT_RADIUS;
+
+      this.storage.radius = radius;
+      this.preference.radius = radius;
     }).catch((e) => console.log(e));
 
     this.storage.mapStyle.then(val => {

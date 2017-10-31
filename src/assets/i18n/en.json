@@ -4,6 +4,8 @@
   "ROUTES": "Routes",
   "KM":"km",
   "MI":"mi",
+  "km":"km",
+  "mi":"mi",
   "MAP": "Map",
   "MY_FAVORITES": "My Favorites",
   "SETTINGS": "Settings",

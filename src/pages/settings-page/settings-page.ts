@@ -23,6 +23,7 @@ export class SettingsPage extends BasePage {
 
     super(injector);
 
+
     this.storage = localStorage;
     this.events = events;
     this.preference = preference;

@@ -111,4 +111,5 @@
     <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" spec="~3.2.2" />
     <plugin name="cordova-plugin-disable-ios11-statusbar" spec="~1.0.0" />
     <plugin name="cordova-plugin-request-location-accuracy" spec="~2.2.1" />
+    <allow-navigation href="http://192.168.1.103:8100" />
 </widget>

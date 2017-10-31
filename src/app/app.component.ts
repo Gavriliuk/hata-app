@@ -51,7 +51,7 @@ export class MyApp {
 
   buildMenu() {
 
-    let trans = ['CATEGORIES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
+    let trans = ['ROUTES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
     'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
 
     this.translate.get(trans).subscribe(values => {
@@ -59,7 +59,8 @@ export class MyApp {
       this.trans = values;
 
       this.pages = [
-        { title: values.CATEGORIES, icon: 'pricetag', component: 'CategoriesPage' },
+        { title: values.ROUTES, icon: 'pricetag', component: 'CategoriesPage' },
+        // { title: values.CATEGORIES, icon: 'pricetag', component: 'CategoriesPage' },
         { title: values.MAP, icon: 'map', component: 'MapPage' },
         // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },
         { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },

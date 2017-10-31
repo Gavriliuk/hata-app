@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.innapp.nearmeguide" version="4.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.innapp.nearmeguide" version="4.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>NearmeGuide</name>
     <description />
     <author email="valentinbragaru@gmail.com" href="http://innapp.com/">QuanLabs</author>
@@ -80,8 +80,9 @@
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
     <allow-navigation href="http://10.10.16.96:8100" />
+    <allow-navigation href="http://192.168.0.91:8100" />
     <engine name="ios" spec="4.5.2" />
-    <engine name="android" spec="~6.1.2" />
+    <engine name="android" spec="6.3.0" />
     <plugin name="cordova-plugin-googlemaps" spec="^1.4.0">
         <variable name="API_KEY_FOR_ANDROID" value="AIzaSyANDYkROqmQQKL99ThZAQj5_u4wysUfPO8" />
         <variable name="API_KEY_FOR_IOS" value="AIzaSyAR9kFaJD_Lp698tz2kLg67X9RwfYqR-Kw" />

@@ -71,16 +71,16 @@ export class MapPage extends BasePage {
     return true;
   }
 
-  ionViewDidLeave() {
+   ionViewDidLeave() {
 
-    this.isViewLoaded = false;
+      this.isViewLoaded = false;
 
     // if (this.map) {
     //   this.map.clear();
     //   this.map.setZoom(0.5);
     //   this.map.setCenter(new LatLng(0, 0));
     // }
-  }
+   }
 
   ionViewWillEnter() {
     this.isViewLoaded = true;
@@ -118,23 +118,25 @@ export class MapPage extends BasePage {
           this.geolocation.watchPosition({ maximumAge: 3000, timeout: 3000, enableHighAccuracy: true }).filter((p) => p.coords !== undefined).subscribe(position => {
 
             let paramsClone = { ...this.params };
-            //TODO add this to settings
-            //Autoplay Distance
-            paramsClone.distance = 0.5;
-            paramsClone.location = position.coords;
+             // paramsClone.distance = 0.02;
+            this.storage.radius.then((val) => {
+                paramsClone.distance = val;
+               console.log("Distance:",val);
+              paramsClone.location = position.coords;
 
-            Place.loadNearPlace(paramsClone).then(place => {
-              if (place && place[0]) {
-                let myDistance = place[0].distance(paramsClone.location, 'none');
-                let radius = place[0].attributes.radius;
+              Place.loadNearPlace(paramsClone).then(place => {
+                if (place && place[0]) {
+                  let myDistance = place[0].distance(paramsClone.location, 'none');
+                  let radius = place[0].attributes.radius;
 
-                if (myDistance <= radius) {
-                  if (this.nearAudio[0] != place[0].audio.url()) {
-                    this.nearAudio = [place[0].audio.url()];
-                    this.api.getDefaultMedia().loadMedia();
+                  if (myDistance <= radius) {
+                    if (this.nearAudio[0] != place[0].audio.url()) {
+                      this.nearAudio = [place[0].audio.url()];
+                      this.api.getDefaultMedia().loadMedia();
+                    }
                   }
                 }
-              }
+              });
             });
           });
         });
@@ -216,19 +218,19 @@ export class MapPage extends BasePage {
 
   loadData() {
     let paramsClone = { ...this.params };
-    //TODO add this to settings
-    //Autoplay Distance
-    paramsClone.distance = 0.5;
+    // paramsClone.distance = 0.5;
+    this.storage.radius.then((val) => {
+      paramsClone.distance = val;
+      Place.loadNearPlace(paramsClone).then(place => {
+        if (place && place[0]) {
+          let myDistance = place[0].distance(this.params.location, 'none');
+          let radius = place[0].attributes.radius;
 
-    Place.loadNearPlace(paramsClone).then(place => {
-      if (place && place[0]) {
-        let myDistance = place[0].distance(this.params.location, 'none');
-        let radius = place[0].attributes.radius;
-
-        if (myDistance <= radius) {
-          this.nearAudio = [place[0].audio.url()];
+          if (myDistance <= radius) {
+            this.nearAudio = [place[0].audio.url()];
+          }
         }
-      }
+      });
     });
 
     Place.load(this.params).then(places => {
@@ -279,6 +281,7 @@ export class MapPage extends BasePage {
         marker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
           this.goToPlace(e.get('place'));
         });
+        // marker.showInfoWindow();
       });
 
       points.push(target);
@@ -299,22 +302,22 @@ export class MapPage extends BasePage {
     this.loadData();
   }
 
-  onSearchButtonTapped() {
-
-    if (this.platform.is('cordova')) {
-      this.map.getCameraPosition().then(camera => {
-        let position: LatLng = <LatLng>camera.target;
-
-        this.params.location = {
-          latitude: position.lat,
-          longitude: position.lng
-        };
-        this.showLoadingView();
-        this.onReload();
-      });
-    } else {
-      console.warn('Native: tried calling GoogleMaps.getCameraPosition, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
-    }
-  }
+  // onSearchButtonTapped() {
+  //
+  //   if (this.platform.is('cordova')) {
+  //     this.map.getCameraPosition().then(camera => {
+  //       let position: LatLng = <LatLng>camera.target;
+  //
+  //       this.params.location = {
+  //         latitude: position.lat,
+  //         longitude: position.lng
+  //       };
+  //       this.showLoadingView();
+  //       this.onReload();
+  //     });
+  //   } else {
+  //     console.warn('Native: tried calling GoogleMaps.getCameraPosition, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
+  //   }
+  // }
 
 }

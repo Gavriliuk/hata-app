@@ -23,6 +23,14 @@ export class LocalStorage {
     this.storage.set('unit', val);
   }
 
+  get radius(): Promise<any> {
+    return this.storage.get('radius');
+  }
+
+  set radius(val) {
+    this.storage.set('radius', val);
+  }
+
   get mapStyle(): Promise<any> {
     return this.storage.get('mapStyle');
   }

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 export class Preference {
 
   private _unit;
+  private _radius;
   private _mapStyle;
   private _distance;
   private _lang;
@@ -13,6 +14,14 @@ export class Preference {
 
   set unit(val) {
     this._unit = val;
+  }
+
+  get radius(): any {
+    return this._radius;
+  }
+
+  set radius(val) {
+    this._radius = val;
   }
 
   get mapStyle(): any {

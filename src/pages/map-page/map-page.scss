@@ -2,13 +2,16 @@ page-map-page {
   .map {
     width: 100%;
     height: 100%;
+    position: absolute;
+    top: -18px !important;
   }
   .mapTop{
-    margin-top:-20px;
+    position:relative;
+    padding-top:0px !important;
+    margin-top:0px !important;
   }
   .vgPlayer {
     height: 50px;
-    //padding-top: 26px;
     //background-color: #4e6382;
     background-color: #717171;
   }

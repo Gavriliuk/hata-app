@@ -23,16 +23,15 @@ export class SettingsPage extends BasePage {
 
     super(injector);
 
-
     this.storage = localStorage;
     this.events = events;
     this.preference = preference;
 
+    this.storage.lang.then(lang => this.settings.lang = lang).catch((e) => console.log(e));
     this.storage.unit.then(unit => this.settings.unit = unit).catch((e) => console.log(e));
     this.storage.radius.then(radius => this.settings.radius = radius).catch((e) => console.log(e));
     this.storage.mapStyle.then(mapStyle => this.settings.mapStyle = mapStyle).catch((e) => console.log(e));
     this.storage.distance.then(distance => this.settings.distance = distance).catch((e) => console.log(e));
-    this.storage.lang.then(lang => this.settings.lang = lang).catch((e) => console.log(e));
   }
 
   enableMenuSwipe() {
@@ -40,7 +39,14 @@ export class SettingsPage extends BasePage {
   }
 
   ionViewDidLoad() {
+  }
 
+  onChangeLang() {
+    if (this.settings.lang) {
+      this.storage.lang = this.settings.lang;
+      this.translate.use(this.settings.lang);
+      this.events.publish('lang:change');
+    }
   }
 
   onChangeRadius() {
@@ -60,14 +66,6 @@ export class SettingsPage extends BasePage {
 
   onChangeDistance() {
     this.storage.distance = this.settings.distance;
-  }
-
-  onChangeLang() {
-    if (this.settings.lang) {
-      this.storage.lang = this.settings.lang;
-      this.translate.use(this.settings.lang);
-      this.events.publish('lang:change');
-    }
   }
 
   goToWalkthrough() {

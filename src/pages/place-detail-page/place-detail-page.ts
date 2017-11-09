@@ -14,18 +14,26 @@ import {BasePage} from '../base-page/base-page';
 import {User} from '../../providers/user-service';
 import {ChangeDetectorRef} from '@angular/core';
 
+import {Category} from '../../providers/categories';
+
 @IonicPage()
 @Component({
   selector: 'page-place-detail-page',
   templateUrl: 'place-detail-page.html'
 })
 export class PlaceDetailPage extends BasePage {
-
+  params: any = {};
+  places: Place[];
   images: Array<any>;
-  audio: any;
+  audio: any[];
   place: Place;
   location: any;
   unit: any;
+  lang: any;
+  audio_ru: any;
+  audio_en: any;
+  category: Category;
+  markers: any;
 
   constructor(injector: Injector,
               private modalCtrl: ModalController,
@@ -52,10 +60,37 @@ export class PlaceDetailPage extends BasePage {
       console.log("Error Geolocation");
     });
 
-    this.place = this.navParams.data;
+    this.storage.lang.then((val) => {
+      this.lang = val;
+      this.place = this.navParams.data.place;
+
+      if (this.lang == "ru") {
+        this.audio = [this.navParams.data.place.audio_ru.url()];
+      } else {
+        this.audio = [this.navParams.data.place.audio_en.url()];
+      }
+    });
+
+    this.place = this.navParams.data.place;
     this.unit = preference.unit;
     this.images = [];
-    this.audio = this.place.audio.url();
+    this.places = this.navParams.data.places;
+    console.log("Places: ", this.places);
+    this.markers = "";
+    this.places.forEach(place => {
+      this.markers += "&markers=size:mid%7Ccolor:red%7Clabel:A%7C" + place.location.latitude + "," + place.location.longitude;
+    });
+    // Place.load(this.params).then(data => {
+    //   this.places = data;
+    //   console.log("Places: ",this.places);
+    //   console.log("location 1: ",this.places[0].location.latitude, this.places[0].location.longitude);
+    //   console.log("location 1: ",this.places[1].location.latitude, this.places[1].location.longitude);
+    //   console.log("location 1: ",this.places[2].location.latitude, this.places[2].location.longitude);
+    // })
+
+
+    this.audio_ru = this.navParams.data.place.audio_ru.url();
+    this.audio_en = this.navParams.data.place.audio_en.url();
 
     if (this.place.image) {
       this.images.push(this.place.image);
@@ -74,12 +109,20 @@ export class PlaceDetailPage extends BasePage {
     }
   }
 
+  // ionViewWillEnter() {
+  //   Place.load(this.params).then(data => {
+  //     this.places = data;
+  //     console.log("Places: ",this.places);
+  //     console.log("location 1: ",this.places[0].location.latitude, this.places[0].location.longitude);
+  //     console.log("location 1: ",this.places[1].location.latitude, this.places[1].location.longitude);
+  //     console.log("location 1: ",this.places[2].location.latitude, this.places[2].location.longitude);
+  //   })
+  // }
+
   enableMenuSwipe() {
     return false;
   }
 
-  ionViewDidLoad() {
-  }
 
   openSignUpModal() {
     this.navigateTo('SignInPage');
@@ -90,45 +133,59 @@ export class PlaceDetailPage extends BasePage {
     modal.present();
   }
 
-  onLike() {
+  // onLike() {
+  //
+  //   if (User.getCurrentUser()) {
+  //     Place.like(this.place);
+  //     this.showToast('Liked');
+  //   } else {
+  //     this.openSignUpModal();
+  //   }
+  // }
 
-    if (User.getCurrentUser()) {
-      Place.like(this.place);
-      this.showToast('Liked');
-    } else {
-      this.openSignUpModal();
-    }
-  }
+  // onRate() {
+  //   if (User.getCurrentUser()) {
+  //     this.openAddReviewModal();
+  //   } else {
+  //     this.openSignUpModal();
+  //   }
+  // }
 
-  onRate() {
-    if (User.getCurrentUser()) {
-      this.openAddReviewModal();
-    } else {
-      this.openSignUpModal();
-    }
-  }
+  // onShare() {
+  //   this.socialSharing.share(this.lang == "ru"?this.place.title_ru:this.place.title_en, null, null, this.place.website);
+  // }
 
-  onShare() {
-    this.socialSharing.share(this.place.title, null, null, this.place.website);
-  }
+  // onCall() {
+  //   // this.callNumber.callNumber(this.place.phone, true)
+  // }
 
-  onCall() {
-    // this.callNumber.callNumber(this.place.phone, true)
-  }
+  // openUrl() {
+  //
+  //   this.browserTab.isAvailable().then((isAvailable: boolean) => {
+  //
+  //     if (isAvailable) {
+  //       this.browserTab.openUrl(this.place.website);
+  //     } else {
+  //       this.inAppBrowser.create(this.place.website, '_system');
+  //     }
+  //
+  //   });
+  //
+  // }
 
-  openUrl() {
-
-    this.browserTab.isAvailable().then((isAvailable: boolean) => {
-
-      if (isAvailable) {
-        this.browserTab.openUrl(this.place.website);
-      } else {
-        this.inAppBrowser.create(this.place.website, '_system');
-      }
-
-    });
-
-  }
+  // openUrl() {
+  //
+  //   this.browserTab.isAvailable().then((isAvailable: boolean) => {
+  //
+  //     if (isAvailable) {
+  //       this.browserTab.openUrl(this.place.website);
+  //     } else {
+  //       this.inAppBrowser.create(this.place.website, '_system');
+  //     }
+  //
+  //   });
+  //
+  // }
 
   goToMap() {
     this.launchNavigator.navigate([this.place.location.latitude, this.place.location.longitude], {

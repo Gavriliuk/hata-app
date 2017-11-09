@@ -1,4 +1,4 @@
-import { IonicPage } from 'ionic-angular';
+import {IonicPage} from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
@@ -6,6 +6,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { Category } from '../../providers/categories';
 import { BasePage } from '../base-page/base-page';
 import { User } from '../../providers/user-service';
+import {LocalStorage} from '../../providers/local-storage';
 
 @IonicPage()
 @Component({
@@ -14,13 +15,14 @@ import { User } from '../../providers/user-service';
 })
 export class CategoriesPage extends BasePage {
   private categories: Array<Category>;
+  lang:any;
 
-  constructor(injector: Injector,
-    private events: Events,
-    private locationAccuracy: LocationAccuracy,
-    private diagnostic: Diagnostic) {
+    constructor(injector: Injector,
+                private storage: LocalStorage,
+                private events: Events,
+                private locationAccuracy: LocationAccuracy,
+                private diagnostic: Diagnostic) {
     super(injector);
-
 
     this.locationAccuracy.canRequest().then((canRequest: boolean) => {
 
@@ -41,6 +43,15 @@ export class CategoriesPage extends BasePage {
           });
       }
     }).catch((err) => console.log(err));
+  }
+
+  showAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'New Friend!',
+      subTitle: 'Your friend, Obi wan Kenobi, just accepted your friend request!',
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
   enableMenuSwipe() {
@@ -68,6 +79,10 @@ export class CategoriesPage extends BasePage {
 
       this.onRefreshComplete();
 
+      this.storage.lang.then((val) => {
+        this.lang = val;
+      });
+
     }, error => {
 
       if (error.code === 209) {
@@ -85,5 +100,15 @@ export class CategoriesPage extends BasePage {
     this.refresher = refresher;
     this.loadData();
   }
+
+  // showAlert(info) {
+  //   alert("InfoText: "+info);
+  //   // let alert = this.alertCtrl.create({
+  //   //   title: 'New Friend!',
+  //   //   subTitle: 'Your friend, Obi wan Kenobi, just accepted your friend request!',
+  //   //   buttons: ['OK']
+  //   // });
+  //   // alert.present();
+  // }
 
 }

@@ -173,20 +173,35 @@ export class Place extends Parse.Object {
     });
   }
 
-  get title(): string {
-    return this.get('title');
+  get title_ru(): string {
+    return this.get('title_ru');
   }
 
-  set title(val) {
-    this.set('title', val);
+  set title_ru(val) {
+    this.set('title_ru', val);
   }
 
-  get description(): string {
-    return this.get('description');
+  get title_en(): string {
+    return this.get('title_en');
   }
 
-  set description(val) {
-    this.set('description', val);
+  set title_en(val) {
+    this.set('title_en', val);
+  }
+
+  get description_ru(): string {
+    return this.get('description_ru');
+  }
+
+  set description_ru(val) {
+    this.set('description_ru', val);
+  }
+  get description_en(): string {
+    return this.get('description_en');
+  }
+
+  set description_en(val) {
+    this.set('description_en', val);
   }
 
   get phone(): string {
@@ -205,12 +220,18 @@ export class Place extends Parse.Object {
     this.set('website', val);
   }
 
-  get address(): string {
-    return this.get('address');
+  get address_ru(): string {
+    return this.get('address_ru');
+  }
+  set address_ru(val) {
+    this.set('address_ru', val);
   }
 
-  set address(val) {
-    this.set('address', val);
+  get address_en(): string {
+    return this.get('address_en');
+  }
+  set address_en(val) {
+    this.set('address_en', val);
   }
 
   get category() {
@@ -253,8 +274,18 @@ export class Place extends Parse.Object {
     return this.get('imageFour');
   }
 
-  get audio() {
-    return this.get('audio');
+  get audio_ru() {
+    return this.get('audio_ru');
+  }
+  set audio_ru(val) {
+     this.set('audio_ru', val);
+  }
+
+  get audio_en() {
+    return this.get('audio_en');
+  }
+  set audio_en(val) {
+    this.set('audio_en', val);
   }
 
   get imageThumb() {

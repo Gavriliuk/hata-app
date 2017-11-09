@@ -19,7 +19,7 @@ export abstract class BasePage {
   private navCtrl: NavController;
   private toastCtrl: ToastController;
   private loadingCtrl: LoadingController;
-  private alertCtrl: AlertController;
+  protected alertCtrl: AlertController;
 
   constructor(injector: Injector) {
     this.loadingCtrl = injector.get(LoadingController);

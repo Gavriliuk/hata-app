@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import Parse from 'parse';
 
+
 @Injectable()
 export class Category extends Parse.Object {
 
   constructor() {
+  // constructor() {
     super('Category');
   }
 
@@ -20,8 +22,12 @@ export class Category extends Parse.Object {
     });
   }
 
-  get title(): string {
-    return this.get('title');
+  get title_ru(): string {
+    return this.get('title_ru');
+  }
+
+  get title_en(): string {
+    return this.get('title_en');
   }
 
   get icon() {

@@ -46,6 +46,16 @@ page-place-detail-page {
   .label-ios {
     margin: 8px 8px 8px 0;
   }
+  .mapObjectPlace{
+    height:auto;
+    overflow:hidden;
+  }
+  #map-page {
+    margin-top:0px;
+    min-width:340px;
+    min-height: 260px;
+  }
+
 
   @import "../../../node_modules/videogular2/fonts/videogular.css";
 }

@@ -2,10 +2,14 @@ export class AppConfig {
 
   /* Parse Server URL */
    public static get SERVER_URL(): string {
-      return 'http://188.166.101.46:1337/parse/';
-      // return 'http://localhost:1337/parse/';
-   //----------Setting server tunel ngrok -----------------------------
+     //----------Setting Localhost-----------------------------
+     // return 'http://localhost:1337/parse/';
 
+     //----------Setting server-----------------------------
+     // return 'http://188.166.101.46:1337/parse/';
+
+     //----------Setting Ngrok-----------------------------
+     return 'http://9ffd43f0.ngrok.io/parse/';
    }
 
    /* Parse App ID  */
@@ -43,6 +47,6 @@ export class AppConfig {
    }
 
    public static get DEFAULT_LANG(): string {
-     return 'en';
+     return 'ru';
    }
 }

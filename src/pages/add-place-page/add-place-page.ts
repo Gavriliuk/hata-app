@@ -10,6 +10,7 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { CameraPosition, GoogleMap, GoogleMaps, GoogleMapsEvent, Marker,
   MarkerOptions, LatLng, Geocoder, GeocoderRequest, GeocoderResult } from '@ionic-native/google-maps';
+import { LocalStorage } from '../../providers/local-storage';
 
 @IonicPage()
 @Component({
@@ -24,8 +25,10 @@ export class AddPlacePage extends BasePage {
   private marker: Marker;
   trans: any;
   isViewLoaded: boolean;
+  lang:any;
 
   constructor(injector: Injector,
+    private storage: LocalStorage,
     private formBuilder: FormBuilder,
     private platform: Platform,
     private place: Place,
@@ -63,6 +66,12 @@ export class AddPlacePage extends BasePage {
         this.map.setClickable(true);
       }
     });
+
+    this.storage.lang.then((val) => {
+      this.lang = val;
+      console.log("Language add-place-page: ",val);
+    });
+
   }
 
   enableMenuSwipe() {
@@ -205,10 +214,19 @@ export class AddPlacePage extends BasePage {
 
   onSubmit() {
 
-    this.place.title = this.form.value.name;
+    this.place.title_ru = this.form.value.name;
+    this.place.title_en = this.form.value.name;
+    // this.place.title = this.form.value.name;
+    // this.place.title = this.form.value.name;
     this.place.category = this.form.value.category;
-    this.place.description = this.form.value.description;
-    this.place.address = this.form.value.address;
+    this.place.description_ru = this.form.value.description;
+    this.place.description_en = this.form.value.description;
+    // this.place.description = this.form.value.description;
+    // this.place.description = this.form.value.description;
+    this.place.address_ru = this.form.value.address_ru;
+    this.place.address_en = this.form.value.address_en;
+    // this.place.address = this.form.value.address;
+    // this.place.address = this.form.value.address;
     this.place.website = this.form.value.website;
     this.place.phone = this.form.value.phone;
 

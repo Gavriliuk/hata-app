@@ -51,6 +51,7 @@ export class MyApp {
 
   buildMenu() {
 
+    // let trans = ['ROUTES', 'MAP', 'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
     let trans = ['ROUTES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
       'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
 
@@ -104,8 +105,7 @@ export class MyApp {
 
       this.storage.skipIntroPage.then((skipIntroPage) => {
         //--------Open First Page Map---------------
-        this.rootPage = skipIntroPage ? 'MapPage' : 'WalkthroughPage';
-        //  this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
+          this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
       }).catch((e) => console.log(e));
 
       this.buildMenu();

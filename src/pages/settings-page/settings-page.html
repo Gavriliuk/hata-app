@@ -27,7 +27,7 @@
       <p ion-text class="bold" color="primary">{{ 'RADIUS_SEARCH' | translate }}</p>
     </ion-list-header>
     <ion-item no-lines>
-      <ion-label>0.5  {{ preference.unit | translate }}</ion-label>
+      <ion-label>0.5  {{ preference.unit | translate}}</ion-label>
       <ion-radio value="0.5"></ion-radio>
     </ion-item>
     <ion-item no-lines>
@@ -38,6 +38,24 @@
       <ion-label>5  {{ preference.unit | translate }} </ion-label>
       <ion-radio value="5"></ion-radio>
     </ion-item>
+  </ion-list>
+
+  <ion-list radio-group (ionChange)="onChangeLang()" [(ngModel)]="settings.lang">
+    <ion-list-header>
+      <p ion-text class="bold" color="primary">{{ 'LANGUAGE' | translate }}</p>
+    </ion-list-header>
+    <ion-item no-lines>
+      <ion-label>{{ 'RUSSIAN' | translate }}</ion-label>
+      <ion-radio value="ru"></ion-radio>
+    </ion-item>
+    <ion-item no-lines>
+      <ion-label>{{ 'ENGLISH' | translate }}</ion-label>
+      <ion-radio value="en"></ion-radio>
+    </ion-item>
+    <!--<ion-item no-lines>-->
+    <!--<ion-label>{{ 'SPANISH' | translate }}</ion-label>-->
+    <!--<ion-radio value="es"></ion-radio>-->
+    <!--</ion-item>-->
   </ion-list>
 
   <ion-list radio-group (ionChange)="onChangeMapStyle()" [(ngModel)]="settings.mapStyle">
@@ -53,23 +71,7 @@
       <ion-radio value="MAP_TYPE_SATELLITE"></ion-radio>
     </ion-item>
   </ion-list>
-  <ion-list radio-group (ionChange)="onChangeLang()" [(ngModel)]="settings.lang">
-    <ion-list-header>
-      <p ion-text class="bold" color="primary">{{ 'LANGUAGE' | translate }}</p>
-    </ion-list-header>
-    <ion-item no-lines>
-      <ion-label>{{ 'ENGLISH' | translate }}</ion-label>
-      <ion-radio value="en"></ion-radio>
-    </ion-item>
-    <ion-item no-lines>
-      <ion-label>{{ 'RUSSIAN' | translate }}</ion-label>
-      <ion-radio value="ru"></ion-radio>
-    </ion-item>
-    <!--<ion-item no-lines>-->
-      <!--<ion-label>{{ 'SPANISH' | translate }}</ion-label>-->
-      <!--<ion-radio value="es"></ion-radio>-->
-    <!--</ion-item>-->
-  </ion-list>
+
   <ion-list>
     <ion-list-header>
       <p ion-text class="bold" color="primary">{{ 'MORE' | translate }}</p>

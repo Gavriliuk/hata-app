@@ -26,14 +26,20 @@
   </ion-refresher>
 
   <ion-list *ngIf="isContentViewVisible">
-    <ion-item *ngFor="let category of categories" (click)="goToPlaces(category)">
-      <ion-avatar item-left>
-        <img src="assets/img/tag.png" offset="100"
-          [lazyLoad]="category.imageThumb.url()"
-          [scrollTarget]="container.getScrollElement()">
-      </ion-avatar>
-      <h2>{{ category.title }}</h2>
-    </ion-item>
+    <div *ngFor="let category of categories" >
+      <ion-item (click)="goToPlaces(category)">
+        <ion-avatar item-start>
+          <img src="assets/img/tag.png" offset="100"
+               [lazyLoad]="category.imageThumb.url()"
+               [scrollTarget]="container.getScrollElement()">
+        </ion-avatar>
+        <h2>{{ category["title_"+lang] }} </h2>
+
+        <!--<button ion-button color="secondary" (click)="showAlert()">Show Prompt Alert</button>-->
+      </ion-item>
+      <ion-icon name="ios-information-circle-outline" (click)="showAlert(category.attributes['information_'+lang])" item-end></ion-icon>
+
+    </div>
   </ion-list>
 
 </ion-content>

@@ -32,7 +32,7 @@
         <ion-label color="primary">{{ "CATEGORY" | translate }}</ion-label>
         <ion-select formControlName="category">
           <ion-option *ngFor="let category of categories" [value]="category">
-            {{ category.title }}
+            {{ category["title_"+lang] }}
           </ion-option>
         </ion-select>
       </ion-item>

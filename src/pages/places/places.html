@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="placeHeader">
   <ion-navbar color="primary">
     <!-- <ion-segment [(ngModel)]="params.filter" color="secondary">
       <ion-segment-button value="nearby" (ionSelect)="onFilter('nearby')">
@@ -8,17 +8,21 @@
         {{ "NEW" | translate }}
       </ion-segment-button>
     </ion-segment> -->
+    <ion-title>{{ params.category["title_"+lang] }}</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding #container style="padding-top:-20px">
+<ion-content #container class="placesContent">
 
-  <ion-refresher (ionRefresh)="onReload($event)">
-    <ion-refresher-content
-      pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
-      refreshingText="{{ 'REFRESHING' | translate }}">
-    </ion-refresher-content>
-  </ion-refresher>
+      <div id="map" class="map" #map showWhen="android,ios"></div>
+      <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core"></empty-view>
+
+  <!--<ion-refresher (ionRefresh)="onReload($event)">-->
+    <!--<ion-refresher-content-->
+      <!--pullingText="{{ 'PULL_TO_REFRESH' | translate }}"-->
+      <!--refreshingText="{{ 'REFRESHING' | translate }}">-->
+    <!--</ion-refresher-content>-->
+  <!--</ion-refresher>-->
 
   <empty-view *ngIf="isErrorViewVisible" icon="alert"
     [text]="'ERROR_PLACES' | translate">
@@ -28,7 +32,8 @@
     [text]="'EMPTY_PLACES' | translate">
   </empty-view>
 
-  <ion-list *ngIf="isContentViewVisible">
+  <!--<ion-list *ngIf="isContentViewVisible" padding>-->
+  <ion-list padding>
     <ion-item *ngFor="let place of places" (click)="goToPlace(place)"
       color="dark" no-lines>
       <ion-thumbnail item-left>
@@ -36,9 +41,10 @@
           [lazyLoad]="place.imageThumb.url()"
           [scrollTarget]="container.getScrollElement()">
       </ion-thumbnail>
-      <!--<h2 class="bold" ion-text color="primary">{{ place.title }}</h2>-->
-      <h2 class="bold" ion-text color="secondaru">{{ place.title }}</h2>
-      <p>{{ place.description }}</p>
+      <!--<h2 class="bold" ion-text color="secondaru">{{ place.title }}</h2>-->
+      <h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>
+      <!--<p>{{ place.description }}</p>-->
+      <p>{{ place["description_"+lang] }}</p>
       <ion-note ion-text color="light" item-right>
         {{ place.distance(params.location, params.unit) }}
       </ion-note>
@@ -47,16 +53,17 @@
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll (ionInfinite)="onLoadMore($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  <!--<ion-infinite-scroll (ionInfinite)="onLoadMore($event)">-->
+    <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
 
 </ion-content>
 
 <ion-footer>
   <ion-toolbar color="secondary" text-center>
 
-    <vg-player class="vgPlayer" (onPlayerReady)="onPlayerReady($event)">
+    <vg-player class="vgPlayer">
+    <!--<vg-player class="vgPlayer" (onPlayerReady)="onPlayerReady($event)">-->
       <vg-controls>
         <vg-play-pause [vgFor]="myAudio"></vg-play-pause>
         <vg-playback-button [vgFor]="myAudio"></vg-playback-button>
@@ -67,10 +74,12 @@
         </vg-scrub-bar>
 
         <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
-
       </vg-controls>
-      <audio #media [vgMedia]="media" id="myAudio">
-        <source [src]="audio" type="audio/mp3">
+      <!--<audio #media [vgMedia]="media" id="myAudio" preload="auto" autoplay>-->
+      <audio #media [vgMedia]="media" id="myAudio" preload="auto">
+        <!--<source *ngFor="let audio of ['nearAudio_'+lang]" [src]="audio" type="audio/mp3">-->
+        <source *ngFor="let audio of nearAudio" [src]="audio" type="audio/mp3">
+        <!--<source *ngFor="let audio of nearAudio_ru" src="{{audio}}" type="audio/mp3">-->
       </audio>
     </vg-player>
 

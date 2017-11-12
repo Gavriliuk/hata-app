@@ -30,6 +30,30 @@ export class Category extends Parse.Object {
     return this.get('title_en');
   }
 
+  get information_ru(): string {
+    return this.get('information_ru');
+  }
+  get information_en(): string {
+    return this.get('information_en');
+  }
+
+  get start_route(): string {
+    return this.get('start_route');
+  }
+
+  get waypoints(): string {
+    return this.get('waypoints');
+  }
+
+  get end_route(): string {
+    return this.get('end_route');
+  }
+
+  get center_map(): string {
+    return this.get('center_map');
+  }
+
+
   get icon() {
     return this.get('icon');
   }

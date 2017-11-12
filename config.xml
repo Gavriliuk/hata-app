@@ -3,7 +3,7 @@
     <name>Dromos</name>
     <description />
     <author email="valentinbragaru@gmail.com" href="http://innapp.com/">QuanLabs</author>
-    <content original-src="index.html" src="http://192.168.0.91:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -123,4 +123,5 @@
     <plugin name="cordova-plugin-statusbar" spec="git+https://github.com/apache/cordova-plugin-statusbar.git" />
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-disable-ios11-statusbar" spec="~1.0.0" />
+    <allow-navigation href="http://192.168.1.6:8100" />
 </widget>

@@ -15,4 +15,28 @@ page-categories {
       border-radius: 4rem !important;
     }
   }
+  .iconCategory{
+      display: inline-block;
+      font-size: 2.2em;
+      padding: 8px;
+  }
+
+  .avatarCategory{
+     float:left;
+   }
+  page-categories .iconCategory {
+    display: inline-block;
+    font-size: 1.8em;
+    padding:2px !important;
+  }
+  .divCategory{
+    padding: 2px;
+  }
+  .itemCategory{
+    margin-bottom:2px;
+    height:64px !important;
+  }
+  .textCategory{
+    padding-top:15px;
+  }
 }

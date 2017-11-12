@@ -70,15 +70,10 @@
   <ion-card class="mapObjectPlace">
     <!-- &markers=size:mid%7Ccolor:red%7Clabel:A%7C{{places[1].location.latitude}},{{places[1].location.longitude}} -->
     <img src="assets/img/avatar.png" offset="100"
-      lazyLoad="http://maps.googleapis.com/maps/api/staticmap?sensor=false
-&path=color:0x00ffff%7Cweight:5
-%7C47.025554,28.8304086
-%7C47.025829,28.830839
-%7C47.024699,28.832505
-%7C47.025616,28.833859
-%7C47.026108,28.834643
+      lazyLoad="http://maps.googleapis.com/maps/api/staticmap?center={{category.center_map}}&sensor=false
+&path=color:0x00ffff%7Cweight:5%7C{{category.start_route}}{{waypoints}}%7C{{category.end_route}}
 &markers=color:yellow%7C{{place.location.latitude}},{{place.location.longitude}}{{markers}}
-&zoom=17&format=png&maptype=roadmap&style=element:geometry%7Ccolor:0x242f3e
+&zoom={{zoom}}&format=png&maptype=roadmap&style=element:geometry%7Ccolor:0x242f3e
 &style=element:labels.text.fill%7Ccolor:0x746855&style=element:labels.text.stroke%7Ccolor:0x242f3e
 &style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xd59563
 &style=feature:poi%7Celement:labels.text.fill%7Ccolor:0xd59563
@@ -95,6 +90,10 @@
 &style=feature:water%7Celement:geometry%7Ccolor:0x17263c&style=feature:water%7Celement:labels.text.fill%7Ccolor:0x515c6d
 &style=feature:water%7Celement:labels.text.stroke%7Ccolor:0x17263c&size=600x350"
          [scrollTarget]="container.getScrollElement()">
+
+         <!-- %7C47.025829,28.830839
+         %7C47.024699,28.832505
+         %7C47.025616,28.833859 -->
 
     <!--lazyLoad="https://maps.googleapis.com/maps/api/staticmap?markers=color:yellow%7C{{place.location.latitude}},{{place.location.longitude}}&zoom=18&format=png&maptype=roadmap&style=element:geometry%7Ccolor:0x242f3e&style=element:labels.text.fill%7Ccolor:0x746855&style=element:labels.text.stroke%7Ccolor:0x242f3e&style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xd59563&style=feature:poi%7Celement:labels.text.fill%7Ccolor:0xd59563&style=feature:poi.park%7Celement:geometry%7Ccolor:0x263c3f&style=feature:poi.park%7Celement:labels.text.fill%7Ccolor:0x6b9a76&style=feature:road%7Celement:geometry%7Ccolor:0x38414e&style=feature:road%7Celement:geometry.stroke%7Ccolor:0x212a37&style=feature:road%7Celement:labels.text.fill%7Ccolor:0x9ca5b3&style=feature:road.highway%7Celement:geometry%7Ccolor:0x746855&style=feature:road.highway%7Celement:geometry.stroke%7Ccolor:0x1f2835&style=feature:road.highway%7Celement:labels.text.fill%7Ccolor:0xf3d19c&style=feature:transit%7Celement:geometry%7Ccolor:0x2f3948&style=feature:transit.station%7Celement:labels.text.fill%7Ccolor:0xd59563&style=feature:water%7Celement:geometry%7Ccolor:0x17263c&style=feature:water%7Celement:labels.text.fill%7Ccolor:0x515c6d&style=feature:water%7Celement:labels.text.stroke%7Ccolor:0x17263c&size=600x350"-->
 

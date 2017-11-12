@@ -43,15 +43,10 @@ export class CategoriesPage extends BasePage {
           });
       }
     }).catch((err) => console.log(err));
-  }
 
-  showAlert() {
-    let alert = this.alertCtrl.create({
-      title: 'New Friend!',
-      subTitle: 'Your friend, Obi wan Kenobi, just accepted your friend request!',
-      buttons: ['OK']
-    });
-    alert.present();
+      this.storage.lang.then((val) => {
+        this.lang = val;
+      });
   }
 
   enableMenuSwipe() {
@@ -79,10 +74,6 @@ export class CategoriesPage extends BasePage {
 
       this.onRefreshComplete();
 
-      this.storage.lang.then((val) => {
-        this.lang = val;
-      });
-
     }, error => {
 
       if (error.code === 209) {
@@ -100,15 +91,13 @@ export class CategoriesPage extends BasePage {
     this.refresher = refresher;
     this.loadData();
   }
-
-  // showAlert(info) {
-  //   alert("InfoText: "+info);
-  //   // let alert = this.alertCtrl.create({
-  //   //   title: 'New Friend!',
-  //   //   subTitle: 'Your friend, Obi wan Kenobi, just accepted your friend request!',
-  //   //   buttons: ['OK']
-  //   // });
-  //   // alert.present();
-  // }
+  showAlert(title,info,category) {
+    let alert = this.alertCtrl.create({
+      title: title,
+      subTitle: info,
+      buttons: ['OK']
+    });
+    alert.present();
+  }
 
 }

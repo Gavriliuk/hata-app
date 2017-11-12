@@ -8,8 +8,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding #container>
-
+<ion-content #container>
   <empty-view *ngIf="isErrorViewVisible" icon="alert"
     [text]="'ERROR_ROUTES' | translate">
   </empty-view>
@@ -25,21 +24,20 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-list *ngIf="isContentViewVisible">
-    <div *ngFor="let category of categories" >
-      <ion-item (click)="goToPlaces(category)">
-        <ion-avatar item-start>
-          <img src="assets/img/tag.png" offset="100"
-               [lazyLoad]="category.imageThumb.url()"
-               [scrollTarget]="container.getScrollElement()">
-        </ion-avatar>
-        <h2>{{ category["title_"+lang] }} </h2>
-
-        <!--<button ion-button color="secondary" (click)="showAlert()">Show Prompt Alert</button>-->
-      </ion-item>
-      <ion-icon name="ios-information-circle-outline" (click)="showAlert(category.attributes['information_'+lang])" item-end></ion-icon>
-
-    </div>
-  </ion-list>
-
+  <div *ngIf="isContentViewVisible" class="divCategory">
+    <ion-item *ngFor="let category of categories" color="dark" no-lines class="itemCategory">
+      <div (click)="goToPlaces(category)">
+      <ion-avatar item-start class="avatarCategory">
+        <img src="assets/img/tag.png" offset="100"
+             [lazyLoad]="category.imageThumb.url()"
+             [scrollTarget]="container.getScrollElement()">
+      </ion-avatar>
+      <h2 class="bold textCategory" ion-text color="secondaru">{{ category["title_"+lang] }}</h2>
+      </div>
+      <!--<ion-note color="light"  ion-text item-right>-->
+        <ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="showAlert(category['title_'+lang], category['information_'+lang],category)" item-end></ion-icon>
+        <!--<ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="showAlert(category.attributes['information_'+lang])" item-end></ion-icon>-->
+      <!--</ion-note>-->
+    </ion-item>
+  </div>
 </ion-content>

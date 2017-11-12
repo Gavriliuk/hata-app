@@ -35,7 +35,7 @@
   <!--<ion-list *ngIf="isContentViewVisible" padding>-->
   <ion-list padding>
     <ion-item *ngFor="let place of places" (click)="goToPlace(place)"
-      color="dark" no-lines>
+              color="dark" no-lines>
       <ion-thumbnail item-left>
         <img src="assets/img/location.png" offset="100"
           [lazyLoad]="place.imageThumb.url()"

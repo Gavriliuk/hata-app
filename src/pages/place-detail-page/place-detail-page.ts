@@ -14,7 +14,7 @@ import {BasePage} from '../base-page/base-page';
 import {User} from '../../providers/user-service';
 import {ChangeDetectorRef} from '@angular/core';
 
-import {Category} from '../../providers/categories';
+// import {Category} from '../../providers/categories';
 
 @IonicPage()
 @Component({
@@ -32,8 +32,13 @@ export class PlaceDetailPage extends BasePage {
   lang: any;
   audio_ru: any;
   audio_en: any;
-  category: Category;
+  category: any;
   markers: any;
+  waypoints:any;
+  // center_map:any;
+  // end_route:any;
+  // start_route:any;
+  zoom:any;
 
   constructor(injector: Injector,
               private modalCtrl: ModalController,
@@ -76,10 +81,39 @@ export class PlaceDetailPage extends BasePage {
     this.images = [];
     this.places = this.navParams.data.places;
     console.log("Places: ", this.places);
+    this.category = this.places[0].category;
+    // this.start_route = this.category.start_route;
+    // this.center_map = this.category.center_map;
+    // this.end_route = this.category.end_route; 
+    let mapZoom: any;
+    let coordinates = [];
+    this.waypoints = ""; 
+    this.zoom = 18;
+    if (this.category.waypoints && this.category.waypoints !== "") {
+       if(this.category.waypoints.indexOf('/') != -1){
+         coordinates = this.category.waypoints.split('/');
+         mapZoom = coordinates.length; 
+         if(mapZoom >= 3 ){
+             this.zoom = 17;
+          }
+
+         
+            coordinates.forEach(data => {
+                this.waypoints += "%7C" + data;
+            })
+        }else{
+          this.waypoints = "%7C"+this.category.waypoints;
+        } 
+        console.log("Waypoints: ", this.waypoints );  
+    }
+  
+    
     this.markers = "";
     this.places.forEach(place => {
-      this.markers += "&markers=size:mid%7Ccolor:red%7Clabel:A%7C" + place.location.latitude + "," + place.location.longitude;
+       this.markers += "&markers=size:mid%7Ccolor:red%7C" + place.location.latitude + "," + place.location.longitude;
+      //  this.markers += "&markers=size:mid%7Ccolor:red%7Clabel:A%7C" + place.location.latitude + "," + place.location.longitude;
     });
+   
     // Place.load(this.params).then(data => {
     //   this.places = data;
     //   console.log("Places: ",this.places);

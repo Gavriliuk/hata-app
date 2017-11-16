@@ -8,11 +8,11 @@ import {LocalStorage} from '../../providers/local-storage';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
 import {ChangeDetectorRef} from '@angular/core';
 import 'rxjs/add/operator/filter'
+import {Category} from '../../providers/categories';
 
-import {
-  CameraPosition, GoogleMap, GoogleMapsEvent,
-  LatLng, LatLngBounds, Geocoder, GeocoderRequest,
-  GeocoderResult, Marker
+import {GoogleMaps,GoogleMap,GoogleMapsEvent,
+        CameraPosition,GeocoderResult,Polyline,PolylineOptions,LatLng,
+        LatLngBounds, Geocoder, GeocoderRequest,MarkerOptions,Marker
 } from '@ionic-native/google-maps';
 
 @IonicPage()
@@ -26,14 +26,18 @@ export class MapPage extends BasePage {
   places: Place[];
   map: GoogleMap;
   isViewLoaded: boolean;
-
   audio: any;
-  nearPlaces: Place[];
   nearAudio: any[];
   api: any;
   lang: any;
-
+  category: Category;
+  place:any;
+  waypoints:any=[];
+  start:any;
+  end:any;
+  categories:any;
   constructor(public injector: Injector,
+              private googleMaps: GoogleMaps,
               private events: Events,
               private storage: LocalStorage,
               private geolocation: Geolocation,
@@ -53,12 +57,6 @@ export class MapPage extends BasePage {
         this.map.setClickable(true);
       }
     });
-
-    // Place.load(this.params).then(places => {
-    //   this.nearPlaces = places;
-    //   this.nearAudio = [this.nearPlaces[0].audio.url()];
-    //   this.api.getDefaultMedia().loadMedia();
-    // });
 
     this.storage.lang.then((val) => {
       this.lang = val;
@@ -103,29 +101,11 @@ export class MapPage extends BasePage {
       });
 
       this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
-        // let HND_AIR_PORT = new LatLng(47.025554,28.8304086);
-        // let SFO_AIR_PORT = new LatLng(47.025829,28.830839);
-        const HND_AIR_PORT = <LatLng>{"lat": 47.025554, "lng": 28.8304086};
-        const SFO_AIR_PORT = <LatLng>{"lat": 47.025829, "lng": 28.830839};
-        // this.map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
-        // this.map.addCircle({
-        //     'center': <LatLng>{"lat": 47.025554, "lng": 28.8304086}, 'radius': 30,
-        //     'strokeColor': '#AA00FF',
-        //     'strokeWidth': 5,
-        //     'fillColor': '#880000'
-        //   });
 
-        this.map.addPolyline({
-          'points': [
-            HND_AIR_PORT,
-            SFO_AIR_PORT
-          ]}
-        );
         this.storage.unit.then(unit => {
-
           this.params.unit = unit;
 
-          const options: GeolocationOptions = {
+           const options: GeolocationOptions = {
             enableHighAccuracy: true,
             timeout: 7000
           };
@@ -147,7 +127,6 @@ export class MapPage extends BasePage {
           }).filter((p) => p.coords !== undefined).subscribe(position => {
 
             let paramsClone = {...this.params};
-            // paramsClone.distance = 0.02;
             this.storage.radius.then((val) => {
               paramsClone.distance = val;
               console.log("Distance:", val);
@@ -205,20 +184,6 @@ export class MapPage extends BasePage {
       });
 
       this.map.setMyLocationEnabled(true);
-      // let HND_AIR_PORT = new LatLng(35.548852, 139.784086);
-      // let SFO_AIR_PORT = new LatLng(37.615223, -122.389979);
-      // let HNL_AIR_PORT = new LatLng(21.324513, -157.925074);
-      // let AIR_PORTS1 = [
-      //   HND_AIR_PORT,SFO_AIR_PORT,HNL_AIR_PORT
-      //
-      // ];
-      // this.map.addPolyline({
-      //   points: AIR_PORTS1,
-      //   'color' : '#AA00FF',
-      //   'width': 10,
-      //   'geodesic': true
-      // });
-
       // });
     } else {
       console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
@@ -246,7 +211,6 @@ export class MapPage extends BasePage {
           results[0].position.lat,
           results[0].position.lng
         );
-        // code
         let position: CameraPosition = {
           target: target,
           zoom: 18,
@@ -259,11 +223,9 @@ export class MapPage extends BasePage {
           latitude: target.lat,
           longitude: target.lng
         };
-
         this.showLoadingView();
         this.onReload();
       });
-
     } else {
       console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
     }
@@ -271,7 +233,6 @@ export class MapPage extends BasePage {
 
   loadData() {
     let paramsClone = {...this.params};
-    // paramsClone.distance = 0.5;
     this.storage.radius.then((val) => {
       paramsClone.distance = val;
       Place.loadNearPlace(paramsClone).then(place => {
@@ -291,6 +252,30 @@ export class MapPage extends BasePage {
           }
         }
       });
+    });
+
+    Category.load().then(data => {
+      data.forEach(category => {
+        this.waypoints = [];
+        let coordinates = [];
+        if (category.waypoints && category.waypoints !== "") {
+          if(category.waypoints.indexOf('/') != -1){
+            coordinates= category.waypoints.split('/');
+            coordinates.forEach(data => {
+              let loc = data.split(",");
+              let lat = parseFloat(loc[0]);
+              let lng = parseFloat(loc[1]);
+              this.waypoints.push(<LatLng>{"lat":lat,"lng":lng});
+            });
+          }
+          this.map.addPolyline({
+            points: this.waypoints,
+            'color' : '#AA00FF',
+            'width': 4,
+            'geodesic': true
+          });
+        }
+      })
     });
 
     Place.load(this.params).then(places => {
@@ -341,7 +326,7 @@ export class MapPage extends BasePage {
         marker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
           this.goToPlace(e.get('place'));
         });
-        // marker.showInfoWindow();
+
       });
 
       points.push(target);
@@ -352,6 +337,15 @@ export class MapPage extends BasePage {
         target: new LatLngBounds(points),
         zoom: 10
       });
+
+      // alert("POINTS:"+points)
+      // this.map.addPolyline({
+      //   points: points,
+      //   'color' : '#AA00FF',
+      //   'width': 4,
+      //   'geodesic': true
+      // });
+
     }
 
   }

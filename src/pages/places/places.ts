@@ -29,12 +29,12 @@ export class PlacesPage extends BasePage {
   params: any = {};
   places: Place[];
   category: Category;
-  // place: Place;
   api: any;
   lang: any;
   map: GoogleMap;
   isViewLoaded: boolean;
   nearAudio: any[];
+  waypoints:any=[];
 
   constructor(injector: Injector,
               private storage: LocalStorage,
@@ -62,7 +62,7 @@ export class PlacesPage extends BasePage {
     this.params.filter = 'nearby';
     this.params.unit = this.preference.unit;
     this.places = [];
-
+    console.log("Category:",JSON.stringify(this.params.category));
     // this.showLoadingView();
     // this.onReload();
     // this.prepareAd();
@@ -153,10 +153,8 @@ export class PlacesPage extends BasePage {
           }).filter((p) => p.coords !== undefined).subscribe(position => {
 
             let paramsClone = {...this.params};
-            // paramsClone.distance = 0.02;
             this.storage.radius.then((val) => {
               paramsClone.distance = val;
-              console.log("Distance:", val);
               paramsClone.location = position.coords;
 
               Place.loadNearPlace(paramsClone).then(place => {
@@ -270,6 +268,30 @@ export class PlacesPage extends BasePage {
     //     }
     //   });
     // });
+    //============= Add waypoints ==================
+    Category.load().then(data => {
+      data.forEach(category => {
+        this.waypoints = [];
+        let coordinates = [];
+        if (category.waypoints && category.waypoints !== "") {
+          if(category.waypoints.indexOf('/') != -1){
+            coordinates= category.waypoints.split('/');
+            coordinates.forEach(data => {
+              let loc = data.split(",");
+              let lat = parseFloat(loc[0]);
+              let lng = parseFloat(loc[1]);
+              this.waypoints.push(<LatLng>{"lat":lat,"lng":lng});
+            });
+          }
+          this.map.addPolyline({
+            points: this.waypoints,
+            'color' : '#AA00FF',
+            'width': 4,
+            'geodesic': true
+          });
+        }
+      })
+    });
 
 
     this.storage.lang.then((val) => {
@@ -287,10 +309,6 @@ export class PlacesPage extends BasePage {
         if (this.platform.is('cordova')) {
           this.onPlacesLoaded(data);
         }
-        // alert("this.params:"+this.params);
-        // alert("this.places:"+this.places);
-        // alert("Date Map:"+JSON.stringify(data));
-
         for (let place of data) {
           this.places.push(place);
         }
@@ -316,7 +334,6 @@ export class PlacesPage extends BasePage {
     let points: Array<LatLng> = [];
 
     for (let place of places) {
-// alert("place"+JSON.stringify(place));
       let target: LatLng = new LatLng(
         place.location.latitude,
         place.location.longitude

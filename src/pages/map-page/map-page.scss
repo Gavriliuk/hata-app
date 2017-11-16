@@ -3,7 +3,6 @@ page-map-page {
     width: 100%;
     height: 100%;
     position: absolute;
-    top: -18px !important;
   }
   .mapTop{
     position:relative;
@@ -30,9 +29,6 @@ page-map-page {
   .swiper-pagination-bullet-active{
     background-color: #bbbbbb;
   }
-  //.label-ios {
-  //  margin: 8px 8px 8px 0;
-  //}
 
   @import "../../../node_modules/videogular2/fonts/videogular.css";
 }

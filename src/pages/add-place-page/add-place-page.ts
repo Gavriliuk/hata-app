@@ -8,8 +8,10 @@ import { ParseFile } from '../../providers/parse-file-service';
 import { Category } from '../../providers/categories';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import { CameraPosition, GoogleMap, GoogleMaps, GoogleMapsEvent, Marker,
-  MarkerOptions, LatLng, Geocoder, GeocoderRequest, GeocoderResult } from '@ionic-native/google-maps';
+import {
+  CameraPosition, GoogleMap, GoogleMaps, GoogleMapsEvent, Marker,
+  MarkerOptions, LatLng, Geocoder, GeocoderRequest, GeocoderResult, ILatLng
+} from '@ionic-native/google-maps';
 import { LocalStorage } from '../../providers/local-storage';
 
 @IonicPage()
@@ -84,8 +86,8 @@ export class AddPlacePage extends BasePage {
 
     if (this.map) {
       this.map.clear();
-      this.map.setZoom(1);
-      this.map.setCenter(new LatLng(0, 0));
+      // this.map.setZoom(1);
+      // this.map.setCenter(new LatLng(0, 0));
     }
   }
 
@@ -101,7 +103,7 @@ export class AddPlacePage extends BasePage {
 
       this.map = new GoogleMap('map_add', {
         styles: MapStyle.dark(),
-        backgroundColor: '#333333'
+        // backgroundColor: '#333333'
       });
 
       let markerOptions: MarkerOptions = {
@@ -118,20 +120,17 @@ export class AddPlacePage extends BasePage {
 
       this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
 
+
         if (this.isViewLoaded) {
-
-          this.map.getCameraPosition().then((camera: CameraPosition) => {
-
-            let target: LatLng = <LatLng> camera.target;
-            this.marker.setPosition(target);
-          });
+          let position: CameraPosition<ILatLng> = this.map.getCameraPosition();
+          let target: ILatLng = position.target;
+          this.marker.setPosition(target);
         }
-
       });
 
-      this.map.on(GoogleMapsEvent.CAMERA_CHANGE).subscribe(camera => {
-        this.marker.setPosition(camera.target);
-      });
+      // this.map.on(GoogleMapsEvent.CAMERA_CHANGE).subscribe(camera => {
+      //   this.marker.setPosition(camera.target);
+      // });
     }
   }
 
@@ -153,7 +152,7 @@ export class AddPlacePage extends BasePage {
       );
 
       // create CameraPosition
-      let position: CameraPosition = {
+      let position: CameraPosition<ILatLng> = {
         target: target,
         zoom: 10
       };
@@ -232,18 +231,18 @@ export class AddPlacePage extends BasePage {
 
     this.showLoadingView();
 
-    this.marker.getPosition().then(position => {
-
-      this.place.location = position;
-
-      this.place.save().then(place => {
-        this.showContentView();
-        this.translate.get('PLACE_ADDED').subscribe(str => this.showToast(str));
-      }, error => {
-        this.showContentView();
-        this.translate.get('ERROR_PLACE_ADD').subscribe(str => this.showToast(str));
-      });
-    });
+    // this.marker.getPosition().then(position => {
+    //
+    //   this.place.location = position;
+    //
+    //   this.place.save().then(place => {
+    //     this.showContentView();
+    //     this.translate.get('PLACE_ADDED').subscribe(str => this.showToast(str));
+    //   }, error => {
+    //     this.showContentView();
+    //     this.translate.get('ERROR_PLACE_ADD').subscribe(str => this.showToast(str));
+    //   });
+    // });
 
   }
 

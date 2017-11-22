@@ -27,7 +27,7 @@
     "@ionic-native/file": "^3.12.1",
     "@ionic-native/geolocation": "3.12.1",
     "@ionic-native/google-analytics": "3.12.1",
-    "@ionic-native/google-maps": "^3.14.0",
+    "@ionic-native/google-maps": "^4.4.2",
     "@ionic-native/header-color": "^3.12.1",
     "@ionic-native/in-app-browser": "3.12.1",
     "@ionic-native/launch-navigator": "3.12.1",

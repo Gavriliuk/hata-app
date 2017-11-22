@@ -93,7 +93,6 @@ export class PlaceDetailPage extends BasePage {
        }else{
           this.waypoints = "%7C"+this.category.waypoints;
        }
-       console.log("Waypoints: ", this.waypoints );
     }
     this.markers = "";
     this.places.forEach(place => {
@@ -120,20 +119,9 @@ export class PlaceDetailPage extends BasePage {
     }
   }
 
-  // ionViewWillEnter() {
-  //   Place.load(this.params).then(data => {
-  //     this.places = data;
-  //     console.log("Places: ",this.places);
-  //     console.log("location 1: ",this.places[0].location.latitude, this.places[0].location.longitude);
-  //     console.log("location 1: ",this.places[1].location.latitude, this.places[1].location.longitude);
-  //     console.log("location 1: ",this.places[2].location.latitude, this.places[2].location.longitude);
-  //   })
-  // }
-
   enableMenuSwipe() {
     return false;
   }
-
 
   openSignUpModal() {
     this.navigateTo('SignInPage');

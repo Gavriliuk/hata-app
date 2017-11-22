@@ -10,9 +10,19 @@ import {ChangeDetectorRef} from '@angular/core';
 import 'rxjs/add/operator/filter'
 import {Category} from '../../providers/categories';
 
-import {GoogleMaps,GoogleMap,GoogleMapsEvent,
-        CameraPosition,GeocoderResult,Polyline,PolylineOptions,LatLng,
-        LatLngBounds, Geocoder, GeocoderRequest,MarkerOptions,Marker
+// import {GoogleMaps,GoogleMap,GoogleMapsEvent,
+//         CameraPosition,GeocoderResult,Polyline,PolylineOptions,LatLng,
+//         LatLngBounds, Geocoder, GeocoderRequest,MarkerOptions,Marker
+// } from '@ionic-native/google-maps';
+import {
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  GoogleMapOptions,
+  CameraPosition,
+  MarkerOptions,
+  Marker,
+  LatLng, ILatLng, GeocoderRequest, Geocoder, GeocoderResult, LatLngBounds
 } from '@ionic-native/google-maps';
 
 @IonicPage()
@@ -78,9 +88,7 @@ export class MapPage extends BasePage {
   }
 
   ionViewDidLeave() {
-
     this.isViewLoaded = false;
-
     // if (this.map) {
     //   this.map.clear();
     //   this.map.setZoom(0.5);
@@ -94,10 +102,8 @@ export class MapPage extends BasePage {
     if (this.platform.is('cordova')) {
 
       this.showLoadingView();
-
       this.map = new GoogleMap('map', {
-        styles: MapStyle.dark(),
-        backgroundColor: '#333333'
+        styles: MapStyle.dark()
       });
 
       this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
@@ -105,7 +111,7 @@ export class MapPage extends BasePage {
         this.storage.unit.then(unit => {
           this.params.unit = unit;
 
-           const options: GeolocationOptions = {
+          const options: GeolocationOptions = {
             enableHighAccuracy: true,
             timeout: 7000
           };
@@ -148,7 +154,6 @@ export class MapPage extends BasePage {
                           this.nearAudio = [place[0].audio_en.url()];
                         }
                       });
-                      // this.nearAudio = [place[0].audio.url()];
                       this.api.getDefaultMedia().loadMedia();
                     }
                   }
@@ -167,24 +172,20 @@ export class MapPage extends BasePage {
       this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
 
         if (this.isViewLoaded) {
+          let position: CameraPosition<ILatLng> = this.map.getCameraPosition();
+          let target: ILatLng = position.target;
 
-          this.map.getCameraPosition().then((camera: CameraPosition) => {
+          this.params.location = {
+            latitude: target.lat,
+            longitude: target.lng
+          };
 
-            let target: LatLng = <LatLng>camera.target;
-
-            this.params.location = {
-              latitude: target.lat,
-              longitude: target.lng
-            };
-
-            this.showLoadingView();
-            this.onReload();
-          });
+          this.showLoadingView();
+          this.onReload();
         }
       });
 
       this.map.setMyLocationEnabled(true);
-      // });
     } else {
       console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
     }
@@ -194,42 +195,38 @@ export class MapPage extends BasePage {
     this.navigateTo('PlaceDetailPage', place);
   }
 
-  onSearchAddress(event: any) {
-
-    if (this.platform.is('cordova')) {
-
-      let query = event.target.value;
-
-      let request: GeocoderRequest = {
-        address: query
-      };
-
-      let geocoder = new Geocoder;
-      geocoder.geocode(request).then((results: GeocoderResult) => {
-
-        let target: LatLng = new LatLng(
-          results[0].position.lat,
-          results[0].position.lng
-        );
-        let position: CameraPosition = {
-          target: target,
-          zoom: 18,
-          tilt: 30
-        };
-
-        this.map.moveCamera(position);
-
-        this.params.location = {
-          latitude: target.lat,
-          longitude: target.lng
-        };
-        this.showLoadingView();
-        this.onReload();
-      });
-    } else {
-      console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
-    }
-  }
+  // onSearchAddress(event: any) {
+  //   if (this.platform.is('cordova')) {
+  //     let query = event.target.value;
+  //     let request: GeocoderRequest = {
+  //       address: query
+  //     };
+  //     let geocoder = new Geocoder;
+  //     geocoder.geocode(request).then((results: GeocoderResult) => {
+  //
+  //       let target: LatLng = new LatLng(
+  //         results[0].position.lat,
+  //         results[0].position.lng
+  //       );
+  //       let position: CameraPosition<ILatLng> = {
+  //         target: target,
+  //         zoom: 18,
+  //         tilt: 30
+  //       };
+  //
+  //       this.map.moveCamera(position);
+  //
+  //       this.params.location = {
+  //         latitude: target.lat,
+  //         longitude: target.lng
+  //       };
+  //       this.showLoadingView();
+  //       this.onReload();
+  //     });
+  //   } else {
+  //     console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
+  //   }
+  // }
 
   loadData() {
     let paramsClone = {...this.params};
@@ -270,7 +267,7 @@ export class MapPage extends BasePage {
           }
           this.map.addPolyline({
             points: this.waypoints,
-            'color' : '#AA00FF',
+            'color' : '#c401ff',
             'width': 4,
             'geodesic': true
           });
@@ -292,11 +289,9 @@ export class MapPage extends BasePage {
   }
 
   onPlacesLoaded(places) {
-
     let points: Array<LatLng> = [];
 
     for (let place of places) {
-
       let target: LatLng = new LatLng(
         place.location.latitude,
         place.location.longitude
@@ -310,25 +305,30 @@ export class MapPage extends BasePage {
         }
       } : 'yellow';
 
-      let markerOptions = {
-        position: target,
-        title: place.title,
-        snippet: place.description,
-        icon: icon,
-        place: place,
-        styles: {
-          maxWidth: '80%'
-        },
-      };
+      this.storage.lang.then((val) => {
+        this.lang = val;
+        let markerOptions = {
+          position: target,
+          title: place['title_'+this.lang],
+          snippet: place['description_'+this.lang],
+          icon: icon,
+          place: place,
+          places: places,
+          styles: {
+            maxWidth: '80%'
+          },
+        };
 
-      this.map.addMarker(markerOptions).then((marker: Marker) => {
-
-        marker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
-          this.goToPlace(e.get('place'));
+        this.map.addMarker(markerOptions).then((marker) => {
+          marker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
+            let marker = e[1];
+            let place = marker.get("place");
+            let places = marker.get("places");
+            this.goToPlace({"place":place,"places":places});
+          });
         });
 
       });
-
       points.push(target);
     }
 
@@ -337,17 +337,7 @@ export class MapPage extends BasePage {
         target: new LatLngBounds(points),
         zoom: 10
       });
-
-      // alert("POINTS:"+points)
-      // this.map.addPolyline({
-      //   points: points,
-      //   'color' : '#AA00FF',
-      //   'width': 4,
-      //   'geodesic': true
-      // });
-
     }
-
   }
 
   onReload() {
@@ -361,7 +351,6 @@ export class MapPage extends BasePage {
   }
 
   // onSearchButtonTapped() {
-  //
   //   if (this.platform.is('cordova')) {
   //     this.map.getCameraPosition().then(camera => {
   //       let position: LatLng = <LatLng>camera.target;
@@ -377,6 +366,4 @@ export class MapPage extends BasePage {
   //     console.warn('Native: tried calling GoogleMaps.getCameraPosition, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
   //   }
   // }
-
-
 }

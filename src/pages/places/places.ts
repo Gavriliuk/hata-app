@@ -130,6 +130,7 @@ export class PlacesPage extends BasePage {
                   let radius = place[0].attributes.radius;
 
                   if (myDistance <= radius) {
+  //--------Dodelati ru,en,ro---------------
                     if (this.nearAudio[0] != place[0].audio_ru.url()) {
                       this.nearAudio = [place[0].audio_ru.url()];
                       this.api.getDefaultMedia().loadMedia();
@@ -256,6 +257,8 @@ export class PlacesPage extends BasePage {
 
         if(this.lang == "ru"){
           this.nearAudio = [data[0].audio_ru.url()];
+        }else if(this.lang == "ro"){
+          this.nearAudio = [data[0].audio_ro.url()];
         }else{
           this.nearAudio = [data[0].audio_en.url()];
         }

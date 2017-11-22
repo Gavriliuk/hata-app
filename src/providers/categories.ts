@@ -25,13 +25,18 @@ export class Category extends Parse.Object {
   get title_ru(): string {
     return this.get('title_ru');
   }
-
+  get title_ro(): string {
+    return this.get('title_ro');
+  }
   get title_en(): string {
     return this.get('title_en');
   }
 
   get information_ru(): string {
     return this.get('information_ru');
+  }
+  get information_ro(): string {
+    return this.get('information_ro');
   }
   get information_en(): string {
     return this.get('information_en');

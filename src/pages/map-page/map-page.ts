@@ -150,7 +150,9 @@ export class MapPage extends BasePage {
                         this.nearAudio = [];
                         if (this.lang == "ru") {
                           this.nearAudio = [place[0].audio_ru.url()];
-                        } else {
+                        } else if(this.lang == "ro") {
+                          this.nearAudio = [place[0].audio_ro.url()];
+                        }else{
                           this.nearAudio = [place[0].audio_en.url()];
                         }
                       });
@@ -242,7 +244,9 @@ export class MapPage extends BasePage {
               this.nearAudio = [];
               if (this.lang == "ru") {
                 this.nearAudio = [place[0].audio_ru.url()];
-              } else {
+              } else if(this.lang == "ro"){
+                this.nearAudio = [place[0].audio_ro.url()];
+              }else{
                 this.nearAudio = [place[0].audio_en.url()];
               }
             })

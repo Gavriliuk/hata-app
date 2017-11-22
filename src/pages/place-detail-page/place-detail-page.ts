@@ -29,6 +29,7 @@ export class PlaceDetailPage extends BasePage {
   unit: any;
   lang: any;
   audio_ru: any;
+  audio_ro: any;
   audio_en: any;
   category: any;
   markers: any;
@@ -66,7 +67,9 @@ export class PlaceDetailPage extends BasePage {
 
       if (this.lang == "ru") {
         this.audio = [this.navParams.data.place.audio_ru.url()];
-      } else {
+      } else if (this.lang == "ro"){
+        this.audio = [this.navParams.data.place.audio_ro.url()];
+      }else{
         this.audio = [this.navParams.data.place.audio_en.url()];
       }
     });
@@ -100,6 +103,7 @@ export class PlaceDetailPage extends BasePage {
     });
 
     this.audio_ru = this.navParams.data.place.audio_ru.url();
+    this.audio_ro = this.navParams.data.place.audio_ro.url();
     this.audio_en = this.navParams.data.place.audio_en.url();
 
     if (this.place.image) {

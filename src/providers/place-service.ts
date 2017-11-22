@@ -176,15 +176,20 @@ export class Place extends Parse.Object {
   get title_ru(): string {
     return this.get('title_ru');
   }
-
   set title_ru(val) {
     this.set('title_ru', val);
+  }
+
+  get title_ro(): string {
+    return this.get('title_ro');
+  }
+  set title_ro(val) {
+    this.set('title_ro', val);
   }
 
   get title_en(): string {
     return this.get('title_en');
   }
-
   set title_en(val) {
     this.set('title_en', val);
   }
@@ -192,14 +197,20 @@ export class Place extends Parse.Object {
   get description_ru(): string {
     return this.get('description_ru');
   }
-
   set description_ru(val) {
     this.set('description_ru', val);
   }
+
+  get description_ro(): string {
+    return this.get('description_ro');
+  }
+  set description_ro(val) {
+    this.set('description_ro', val);
+  }
+
   get description_en(): string {
     return this.get('description_en');
   }
-
   set description_en(val) {
     this.set('description_en', val);
   }
@@ -225,6 +236,13 @@ export class Place extends Parse.Object {
   }
   set address_ru(val) {
     this.set('address_ru', val);
+  }
+
+  get address_ro(): string {
+    return this.get('address_ro');
+  }
+  set address_ro(val) {
+    this.set('address_ro', val);
   }
 
   get address_en(): string {
@@ -279,6 +297,13 @@ export class Place extends Parse.Object {
   }
   set audio_ru(val) {
      this.set('audio_ru', val);
+  }
+
+  get audio_ro() {
+    return this.get('audio_ro');
+  }
+  set audio_ro(val) {
+    this.set('audio_ro', val);
   }
 
   get audio_en() {

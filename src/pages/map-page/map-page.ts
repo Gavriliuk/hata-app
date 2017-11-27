@@ -21,8 +21,9 @@ import {
   GoogleMapOptions,
   CameraPosition,
   MarkerOptions,
-  Marker,
-  LatLng, ILatLng, GeocoderRequest, Geocoder, GeocoderResult, LatLngBounds
+  Marker, LatLngBounds, Circle,
+  LatLng, ILatLng, GeocoderRequest,
+  Geocoder, GeocoderResult
 } from '@ionic-native/google-maps';
 
 @IonicPage()
@@ -46,6 +47,8 @@ export class MapPage extends BasePage {
   start:any;
   end:any;
   categories:any;
+  colorLine= '#c401ff';
+
   constructor(public injector: Injector,
               private googleMaps: GoogleMaps,
               private events: Events,
@@ -237,7 +240,8 @@ export class MapPage extends BasePage {
       Place.loadNearPlace(paramsClone).then(place => {
         if (place && place[0]) {
           let myDistance = place[0].distance(this.params.location, 'none');
-          let radius = place[0].attributes.radius;
+          let radius = place[0].radius;
+          // let radius = place[0].attributes.radius;
           if (myDistance <= radius) {
             this.storage.lang.then((val) => {
               this.lang = val;
@@ -256,7 +260,16 @@ export class MapPage extends BasePage {
     });
 
     Category.load().then(data => {
+      let num = 1;
       data.forEach(category => {
+        num++;
+        if(num ==3){
+          // let color1 = '#fff72'+num;
+          // this.colorLine = color1;
+          this.colorLine = '#8eff90';
+        }else if(num ==4){
+          this.colorLine = '#cfff85';
+        }
         this.waypoints = [];
         let coordinates = [];
         if (category.waypoints && category.waypoints !== "") {
@@ -271,7 +284,7 @@ export class MapPage extends BasePage {
           }
           this.map.addPolyline({
             points: this.waypoints,
-            'color' : '#c401ff',
+            'color' : this.colorLine,
             'width': 4,
             'geodesic': true
           });
@@ -294,7 +307,6 @@ export class MapPage extends BasePage {
 
   onPlacesLoaded(places) {
     let points: Array<LatLng> = [];
-
     for (let place of places) {
       let target: LatLng = new LatLng(
         place.location.latitude,
@@ -311,10 +323,13 @@ export class MapPage extends BasePage {
 
       this.storage.lang.then((val) => {
         this.lang = val;
+
         let markerOptions = {
           position: target,
+          draggable: true,
           title: place['title_'+this.lang],
           snippet: place['description_'+this.lang],
+          animation:'NodeFX',
           icon: icon,
           place: place,
           places: places,
@@ -330,8 +345,16 @@ export class MapPage extends BasePage {
             let places = marker.get("places");
             this.goToPlace({"place":place,"places":places});
           });
-        });
 
+          this.map.addCircle({
+            center: marker.getPosition(),
+            radius: place.radius*1000,
+            fillColor: "rgba(0, 0, 255, 0.1)",
+            strokeColor: "rgba(0, 0, 255, 0.75)",
+            strokeWidth: 1
+          });
+
+        });
       });
       points.push(target);
     }

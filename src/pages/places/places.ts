@@ -1,7 +1,7 @@
 import {IonicPage} from 'ionic-angular';
 import {Component, Injector} from '@angular/core';
 import {BasePage} from '../base-page/base-page';
-// import {AppConfig} from '../../app/app.config';
+import {AppConfig} from '../../app/app.config';
 import {Place} from '../../providers/place-service';
 import {Preference} from '../../providers/preference';
 import {Category} from '../../providers/categories';
@@ -325,6 +325,25 @@ export class PlacesPage extends BasePage {
           });
           // marker.showInfoWindow();
         });
+
+        this.map.addMarker(markerOptions).then((marker) => {
+          marker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
+            let marker = e[1];
+            let place = marker.get("place");
+            let places = marker.get("places");
+            this.goToPlace({"place":place,"places":places});
+          });
+
+          this.map.addCircle({
+            center: marker.getPosition(),
+            radius: place.radius*1000,
+            fillColor: "rgba(0, 0, 255, 0.2)",
+            strokeColor: "rgba(0, 0, 255, 0.75)",
+            strokeWidth: 1
+          });
+
+        });
+
       });
       points.push(target);
     }

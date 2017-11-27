@@ -252,10 +252,16 @@ export class Place extends Parse.Object {
     this.set('address_en', val);
   }
 
+  get radius() {
+    return this.get('radius');
+  }
+  set radius(val) {
+    this.set('radius', val);
+  }
+
   get category() {
     return this.get('category');
   }
-
   set category(val) {
     this.set('category', val);
   }

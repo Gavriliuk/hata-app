@@ -12,7 +12,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content #container class="placesContent">
+<ion-content #container class="placesContent card-background-page">
 
       <div id="map" class="map" #map showWhen="android,ios"></div>
       <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core"></empty-view>
@@ -33,25 +33,59 @@
   </empty-view>
 
   <!--<ion-list *ngIf="isContentViewVisible" padding>-->
-  <ion-list padding>
-    <ion-item *ngFor="let place of places" (click)="goToPlace(place)"
-              color="dark" no-lines>
-      <ion-thumbnail item-left>
-        <img src="assets/img/location.png" offset="100"
-          [lazyLoad]="place.imageThumb.url()"
-          [scrollTarget]="container.getScrollElement()">
-      </ion-thumbnail>
-      <!--<h2 class="bold" ion-text color="secondaru">{{ place.title }}</h2>-->
-      <h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>
-      <!--<p>{{ place.description }}</p>-->
-      <p>{{ place["description_"+lang] }}</p>
-      <ion-note ion-text color="light" item-right>
-        {{ place.distance(params.location, params.unit) }}
-      </ion-note>
-      <rating color="ops" *ngIf="place.rating" [(ngModel)]="place.rating" readOnly="true">
-      </rating>
-    </ion-item>
-  </ion-list>
+
+
+  <ion-slides pager>
+    <ion-slide *ngFor="let place of places" (click)="goToPlace(place)">
+
+      <ion-card>
+        <img src="{{place.imageThumb.url()}}">
+        <ion-card-content>
+          <ion-card-title>
+            {{ place["title_"+lang] }}
+          </ion-card-title>
+          <p>
+            {{ place["description_"+lang] }}
+          </p>
+        </ion-card-content>
+      </ion-card>
+
+      <!--<ion-card>-->
+        <!--<img src="{{place.imageThumb.url()}}"/>-->
+        <!--<div class="card-title">São Paulo</div>-->
+        <!--<div class="card-subtitle">41 Listings</div>-->
+      <!--</ion-card>-->
+
+      <!--<ion-avatar>-->
+        <!--<img src="assets/img/location.png" offset="100"-->
+             <!--[lazyLoad]="place.imageThumb.url()"-->
+             <!--[scrollTarget]="container.getScrollElement()">-->
+      <!--</ion-avatar>-->
+
+    </ion-slide>
+  </ion-slides>
+
+
+
+  <!--<ion-list padding>-->
+    <!--<ion-item *ngFor="let place of places" (click)="goToPlace(place)"-->
+              <!--color="dark" no-lines>-->
+      <!--<ion-thumbnail item-left>-->
+        <!--<img src="assets/img/location.png" offset="100"-->
+          <!--[lazyLoad]="place.imageThumb.url()"-->
+          <!--[scrollTarget]="container.getScrollElement()">-->
+      <!--</ion-thumbnail>-->
+      <!--&lt;!&ndash;<h2 class="bold" ion-text color="secondaru">{{ place.title }}</h2>&ndash;&gt;-->
+      <!--<h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>-->
+      <!--&lt;!&ndash;<p>{{ place.description }}</p>&ndash;&gt;-->
+      <!--<p>{{ place["description_"+lang] }}</p>-->
+      <!--<ion-note ion-text color="light" item-right>-->
+        <!--{{ place.distance(params.location, params.unit) }}-->
+      <!--</ion-note>-->
+      <!--<rating color="ops" *ngIf="place.rating" [(ngModel)]="place.rating" readOnly="true">-->
+      <!--</rating>-->
+    <!--</ion-item>-->
+  <!--</ion-list>-->
 
   <!--<ion-infinite-scroll (ionInfinite)="onLoadMore($event)">-->
     <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->

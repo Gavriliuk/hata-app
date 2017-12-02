@@ -106,9 +106,14 @@ export class MapPage extends BasePage {
       console.log("Init cordova");
 
       this.showLoadingView();
-      this.map = new GoogleMap('map');
+      this.map = new GoogleMap('map', {
+        styles: MapStyle.dark()
+      });
+
 
       this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
+
+        this.map.setMyLocationEnabled(true);
         console.log("Init Gmap");
 
         this.storage.unit.then(unit => {
@@ -128,52 +133,14 @@ export class MapPage extends BasePage {
             this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
             this.showErrorView();
           });
-          // Options: throw an error if no update is received every 30 seconds.
-          this.geolocation.watchPosition({
-            maximumAge: 3000,
-            timeout: 3000,
-            enableHighAccuracy: true
-          }).filter((p) => p.coords !== undefined).subscribe(position => {
-
-            let paramsClone = {...this.params};
-            this.storage.radius.then((val) => {
-              paramsClone.distance = val;
-              console.log("Distance:", val);
-              paramsClone.location = position.coords;
-
-              Place.loadNearPlace(paramsClone).then(place => {
-                if (place && place[0]) {
-                  let myDistance = place[0].distance(paramsClone.location, 'none');
-                  let radius = place[0].attributes.radius;
-
-                  if (myDistance <= radius) {
-                    if (this.nearAudio[0] != place[0].audio.url()) {
-                      this.storage.lang.then((val) => {
-                        this.lang = val;
-                        this.nearAudio = [];
-                        if (this.lang == "ru") {
-                          this.nearAudio = [place[0].audio_ru.url()];
-                        } else if(this.lang == "ro") {
-                          this.nearAudio = [place[0].audio_ro.url()];
-                        }else{
-                          this.nearAudio = [place[0].audio_en.url()];
-                        }
-                      });
-                      this.api.getDefaultMedia().loadMedia();
-                    }
-                  }
-                }
-              });
-            });
-          });
+          this.onMove();
         });
 
       });
 
-
-      // this.storage.mapStyle.then(mapStyle => {
-      //   this.map.setMapTypeId(mapStyle);
-      // });
+      this.storage.mapStyle.then(mapStyle => {
+        this.map.setMapTypeId(mapStyle);
+      });
 
       this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
 
@@ -196,7 +163,32 @@ export class MapPage extends BasePage {
       console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
     }
   }
+  onMove() {
+// Options: throw an error if no update is received every 30 seconds.
+    this.geolocation.watchPosition({
+      maximumAge: 3000,
+      timeout: 3000,
+      enableHighAccuracy: true
+    }).filter((p) => p.coords !== undefined).subscribe(position => {
+      let paramsClone = {...this.params};
+      this.storage.radius.then((val) => {
+        paramsClone.distance = val;
+        paramsClone.location = position.coords;
 
+        Place.loadNearPlace(paramsClone).then(place => {
+          if (place && place[0]) {
+            let myDistance = place[0].distance(paramsClone.location, 'none');
+            let radius = place[0].attributes.radius;
+            let audioURL = place[0]['audio_' + this.lang].url();
+            if (this.nearAudio[0] != audioURL && myDistance <= radius) {
+              this.nearAudio = [audioURL];
+              this.api.getDefaultMedia().loadMedia();
+            }
+          }
+        });
+      });
+    });
+  }
   goToPlace(place) {
     this.navigateTo('PlaceDetailPage', place);
   }

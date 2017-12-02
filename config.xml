@@ -108,9 +108,11 @@
     <plugin name="cordova-plugin-statusbar" spec="git+https://github.com/apache/cordova-plugin-statusbar.git" />
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-disable-ios11-statusbar" spec="~1.0.0" />
-    <plugin name="cordova-plugin-googlemaps" spec="^2.1.1">
-        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyCmfY6FUlDnldRN_Qlz-fspUiQ5O-jy8Ho" />
-        <variable name="API_KEY_FOR_IOS" value="AIzaSyCmfY6FUlDnldRN_Qlz-fspUiQ5O-jy8Ho" />
-    </plugin>
     <engine name="ios" spec="~4.5.4" />
+    <plugin name="cordova-plugin-googlemaps" spec="^2.1.1">
+        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyDwqcBVvGUTpPuXd5S3EP7Bbd7gfOHm7Vw" />
+        <variable name="API_KEY_FOR_IOS" value="AIzaSyDwqcBVvGUTpPuXd5S3EP7Bbd7gfOHm7Vw" />
+        <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="Show your location on the map" />
+        <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="Trace your location on the map" />
+    </plugin>
 </widget>

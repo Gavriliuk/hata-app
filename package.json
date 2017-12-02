@@ -110,8 +110,10 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-disable-ios11-statusbar": {},
       "cordova-plugin-googlemaps": {
-        "API_KEY_FOR_ANDROID": "AIzaSyCmfY6FUlDnldRN_Qlz-fspUiQ5O-jy8Ho",
-        "API_KEY_FOR_IOS": "AIzaSyCmfY6FUlDnldRN_Qlz-fspUiQ5O-jy8Ho"
+        "API_KEY_FOR_ANDROID": "AIzaSyDwqcBVvGUTpPuXd5S3EP7Bbd7gfOHm7Vw",
+        "API_KEY_FOR_IOS": "AIzaSyDwqcBVvGUTpPuXd5S3EP7Bbd7gfOHm7Vw",
+        "LOCATION_WHEN_IN_USE_DESCRIPTION": "Show your location on the map",
+        "LOCATION_ALWAYS_USAGE_DESCRIPTION": "Trace your location on the map"
       }
     },
     "platforms": [

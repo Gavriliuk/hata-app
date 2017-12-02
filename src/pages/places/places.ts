@@ -86,6 +86,7 @@ export class PlacesPage extends BasePage {
     });
 
     this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
+      this.map.setMyLocationEnabled(true);
       console.log("Init Gmap");
       this.initGeoLocation();
     });
@@ -274,78 +275,6 @@ export class PlacesPage extends BasePage {
     this.cdr.detectChanges();
   }
 
-  //===========Map End==================
-
-
-  //----------function Autoplay in player videogular2--------
-  //   onPlayerReady(api) {
-  //     this.api=api;
-  //     this.api.getDefaultMedia().subscriptions.canPlay.subscribe(
-  //       () => {
-  //           // this.api.play();
-  //       }
-  //   );
-  // }
-  // enableMenuSwipe() {
-  //   return false;
-  // }
-
-  // prepareAd() {
-  //
-  //   if (AppConfig.BANNER_ID) {
-  //     const bannerConfig: AdMobFreeBannerConfig = {
-  //       id: AppConfig.BANNER_ID,
-  //       isTesting: false,
-  //       autoShow: true
-  //     };
-  //
-  //     this.admobFree.banner.config(bannerConfig);
-  //
-  //     this.admobFree.banner.prepare().then(() => {
-  //       // banner Ad is ready
-  //       // if we set autoShow to false, then we will need to call the show method here
-  //     }).catch(e => console.log(e));
-  //   }
-  // }
-
-  // goToPlace(place) {
-  //   this.navigateTo('PlaceDetailPage', place);
-  // }
-
-  // loadData() {
-  //
-  //   Place.load(this.params).then(data => {
-  //     // this.audio = data[0].audio.url();
-  //
-  //     for (let place of data) {
-  //       this.places.push(place);
-  //     }
-  //
-  //     this.onRefreshComplete(data);
-  //
-  //     if (this.places.length) {
-  //       this.showContentView();
-  //     } else {
-  //       this.showEmptyView();
-  //     }
-  //
-  //   }, error => {
-  //     this.onRefreshComplete();
-  //     this.showErrorView();
-  //   });
-  // }
-
-  // onFilter(filter) {
-  //   this.params.filter = filter;
-  //   this.showLoadingView();
-  //   this.onReload();
-  // }
-  //
-  // onLoadMore(infiniteScroll) {
-  //   this.infiniteScroll = infiniteScroll;
-  //   this.params.page++;
-  //   this.loadData();
-  // }
 
   onReload() {
     this.map && this.map.clear();

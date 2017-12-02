@@ -18,10 +18,8 @@
     "@angular/http": "4.1.3",
     "@angular/platform-browser": "4.1.3",
     "@angular/platform-browser-dynamic": "4.1.3",
-    "@ionic-native/admob-free": "3.12.1",
     "@ionic-native/app-version": "3.12.1",
     "@ionic-native/browser-tab": "3.12.1",
-    "@ionic-native/camera": "3.12.1",
     "@ionic-native/core": "3.12.1",
     "@ionic-native/diagnostic": "3.12.1",
     "@ionic-native/file": "^3.12.1",
@@ -32,31 +30,26 @@
     "@ionic-native/in-app-browser": "3.12.1",
     "@ionic-native/launch-navigator": "3.12.1",
     "@ionic-native/location-accuracy": "3.12.1",
-    "@ionic-native/social-sharing": "3.12.1",
     "@ionic-native/splash-screen": "3.12.1",
     "@ionic-native/status-bar": "3.12.1",
     "@ionic/storage": "2.0.1",
     "@ngx-translate/core": "6.0.1",
     "@ngx-translate/http-loader": "0.0.3",
-    "cordova-android": "6.3.0",
-    "cordova-ios": "^4.5.4",
-    "cordova-plugin-admob-free": "0.9.0",
+    "cordova-ios": "4.5.4",
     "cordova-plugin-browsertab": "0.2.0",
-    "cordova-plugin-camera": "2.4.1",
     "cordova-plugin-device": "1.1.6",
     "cordova-plugin-disable-ios11-statusbar": "~1.0.0",
     "cordova-plugin-geolocation": "2.4.3",
     "cordova-plugin-google-analytics": "1.8.2",
     "cordova-plugin-googlemaps": "^2.1.1",
+    "cordova-plugin-googlemaps-sdk": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps-sdk.git",
     "cordova-plugin-headercolor": "1.0.0",
-    "cordova-plugin-image-picker": "1.1.3",
     "cordova-plugin-inappbrowser": "1.7.1",
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-request-location-accuracy": "~2.2.1",
     "cordova-plugin-splashscreen": "4.0.3",
     "cordova-plugin-statusbar": "git+https://github.com/apache/cordova-plugin-statusbar.git",
     "cordova-plugin-whitelist": "1.3.2",
-    "cordova-plugin-x-socialsharing": "5.1.8",
     "cordova.plugins.diagnostic": "3.6.5",
     "ionic-angular": "3.7.1-201710201922",
     "ionic-plugin-keyboard": "2.2.1",
@@ -106,18 +99,9 @@
       "cordova-plugin-geolocation": {
         "GEOLOCATION_USAGE_DESCRIPTION": " "
       },
-      "cordova-plugin-camera": {
-        "CAMERA_USAGE_DESCRIPTION": " ",
-        "PHOTOLIBRARY_USAGE_DESCRIPTION": " "
-      },
-      "cordova-plugin-image-picker": {
-        "PHOTO_LIBRARY_USAGE_DESCRIPTION": " "
-      },
       "cordova-plugin-google-analytics": {},
-      "cordova-plugin-x-socialsharing": {},
       "cordova-plugin-inappbrowser": {},
       "cordova.plugins.diagnostic": {},
-      "cordova-plugin-admob-free": {},
       "cordova-plugin-headercolor": {},
       "cordova-plugin-browsertab": {},
       "uk.co.workingedge.phonegap.plugin.launchnavigator": {},
@@ -126,14 +110,11 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-disable-ios11-statusbar": {},
       "cordova-plugin-googlemaps": {
-        "API_KEY_FOR_ANDROID": "AIzaSyCQiJngstp5Ajl_irI3VMlNCKaG-mUP6eI",
-        "API_KEY_FOR_IOS": "AIzaSyCQiJngstp5Ajl_irI3VMlNCKaG-mUP6eI",
-        "LOCATION_WHEN_IN_USE_DESCRIPTION": "Show your location on the map",
-        "LOCATION_ALWAYS_USAGE_DESCRIPTION": "Trace your location on the map"
+        "API_KEY_FOR_ANDROID": "AIzaSyCmfY6FUlDnldRN_Qlz-fspUiQ5O-jy8Ho",
+        "API_KEY_FOR_IOS": "AIzaSyCmfY6FUlDnldRN_Qlz-fspUiQ5O-jy8Ho"
       }
     },
     "platforms": [
-      "android",
       "ios"
     ]
   }

@@ -9,7 +9,7 @@ export class AppConfig {
      // return 'http://188.166.101.46:1337/parse/';
 
      //----------Setting Ngrok-----------------------------
-     return 'http://287398cd.ngrok.io/parse/';
+     return 'http://ee70af3c.ngrok.io/parse/';
    }
 
    /* Parse App ID  */

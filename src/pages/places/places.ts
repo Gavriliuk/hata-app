@@ -1,13 +1,10 @@
 import {IonicPage} from 'ionic-angular';
 import {Component, Injector} from '@angular/core';
 import {BasePage} from '../base-page/base-page';
-import {AppConfig} from '../../app/app.config';
 import {Place} from '../../providers/place-service';
 import {Preference} from '../../providers/preference';
 import {Category} from '../../providers/categories';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
-// import { AdMobFree, AdMobFreeBannerConfig } from '@ionic-native/admob-free';
-import {AdMobFree} from '@ionic-native/admob-free';
 import {LocalStorage} from '../../providers/local-storage';
 import {ChangeDetectorRef} from '@angular/core';
 import {Platform, Events} from 'ionic-angular';
@@ -15,8 +12,7 @@ import {Platform, Events} from 'ionic-angular';
 import {MapStyle} from '../../providers/map-style';
 import {
   CameraPosition, GoogleMap, GoogleMapsEvent,
-  LatLng, LatLngBounds, Geocoder, GeocoderRequest,
-  GeocoderResult, Marker, ILatLng
+  LatLng, LatLngBounds, Marker, ILatLng
 } from '@ionic-native/google-maps';
 
 @IonicPage()
@@ -34,12 +30,11 @@ export class PlacesPage extends BasePage {
   map: GoogleMap;
   isViewLoaded: boolean;
   nearAudio: any[];
-  waypoints:any=[];
+  waypoints: any = [];
 
   constructor(injector: Injector,
               private storage: LocalStorage,
               private geolocation: Geolocation,
-              private admobFree: AdMobFree,
               private preference: Preference,
               private events: Events,
               private platform: Platform,
@@ -62,19 +57,7 @@ export class PlacesPage extends BasePage {
     this.params.filter = 'nearby';
     this.params.unit = this.preference.unit;
     this.places = [];
-    // this.showLoadingView();
-    // this.onReload();
-    // this.prepareAd();
   }
-
-  //=============Map Start==================
-  // onPlayerReady(api) {
-  //   this.api = api;
-  //   this.api.getDefaultMedia().subscriptions.canPlay.subscribe(
-  //     () => {
-  //       this.api.play();
-  //     });
-  // }
 
   enableMenuSwipe() {
     return true;
@@ -84,120 +67,37 @@ export class PlacesPage extends BasePage {
     this.isViewLoaded = false;
   }
 
-  ionViewWillEnter() {
+  ionViewDidLoad() {
     this.onReload();
     this.isViewLoaded = true;
+    this.showLoadingView();
 
     if (this.platform.is('cordova')) {
-
-      this.showLoadingView();
-      this.map = new GoogleMap('map', {
-        styles: MapStyle.dark()
-      });
-
-      this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
-        this.storage.unit.then(unit => {
-
-          this.params.unit = unit;
-          const options: GeolocationOptions = {
-            enableHighAccuracy: true,
-            timeout: 7000
-          };
-
-          this.geolocation.getCurrentPosition(options).then(pos => {
-
-            this.params.location = pos.coords;
-            this.loadData();
-          }, error => {
-            this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
-            this.showErrorView();
-          });
-          // Options: throw an error if no update is received every 30 seconds.
-          this.geolocation.watchPosition({
-            maximumAge: 3000,
-            timeout: 3000,
-            enableHighAccuracy: true
-          }).filter((p) => p.coords !== undefined).subscribe(position => {
-
-            let paramsClone = {...this.params};
-            this.storage.radius.then((val) => {
-              paramsClone.distance = val;
-              paramsClone.location = position.coords;
-
-              Place.loadNearPlace(paramsClone).then(place => {
-                if (place && place[0]) {
-                  let myDistance = place[0].distance(paramsClone.location, 'none');
-                  let radius = place[0].attributes.radius;
-
-                  if (myDistance <= radius) {
-  //--------Dodelati ru,en,ro---------------
-                    if (this.nearAudio[0] != place[0].audio_ru.url()) {
-                      this.nearAudio = [place[0].audio_ru.url()];
-                      this.api.getDefaultMedia().loadMedia();
-                    }
-                  }
-                }
-              });
-            });
-          });
-        });
-      });
-
-      this.storage.mapStyle.then(mapStyle => {
-        this.map.setMapTypeId(mapStyle);
-      });
-
-      this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
-        if (this.isViewLoaded) {
-          let position: CameraPosition<ILatLng> = this.map.getCameraPosition();
-          let target: ILatLng = position.target;
-
-          this.params.location = {
-            latitude: target.lat,
-            longitude: target.lng
-          };
-          this.showLoadingView();
-          this.onReload();
-
-        }
-      });
-
-      this.map.setMyLocationEnabled(true);
-
+      this.initGoogleMap();
     } else {
-      this.showLoadingView();
       this.loadData();
       console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
     }
   }
 
-  goToPlace(place) {
-    this.navigateTo('PlaceDetailPage', {place:place, places:this.places});
-  }
+  private initGoogleMap() {
+    this.map = new GoogleMap('map', {
+      styles: MapStyle.dark()
+    });
 
-  onSearchAddress(event: any) {
-    if (this.platform.is('cordova')) {
+    this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
+      console.log("Init Gmap");
+      this.initGeoLocation();
+    });
 
-      let query = event.target.value;
+    this.storage.mapStyle.then(mapStyle => {
+      this.map.setMapTypeId(mapStyle);
+    });
 
-      let request: GeocoderRequest = {
-        address: query
-      };
-
-      let geocoder = new Geocoder;
-      geocoder.geocode(request).then((results: GeocoderResult) => {
-
-        let target: LatLng = new LatLng(
-          results[0].position.lat,
-          results[0].position.lng
-        );
-        let position: CameraPosition<ILatLng> = {
-          target: target,
-          zoom: 18,
-          tilt: 30
-        };
-
-        this.map.moveCamera(position);
+    this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
+      if (this.isViewLoaded) {
+        let position: CameraPosition<ILatLng> = this.map.getCameraPosition();
+        let target: ILatLng = position.target;
 
         this.params.location = {
           latitude: target.lat,
@@ -205,71 +105,82 @@ export class PlacesPage extends BasePage {
         };
         this.showLoadingView();
         this.onReload();
+      }
+    });
+
+    this.map.setMyLocationEnabled(true);
+  }
+
+  private initGeoLocation() {
+    this.storage.unit.then(unit => {
+      this.params.unit = unit;
+      const options: GeolocationOptions = {
+        enableHighAccuracy: true,
+        timeout: 7000
+      };
+
+      this.geolocation.getCurrentPosition(options).then(pos => {
+        this.params.location = pos.coords;
+        this.loadData();
+      }, error => {
+        this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
+        this.showErrorView();
       });
-    } else {
-      console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
-    }
+      this.onMove();
+    });
+  }
+
+  onMove() {
+// Options: throw an error if no update is received every 30 seconds.
+    this.geolocation.watchPosition({
+      maximumAge: 3000,
+      timeout: 3000,
+      enableHighAccuracy: true
+    }).filter((p) => p.coords !== undefined).subscribe(position => {
+      let paramsClone = {...this.params};
+      this.storage.radius.then((val) => {
+        paramsClone.distance = val;
+        paramsClone.location = position.coords;
+
+        Place.loadNearPlace(paramsClone).then(place => {
+          if (place && place[0]) {
+            let myDistance = place[0].distance(paramsClone.location, 'none');
+            let radius = place[0].attributes.radius;
+            let audioURL = place[0]['audio_' + this.lang].url();
+            if (this.nearAudio[0] != audioURL && myDistance <= radius) {
+              this.nearAudio = [audioURL];
+              this.api.getDefaultMedia().loadMedia();
+            }
+          }
+        });
+      });
+    });
+  }
+
+  goToPlace(place) {
+    this.navigateTo('PlaceDetailPage', {place: place, places: this.places});
   }
 
   loadData() {
-    // let paramsClone = { ...this.params };
-    // // paramsClone.distance = 0.5;
-    // this.storage.radius.then((val) => {
-    //   paramsClone.distance = val;
-    //   Place.loadNearPlace(paramsClone).then(place => {
-    //     if (place && place[0]) {
-    //       let myDistance = place[0].distance(this.params.location, 'none');
-    //       let radius = place[0].attributes.radius;
-    //
-    //       if (myDistance <= radius) {
-    //         this.nearAudio = [place[0].audio_ru.url()];
-    //       }
-    //     }
-    //   });
-    // });
-
-  //============= Add waypoints ==================
-    this.waypoints = [];
-    let coordinates = [];
-    if (this.params.category.waypoints && this.params.category.waypoints !== "") {
-      if(this.params.category.waypoints.indexOf('/') != -1){
-        coordinates= this.params.category.waypoints.split('/');
-        coordinates.forEach(data => {
-          let loc = data.split(",");
-          let lat = parseFloat(loc[0]);
-          let lng = parseFloat(loc[1]);
-          this.waypoints.push(<LatLng>{"lat":lat,"lng":lng});
-        });
-      }
-      this.map.addPolyline({
-        points: this.waypoints,
-        'color' : '#C401FF',
-        'width': 4,
-        'geodesic': true
-      });
+    if (this.platform.is('cordova')) {
+      this.drawRoutePolyline();
     }
-    //=============End waypoints==================
+    this.loadRoutePlaces();
+  }
 
+  loadRoutePlaces() {
     this.storage.lang.then((val) => {
       this.lang = val;
       this.nearAudio = [];
       Place.load(this.params).then(data => {
+        this.updateAudioURL(data);
 
-        if(this.lang == "ru"){
-          this.nearAudio = [data[0].audio_ru.url()];
-        }else if(this.lang == "ro"){
-          this.nearAudio = [data[0].audio_ro.url()];
-        }else{
-          this.nearAudio = [data[0].audio_en.url()];
-        }
         if (this.platform.is('cordova')) {
           this.onPlacesLoaded(data);
         }
         for (let place of data) {
           this.places.push(place);
         }
-
-         // this.onRefreshComplete(data);
 
         if (this.places.length) {
           this.showContentView();
@@ -278,11 +189,14 @@ export class PlacesPage extends BasePage {
         }
 
       }, error => {
-        // this.onRefreshComplete();
         this.showErrorView();
       });
     });
+  }
 
+  private updateAudioURL(data) {
+    let audioURL = data[0]['audio_' + this.lang].url();
+    this.nearAudio = [audioURL];
   }
 
   onPlacesLoaded(places) {
@@ -307,8 +221,8 @@ export class PlacesPage extends BasePage {
         this.lang = val;
         let markerOptions = {
           position: target,
-          title: place['title_'+this.lang],
-          snippet: place['description_'+this.lang],
+          title: place['title_' + this.lang],
+          snippet: place['description_' + this.lang],
           icon: icon,
           place: place,
           styles: {
@@ -331,12 +245,12 @@ export class PlacesPage extends BasePage {
             let marker = e[1];
             let place = marker.get("place");
             let places = marker.get("places");
-            this.goToPlace({"place":place,"places":places});
+            this.goToPlace({"place": place, "places": places});
           });
 
           this.map.addCircle({
             center: marker.getPosition(),
-            radius: place.radius*1000,
+            radius: place.radius * 1000,
             fillColor: "rgba(0, 0, 255, 0.2)",
             strokeColor: "rgba(0, 0, 255, 0.75)",
             strokeWidth: 1
@@ -356,11 +270,6 @@ export class PlacesPage extends BasePage {
     }
   }
 
-  // onReload() {
-  //   this.map.clear();
-  //   this.places = [];
-  //   this.loadData();
-  // }
   ngAfterViewChecked(): void {
     this.cdr.detectChanges();
   }
@@ -438,30 +347,43 @@ export class PlacesPage extends BasePage {
   //   this.loadData();
   // }
 
-  onReload(refresher = null) {
+  onReload() {
     this.map && this.map.clear();
-    this.refresher = refresher;
 
     this.places = [];
     this.params.page = 0;
 
-    if (this.params.filter === 'nearby') {
+    const options: GeolocationOptions = {
+      enableHighAccuracy: true,
+      timeout: 10000
+    };
+    this.geolocation.getCurrentPosition(options).then(pos => {
+      this.params.location = pos.coords;
+    }, error => {
+      this.showErrorView();
+      this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(res => this.showToast(res));
+    });
+  }
 
-      const options: GeolocationOptions = {
-        enableHighAccuracy: true,
-        timeout: 10000
-      };
-      this.geolocation.getCurrentPosition(options).then(pos => {
-        this.params.location = pos.coords;
-        // this.loadData();
-      }, error => {
-        this.showErrorView();
-        this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(res => this.showToast(res));
+  drawRoutePolyline() {
+    this.waypoints = [];
+    let coordinates = [];
+    if (this.params.category.waypoints && this.params.category.waypoints !== "") {
+      if (this.params.category.waypoints.indexOf('/') != -1) {
+        coordinates = this.params.category.waypoints.split('/');
+        coordinates.forEach(data => {
+          let loc = data.split(",");
+          let lat = parseFloat(loc[0]);
+          let lng = parseFloat(loc[1]);
+          this.waypoints.push(<LatLng>{"lat": lat, "lng": lng});
+        });
+      }
+      this.map.addPolyline({
+        points: this.waypoints,
+        'color': '#C401FF',
+        'width': 4,
+        'geodesic': true
       });
-
-    } else {
-      this.params.location = null;
-       // this.loadData();
     }
   }
 

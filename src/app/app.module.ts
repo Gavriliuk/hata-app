@@ -20,19 +20,16 @@ import { MapStyle } from '../providers/map-style';
 
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { Camera } from '@ionic-native/camera';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { File } from '@ionic-native/file';
 import { LaunchNavigator } from '@ionic-native/launch-navigator';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { SocialSharing } from '@ionic-native/social-sharing';
 import { GoogleMaps } from '@ionic-native/google-maps';
 import { AppVersion } from '@ionic-native/app-version';
 import { HeaderColor } from '@ionic-native/header-color';
 import { GoogleAnalytics } from '@ionic-native/google-analytics';
-import { AdMobFree } from '@ionic-native/admob-free';
 import { BrowserTab } from '@ionic-native/browser-tab';
 
 import { IonicStorageModule } from '@ionic/storage';
@@ -86,11 +83,8 @@ export function HttpLoaderFactory(http: Http) {
     LaunchNavigator,
     // CallNumber,
     InAppBrowser,
-    SocialSharing,
     GoogleMaps,
-    Camera,
     GoogleAnalytics,
-    AdMobFree,
     AppVersion,
     HeaderColor,
     BrowserTab,

@@ -99,17 +99,17 @@ export class MapPage extends BasePage {
     // }
   }
 
-  ionViewWillEnter() {
+  ionViewDidLoad() {
     this.isViewLoaded = true;
 
     if (this.platform.is('cordova')) {
+      console.log("Init cordova");
 
       this.showLoadingView();
-      this.map = new GoogleMap('map', {
-        styles: MapStyle.dark()
-      });
+      this.map = new GoogleMap('map');
 
       this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
+        console.log("Init Gmap");
 
         this.storage.unit.then(unit => {
           this.params.unit = unit;
@@ -170,9 +170,10 @@ export class MapPage extends BasePage {
 
       });
 
-      this.storage.mapStyle.then(mapStyle => {
-        this.map.setMapTypeId(mapStyle);
-      });
+
+      // this.storage.mapStyle.then(mapStyle => {
+      //   this.map.setMapTypeId(mapStyle);
+      // });
 
       this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
 

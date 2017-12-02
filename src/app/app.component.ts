@@ -64,7 +64,7 @@ export class MyApp {
         // { title: values.CATEGORIES, icon: 'pricetag', component: 'CategoriesPage' },
         { title: values.MAP, icon: 'map', component: 'MapPage' },
         // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },
-        { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },
+        // { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },
         { title: values.SETTINGS, icon: 'settings', component: 'SettingsPage' },
       ];
 

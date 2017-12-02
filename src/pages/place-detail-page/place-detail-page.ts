@@ -9,9 +9,7 @@ import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
 import {InAppBrowser} from '@ionic-native/in-app-browser';
 import {BrowserTab} from '@ionic-native/browser-tab';
 import {LaunchNavigator} from '@ionic-native/launch-navigator';
-import {SocialSharing} from '@ionic-native/social-sharing';
 import {BasePage} from '../base-page/base-page';
-import {User} from '../../providers/user-service';
 import {ChangeDetectorRef} from '@angular/core';
 
 @IonicPage()
@@ -40,12 +38,10 @@ export class PlaceDetailPage extends BasePage {
               private modalCtrl: ModalController,
               private storage: LocalStorage,
               private preference: Preference,
-              // private callNumber: CallNumber,
               private geolocation: Geolocation,
               private inAppBrowser: InAppBrowser,
               private browserTab: BrowserTab,
               private launchNavigator: LaunchNavigator,
-              private socialSharing: SocialSharing,
               private events: Events,
               private cdr: ChangeDetectorRef) {
     super(injector);

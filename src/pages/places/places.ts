@@ -7,7 +7,7 @@ import {Category} from '../../providers/categories';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
 import {LocalStorage} from '../../providers/local-storage';
 import {ChangeDetectorRef} from '@angular/core';
-import {Platform, Events} from 'ionic-angular';
+import {Platform, Events, Slides} from 'ionic-angular';
 
 import {MapStyle} from '../../providers/map-style';
 import {
@@ -31,6 +31,8 @@ export class PlacesPage extends BasePage {
   isViewLoaded: boolean;
   nearAudio: any[];
   waypoints: any = [];
+  slideOptions:any;
+  slides:any;
 
   constructor(injector: Injector,
               private storage: LocalStorage,
@@ -58,6 +60,25 @@ export class PlacesPage extends BasePage {
     this.params.unit = this.preference.unit;
     this.places = [];
   }
+
+  // slideChanged() {
+  //   let currentIndex = this.slides.getActiveIndex();
+  //   console.log('Current index is', currentIndex);
+  // }
+
+  ngOnInit() {
+    this.slideOptions = {
+      initialSlide: 0,
+      loop: false,
+      direction: 'horizontal',
+      pager: true,
+      speed: 800
+    }
+  };
+
+
+
+
 
   enableMenuSwipe() {
     return true;

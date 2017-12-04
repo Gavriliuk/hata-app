@@ -12,86 +12,70 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content #container class="placesContent card-background-page">
+<ion-content #container class="placesContent" scroll="false" >
+  <!--<ion-content #container class="placesContent card-background-page" [attr.noScroll]="shouldScroll">-->
 
-      <div id="map" class="map" #map showWhen="android,ios"></div>
-      <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core"></empty-view>
+  <div id="map" class="map" #map showWhen="android,ios"></div>
+  <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core"></empty-view>
 
   <!--<ion-refresher (ionRefresh)="onReload($event)">-->
-    <!--<ion-refresher-content-->
-      <!--pullingText="{{ 'PULL_TO_REFRESH' | translate }}"-->
-      <!--refreshingText="{{ 'REFRESHING' | translate }}">-->
-    <!--</ion-refresher-content>-->
+  <!--<ion-refresher-content-->
+  <!--pullingText="{{ 'PULL_TO_REFRESH' | translate }}"-->
+  <!--refreshingText="{{ 'REFRESHING' | translate }}">-->
+  <!--</ion-refresher-content>-->
   <!--</ion-refresher>-->
 
   <empty-view *ngIf="isErrorViewVisible" icon="alert"
-    [text]="'ERROR_PLACES' | translate">
+              [text]="'ERROR_PLACES' | translate">
   </empty-view>
 
   <empty-view *ngIf="isEmptyViewVisible" icon="map"
-    [text]="'EMPTY_PLACES' | translate">
+              [text]="'EMPTY_PLACES' | translate">
   </empty-view>
 
   <!--<ion-list *ngIf="isContentViewVisible" padding>-->
 
-  <ion-slides pager style="height: 111px; max-width: 100%; margin-top: 2px;">
+  <ion-slides pager class="ionSlides">
     <ion-slide *ngFor="let place of places" style="margin-top: 38px;width: 320px;">
-        <ion-item (click)="goToPlace(place)" color="dark" no-lines>
-          <ion-thumbnail item-left>
-            <img src="{{place.imageThumb.url()}}" offset="100"
-                 [lazyLoad]="place.imageThumb.url()"
-                 [scrollTarget]="container.getScrollElement()">
-          </ion-thumbnail>
-           <h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>
-           <p>{{ place["description_"+lang] }}</p>
-          <ion-note ion-text color="light" item-right>
-            {{ place.distance(params.location, params.unit) }}
-          </ion-note>
-        </ion-item>
+      <ion-item (click)="goToPlace(place)" color="dark" no-lines>
+        <ion-thumbnail item-left>
+          <img src="{{place.imageThumb.url()}}" offset="100"
+               [lazyLoad]="place.imageThumb.url()"
+               [scrollTarget]="container.getScrollElement()">
+        </ion-thumbnail>
+        <h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>
+        <p>{{ place["description_"+lang] }}</p>
+        <ion-note ion-text color="light" item-right>
+          {{ place.distance(params.location, params.unit) }}
+        </ion-note>
+      </ion-item>
       <!--<button primary prevButton >Prev</button>-->
       <!--<button secondary nextButton>Next</button>-->
     </ion-slide>
   </ion-slides>
-  <!--<ion-slides style="max-height:180px">-->
-    <!--<ion-slide *ngFor="let place of places">-->
-      <!--<ion-card (click)="goToPlace(place)" style="text-align:center; max-height:100%; max-width:100%">-->
-        <!--&lt;!&ndash;<ion-card-content>&ndash;&gt;-->
-          <!--<img src="{{place.imageThumb.url()}}">-->
-          <!--<ion-card-title>-->
-             <!--{{ place["title_"+lang] }}-->
-          <!--</ion-card-title>-->
-          <!--<p>-->
-            <!--{{ place["description_"+lang] }}-->
-          <!--</p>-->
-        <!--&lt;!&ndash;</ion-card-content>&ndash;&gt;-->
-        <!--<button primary prevButton >Prev</button>-->
-        <!--<button secondary nextButton>Next</button>-->
-      <!--</ion-card>-->
-    <!--</ion-slide>-->
-  <!--</ion-slides>-->
 
   <!--<ion-list padding>-->
-    <!--<ion-item *ngFor="let place of places" (click)="goToPlace(place)"-->
-              <!--color="dark" no-lines>-->
-      <!--<ion-thumbnail item-left>-->
-        <!--<img src="assets/img/location.png" offset="100"-->
-          <!--[lazyLoad]="place.imageThumb.url()"-->
-          <!--[scrollTarget]="container.getScrollElement()">-->
-      <!--</ion-thumbnail>-->
-      <!--&lt;!&ndash;<h2 class="bold" ion-text color="secondaru">{{ place.title }}</h2>&ndash;&gt;-->
-      <!--<h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>-->
-      <!--&lt;!&ndash;<p>{{ place.description }}</p>&ndash;&gt;-->
-      <!--<p>{{ place["description_"+lang] }}</p>-->
-      <!--<ion-note ion-text color="light" item-right>-->
-        <!--{{ place.distance(params.location, params.unit) }}-->
-      <!--</ion-note>-->
-      <!--<rating color="ops" *ngIf="place.rating" [(ngModel)]="place.rating" readOnly="true">-->
-      <!--</rating>-->
-    <!--</ion-item>-->
+  <!--<ion-item *ngFor="let place of places" (click)="goToPlace(place)"-->
+  <!--color="dark" no-lines>-->
+  <!--<ion-thumbnail item-left>-->
+  <!--<img src="assets/img/location.png" offset="100"-->
+  <!--[lazyLoad]="place.imageThumb.url()"-->
+  <!--[scrollTarget]="container.getScrollElement()">-->
+  <!--</ion-thumbnail>-->
+  <!--&lt;!&ndash;<h2 class="bold" ion-text color="secondaru">{{ place.title }}</h2>&ndash;&gt;-->
+  <!--<h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>-->
+  <!--&lt;!&ndash;<p>{{ place.description }}</p>&ndash;&gt;-->
+  <!--<p>{{ place["description_"+lang] }}</p>-->
+  <!--<ion-note ion-text color="light" item-right>-->
+  <!--{{ place.distance(params.location, params.unit) }}-->
+  <!--</ion-note>-->
+  <!--<rating color="ops" *ngIf="place.rating" [(ngModel)]="place.rating" readOnly="true">-->
+  <!--</rating>-->
+  <!--</ion-item>-->
   <!--</ion-list>-->
 
   <!--<ion-infinite-scroll (ionInfinite)="onLoadMore($event)">-->
-    <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
   <!--</ion-infinite-scroll>-->
 
 </ion-content>
@@ -100,7 +84,7 @@
   <ion-toolbar color="secondary" text-center>
 
     <vg-player class="vgPlayer">
-    <!--<vg-player class="vgPlayer" (onPlayerReady)="onPlayerReady($event)">-->
+      <!--<vg-player class="vgPlayer" (onPlayerReady)="onPlayerReady($event)">-->
       <vg-controls>
         <vg-play-pause [vgFor]="myAudio"></vg-play-pause>
         <vg-playback-button [vgFor]="myAudio"></vg-playback-button>

@@ -58,24 +58,36 @@ page-places {
     bottom:0px;
   }
   .placesContent{
-      background-color:#fff;
+    background-color:#fff;
+    pozition:relative;
+    top:0px;
   }
   .map {
     width: 100%;
+    display:block;
     position: fixed;
-    z-index: 2;
-    height: 350px;
+    height: 71%;
     background-color: silver;
-    top: 44px !important;
+    top: 0px !important;
   }
 
   .fixed-content{
-    margin-top: 0px!important;
+    margin-top: 0px !important;
     margin-bottom: 0px;
   }
   .scroll-content{
-    margin-top: 394px !important;
+    margin-top: 0px !important;
     margin-bottom: 0px !important;
+  }
+
+  //[noScroll] {
+  //  overflow: hidden;
+  //}
+  .ionSlides{
+    position: absolute;
+    height: 100px;
+    max-width: 100%;
+    bottom: 10%;
   }
   .slide-zoom {
     text-align: center;

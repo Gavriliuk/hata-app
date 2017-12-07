@@ -24,8 +24,6 @@ page-place-detail-page {
   }
   .vgPlayer {
     height: 50px;
-    //padding-top: 26px;
-    //background-color: #4e6382;
     background-color: #656565;
   }
   .scrum-bar {
@@ -47,6 +45,7 @@ page-place-detail-page {
     margin: 8px 8px 8px 0;
   }
   .mapObjectPlace{
+    margin-top: -14px !important;
     height:auto;
     overflow:hidden;
   }
@@ -55,7 +54,12 @@ page-place-detail-page {
     min-width:340px;
     min-height: 260px;
   }
-
-
+  .cardContent {
+    padding: 0px;
+    padding-bottom:8px;
+  }
+  .cardHeader{
+    padding:8px;
+  }
   @import "../../../node_modules/videogular2/fonts/videogular.css";
 }

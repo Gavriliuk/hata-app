@@ -50,7 +50,7 @@ page-places {
 
   }
   .swiper-pagination-bullet-active{
-    background-color: #bbbbbb;
+    background-color: #444444;
   }
   .placeHeader{
     line-height:44px;
@@ -59,7 +59,7 @@ page-places {
   }
   .placesContent{
     background-color:#fff;
-    pozition:relative;
+    //position:relative;
     top:0px;
   }
   .map {
@@ -80,9 +80,6 @@ page-places {
     margin-bottom: 0px !important;
   }
 
-  //[noScroll] {
-  //  overflow: hidden;
-  //}
   .ionSlides{
     position: absolute;
     height: 100px;
@@ -95,5 +92,4 @@ page-places {
     height: 175px;
     width: 99%;
   }
-
 }

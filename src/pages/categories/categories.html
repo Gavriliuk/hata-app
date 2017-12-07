@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar color="primary" >
+  <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -34,10 +34,10 @@
       </ion-avatar>
       <h2 class="bold textCategory" ion-text color="secondaru">{{ category["title_"+lang] }}</h2>
       </div>
-      <!--<ion-note color="light"  ion-text item-right>-->
-        <ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="showAlert(category['title_'+lang], category['information_'+lang],category)" item-end></ion-icon>
-        <!--<ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="showAlert(category.attributes['information_'+lang])" item-end></ion-icon>-->
-      <!--</ion-note>-->
+        <ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="openModalAddReviewRoute(category['title_'+lang],category['information_'+lang],category.center_map,category.waypoints)" item-end></ion-icon>
+        <!--<ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="openModal(category,{charNum: 0})" item-end></ion-icon>-->
+        <!--<ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="showAlert(category['title_'+lang], category['information_'+lang],category)" item-end></ion-icon>-->
     </ion-item>
   </div>
+
 </ion-content>

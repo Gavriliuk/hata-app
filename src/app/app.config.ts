@@ -6,10 +6,10 @@ export class AppConfig {
      // return 'http://localhost:1337/parse/';
 
      //----------Setting server-----------------------------
-     // return 'http://188.166.101.46:1337/parse/';
+     return 'http://188.166.101.46:1337/parse/';
 
      //----------Setting Ngrok-----------------------------
-     return 'http://aaf707c6.ngrok.io/parse/';
+     // return 'http://4ac64e8a.ngrok.io/parse/';
    }
 
    /* Parse App ID  */

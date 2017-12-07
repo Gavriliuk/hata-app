@@ -215,21 +215,21 @@ export class Place extends Parse.Object {
     this.set('description_en', val);
   }
 
-  get phone(): string {
-    return this.get('phone');
-  }
+  // get phone(): string {
+  //   return this.get('phone');
+  // }
+  //
+  // set phone(val) {
+  //   this.set('phone', val);
+  // }
 
-  set phone(val) {
-    this.set('phone', val);
-  }
-
-  get website(): string {
-    return this.get('website');
-  }
-
-  set website(val) {
-    this.set('website', val);
-  }
+  // get website(): string {
+  //   return this.get('website');
+  // }
+  //
+  // set website(val) {
+  //   this.set('website', val);
+  // }
 
   get address_ru(): string {
     return this.get('address_ru');

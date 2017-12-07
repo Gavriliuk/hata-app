@@ -1,12 +1,13 @@
 import {IonicPage} from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
-import { Events } from 'ionic-angular';
+import { Events, ModalController} from 'ionic-angular';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Category } from '../../providers/categories';
 import { BasePage } from '../base-page/base-page';
 import { User } from '../../providers/user-service';
 import {LocalStorage} from '../../providers/local-storage';
+import {Place} from '../../providers/place-service';
 
 @IonicPage()
 @Component({
@@ -15,14 +16,26 @@ import {LocalStorage} from '../../providers/local-storage';
 })
 export class CategoriesPage extends BasePage {
   private categories: Array<Category>;
-  lang:any;
+  place: Place;
+  places: Place[];
+  lang: any;
+  audio: any[];
+  audio_ru: any;
+  audio_ro: any;
+  audio_en: any;
 
-    constructor(injector: Injector,
-                private storage: LocalStorage,
-                private events: Events,
-                private locationAccuracy: LocationAccuracy,
-                private diagnostic: Diagnostic) {
+
+  constructor(injector: Injector,
+              private storage: LocalStorage,
+              private events: Events,
+              private locationAccuracy: LocationAccuracy,
+              private diagnostic: Diagnostic,
+              public modalCtrl: ModalController) {
     super(injector);
+
+    Place.load(this.navParams).then(places => {
+      this.places = places;
+    });
 
     this.locationAccuracy.canRequest().then((canRequest: boolean) => {
 
@@ -44,9 +57,9 @@ export class CategoriesPage extends BasePage {
       }
     }).catch((err) => console.log(err));
 
-      this.storage.lang.then((val) => {
-        this.lang = val;
-      });
+    this.storage.lang.then((val) => {
+      this.lang = val;
+    });
   }
 
   enableMenuSwipe() {
@@ -91,13 +104,18 @@ export class CategoriesPage extends BasePage {
     this.refresher = refresher;
     this.loadData();
   }
-  showAlert(title,info,category) {
-    let alert = this.alertCtrl.create({
-      title: title,
-      subTitle: info,
-      buttons: ['OK']
-    });
-    alert.present();
-  }
 
+  // showAlert(title,info,category) {
+  //   let alert = this.alertCtrl.create({
+  //     title: title,
+  //     subTitle: info,
+  //     buttons: ['OK']
+  //   });
+  //   alert.present();
+  // }
+
+  openModalAddReviewRoute(title, information, center_map, waypoints) {
+    let modal = this.modalCtrl.create('AddReviewPage', {title, information, center_map, waypoints, places: this.places});
+    modal.present();
+  }
 }

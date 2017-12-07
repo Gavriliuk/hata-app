@@ -127,10 +127,10 @@ export class PlaceDetailPage extends BasePage {
     this.navigateTo('SignInPage');
   }
 
-  openAddReviewModal() {
-    let modal = this.modalCtrl.create('AddReviewPage', {place: this.place});
-    modal.present();
-  }
+  // openAddReviewModal() {
+  //   let modal = this.modalCtrl.create('AddReviewPage', {place: this.place});
+  //   modal.present();
+  // }
 
   // onLike() {
   //

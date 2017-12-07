@@ -6,7 +6,6 @@ import Parse from 'parse';
 export class Category extends Parse.Object {
 
   constructor() {
-  // constructor() {
     super('Category');
   }
 

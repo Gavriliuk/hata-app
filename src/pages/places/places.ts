@@ -76,10 +76,6 @@ export class PlacesPage extends BasePage {
     }
   };
 
-
-
-
-
   enableMenuSwipe() {
     return true;
   }

@@ -37,7 +37,7 @@ export class AddReviewPage extends BasePage {
             if(mapZoom >= 3 ){
               this.zoom = 18;
             }else if(mapZoom >= 10 ){
-              this.zoom = 15;
+              this.zoom = 16;
             }
             coordinates.forEach(data => {
               this.waypoints += "%7C" + data;

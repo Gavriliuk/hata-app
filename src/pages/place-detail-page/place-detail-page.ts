@@ -78,13 +78,15 @@ export class PlaceDetailPage extends BasePage {
     let mapZoom: any;
     let coordinates = [];
     this.waypoints = "";
-    this.zoom = 18;
+    this.zoom = 19;
     if (this.category.waypoints && this.category.waypoints !== "") {
        if(this.category.waypoints.indexOf('/') != -1){
          coordinates = this.category.waypoints.split('/');
          mapZoom = coordinates.length;
          if(mapZoom >= 3 ){
-             this.zoom = 17;
+             this.zoom = 18;
+         }else if(mapZoom >= 12 ){
+           this.zoom = 16;
          }
          coordinates.forEach(data => {
              this.waypoints += "%7C" + data;

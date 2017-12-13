@@ -42,13 +42,13 @@ export abstract class BasePage {
     this.isContentViewVisible = false;
     this.isLoadingViewVisible = true;
 
-    this.translate.get('LOADING').subscribe((loadingText: string) => {
+    // this.translate.get('LOADING').subscribe((loadingText: string) => {
 
-      this.loader = this.loadingCtrl.create({
-        content: `<p class="item">${loadingText}</p>`,
-      });
-      this.loader.present();
-    });
+    //   this.loader = this.loadingCtrl.create({
+    //     content: `<p class="item">${loadingText}</p>`,
+    //   });
+    //   this.loader.present();
+    // });
   }
 
   showContentView() {
@@ -58,7 +58,7 @@ export abstract class BasePage {
     this.isLoadingViewVisible = false;
     this.isContentViewVisible = true;
 
-    this.loader.dismiss();
+    // this.loader.dismiss();
   }
 
   showEmptyView() {
@@ -68,7 +68,7 @@ export abstract class BasePage {
     this.isContentViewVisible = false;
     this.isEmptyViewVisible = true;
 
-    this.loader.dismiss();
+    // this.loader.dismiss();
   }
 
   showErrorView() {

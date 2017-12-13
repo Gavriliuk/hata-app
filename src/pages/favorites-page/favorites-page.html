@@ -25,7 +25,7 @@
   </empty-view>
 
   <ion-list *ngIf="isContentViewVisible">
-    <ion-item *ngFor="let place of places" (click)="goToPlace(place)"
+    <ion-item *ngFor="let place of places" (tap)="goToPlace(place)"
       color="dark" no-lines>
       <ion-thumbnail item-left>
         <img src="assets/img/location.png" offset="100"

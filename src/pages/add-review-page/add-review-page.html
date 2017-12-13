@@ -1,14 +1,12 @@
 <ion-header>
   <ion-toolbar color="secondary">
     <ion-buttons start>
-      <button ion-button clear (click)="onDismiss()" icon-only>
-        <!--<span showWhen="ios,core">{{ 'CLOSE' | translate }}</span>-->
+      <button ion-button clear (tap)="onDismiss()" icon-only>
         <ion-icon name="undo" showWhen="ios,core,android"></ion-icon>
       </button>
     </ion-buttons>
     <ion-title>
       {{route.title}}
-      <!--{{ 'ADD_REVIEW' | translate }}-->
     </ion-title>
  </ion-toolbar>
 </ion-header>
@@ -41,22 +39,11 @@
 &style=feature:water%7Celement:labels.text.stroke%7Ccolor:0x17263c&size=600x350&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
            ng-reflect-lazy-image="http://maps.googleapis.com/map"
            ng-reflect-scroll-target="[object HTMLDivElement]" ng-reflect-offset="100" class="ng-lazyloaded">
-    <!--&style=feature:water%7Celement:labels.text.stroke%7Ccolor:0x17263c&size=600x350&key=AIzaSyCmfY6FUlDnldRN_Qlz-fspUiQ5O-jy8Ho"-->
 
     <div padding>
-      <button ion-button block color="primary" (click)="onDismiss()">
+      <button ion-button block color="primary" (tap)="onDismiss()">
       {{ 'OK' | translate }}
       </button>
     </div>
-    <!--<rating [(ngModel)]="review.rating"></rating>-->
-    <!--<ion-item>-->
-      <!--<ion-label color="primary" stacked>{{ 'COMMENT' | translate }}</ion-label>-->
-      <!--<ion-textarea [(ngModel)]="review.comment" rows="6"></ion-textarea>-->
-    <!--</ion-item>-->
-    <!--<div padding>-->
-      <!--<button ion-button block color="primary" (click)="onSubmit()">-->
-        <!--{{ 'SUBMIT' | translate }}-->
-      <!--</button>-->
-    <!--</div>-->
   </ion-list>
 </ion-content>

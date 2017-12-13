@@ -4,7 +4,6 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>{{ 'ROUTES' | translate }}</ion-title>
-    <!-- <ion-title>{{ 'CATEGORIES' | translate }}</ion-title> -->
   </ion-navbar>
 </ion-header>
 
@@ -26,7 +25,7 @@
 
   <div *ngIf="isContentViewVisible" class="divCategory">
     <ion-item *ngFor="let category of categories" color="dark" no-lines class="itemCategory">
-      <div (click)="goToPlaces(category)">
+      <div (tap)="goToPlaces(category)">
       <ion-avatar item-start class="avatarCategory">
         <img src="assets/img/tag.png" offset="100"
              [lazyLoad]="category.imageThumb.url()"
@@ -34,9 +33,7 @@
       </ion-avatar>
       <h2 class="bold textCategory" ion-text color="secondaru">{{ category["title_"+lang] }}</h2>
       </div>
-        <ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="openModalAddReviewRoute(category['title_'+lang],category['information_'+lang],category.center_map,category.waypoints)" item-end></ion-icon>
-        <!--<ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="openModal(category,{charNum: 0})" item-end></ion-icon>-->
-        <!--<ion-icon class="iconCategory" name="ios-information-circle-outline" (click)="showAlert(category['title_'+lang], category['information_'+lang],category)" item-end></ion-icon>-->
+        <ion-icon class="iconCategory" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(category['title_'+lang],category['information_'+lang],category.center_map,category.waypoints)" item-end></ion-icon>
     </ion-item>
   </div>
 

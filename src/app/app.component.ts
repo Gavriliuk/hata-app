@@ -68,10 +68,10 @@ export class MyApp {
         { title: values.SETTINGS, icon: 'settings', component: 'SettingsPage' },
       ];
 
-      if (User.getCurrentUser()) {
-        this.pages.push({ title: values.PROFILE, icon: 'contact', component: 'ProfilePage' })
-        this.pages.push({ title: values.LOGOUT, icon: 'exit', component: null })
-      }
+      // if (User.getCurrentUser()) {
+      //   this.pages.push({ title: values.PROFILE, icon: 'contact', component: 'ProfilePage' })
+      //   this.pages.push({ title: values.LOGOUT, icon: 'exit', component: null })
+      // }
 
     });
   }
@@ -105,7 +105,7 @@ export class MyApp {
 
       this.storage.skipIntroPage.then((skipIntroPage) => {
         //--------Open First Page Map---------------
-          this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
+        this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
       }).catch((e) => console.log(e));
 
       this.buildMenu();
@@ -163,27 +163,27 @@ export class MyApp {
 
   openPage(page) {
 
-    if ((page.component === 'FavoritesPage' || page.component === 'AddPlacePage') && !User.getCurrentUser()) {
+    // if ((page.component === 'FavoritesPage' || page.component === 'AddPlacePage') && !User.getCurrentUser()) {
 
-      this.nav.push('SignInPage');
+    //   this.nav.push('SignInPage');
 
-    } else if (page.component === null && User.getCurrentUser()) {
+    // } else if (page.component === null && User.getCurrentUser()) {
 
-      User.logout().then(success => {
+    //   User.logout().then(success => {
 
-        let toast = this.toastCtrl.create({
-          message: this.trans.LOGGED_OUT,
-          duration: 3000
-        });
+    //     let toast = this.toastCtrl.create({
+    //       message: this.trans.LOGGED_OUT,
+    //       duration: 3000
+    //     });
 
-        toast.present();
+    //     toast.present();
 
-        this.user = null;
-        this.buildMenu();
-      }, error => console.log(error));
+    //     this.user = null;
+    //     this.buildMenu();
+    //   }, error => console.log(error));
 
-    } else {
-      this.nav.setRoot(page.component);
-    }
+    // } else {
+    this.nav.setRoot(page.component);
+    // }
   }
 }

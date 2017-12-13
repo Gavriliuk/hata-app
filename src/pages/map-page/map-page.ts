@@ -18,12 +18,16 @@ import {
   GoogleMaps,
   GoogleMap,
   GoogleMapsEvent,
-  GoogleMapOptions,
+  // GoogleMapOptions,
   CameraPosition,
-  MarkerOptions,
-  Marker, LatLngBounds, Circle,
-  LatLng, ILatLng, GeocoderRequest,
-  Geocoder, GeocoderResult
+  // MarkerOptions,
+  // Marker,
+  LatLngBounds,
+  // Circle,
+  LatLng, ILatLng,
+  // GeocoderRequest,
+  // Geocoder,
+  // GeocoderResult
 } from '@ionic-native/google-maps';
 
 @IonicPage()
@@ -57,6 +61,7 @@ export class MapPage extends BasePage {
               private platform: Platform,
               private cdr: ChangeDetectorRef) {
 
+
     super(injector);
 
     this.events.subscribe('onMenuOpened', (e) => {
@@ -75,6 +80,70 @@ export class MapPage extends BasePage {
       this.lang = val;
       console.log("LanguageMap: ", val);
     });
+
+    //----
+    this.isViewLoaded = true;
+
+        if (this.platform.is('cordova')) {
+          console.log("Init cordova");
+
+          this.showLoadingView();
+          this.map = new GoogleMap('map', {
+            styles: MapStyle.dark()
+          });
+
+
+          this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
+
+            this.map.setMyLocationEnabled(true);
+            console.log("Init Gmap");
+
+            this.storage.unit.then(unit => {
+              this.params.unit = unit;
+
+              const options: GeolocationOptions = {
+                enableHighAccuracy: true,
+                timeout: 7000
+              };
+
+              this.geolocation.getCurrentPosition(options).then(pos => {
+
+                this.params.location = pos.coords;
+                this.loadData();
+
+              }, error => {
+                this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
+                this.showErrorView();
+              });
+              this.onMove();
+            });
+
+          });
+
+          this.storage.mapStyle.then(mapStyle => {
+            this.map.setMapTypeId(mapStyle);
+          });
+
+          this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
+
+            if (this.isViewLoaded) {
+              let position: CameraPosition<ILatLng> = this.map.getCameraPosition();
+              let target: ILatLng = position.target;
+
+              this.params.location = {
+                latitude: target.lat,
+                longitude: target.lng
+              };
+
+              this.showLoadingView();
+              this.onReload();
+            }
+          });
+
+          this.map.setMyLocationEnabled(true);
+        } else {
+          console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
+        }
   }
 
   onPlayerReady(api) {
@@ -100,68 +169,7 @@ export class MapPage extends BasePage {
   }
 
   ionViewDidLoad() {
-    this.isViewLoaded = true;
 
-    if (this.platform.is('cordova')) {
-      console.log("Init cordova");
-
-      this.showLoadingView();
-      this.map = new GoogleMap('map', {
-        styles: MapStyle.dark()
-      });
-
-
-      this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
-
-        this.map.setMyLocationEnabled(true);
-        console.log("Init Gmap");
-
-        this.storage.unit.then(unit => {
-          this.params.unit = unit;
-
-          const options: GeolocationOptions = {
-            enableHighAccuracy: true,
-            timeout: 7000
-          };
-
-          this.geolocation.getCurrentPosition(options).then(pos => {
-
-            this.params.location = pos.coords;
-            this.loadData();
-
-          }, error => {
-            this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
-            this.showErrorView();
-          });
-          this.onMove();
-        });
-
-      });
-
-      this.storage.mapStyle.then(mapStyle => {
-        this.map.setMapTypeId(mapStyle);
-      });
-
-      this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
-
-        if (this.isViewLoaded) {
-          let position: CameraPosition<ILatLng> = this.map.getCameraPosition();
-          let target: ILatLng = position.target;
-
-          this.params.location = {
-            latitude: target.lat,
-            longitude: target.lng
-          };
-
-          this.showLoadingView();
-          this.onReload();
-        }
-      });
-
-      this.map.setMyLocationEnabled(true);
-    } else {
-      console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
-    }
   }
   onMove() {
 // Options: throw an error if no update is received every 30 seconds.

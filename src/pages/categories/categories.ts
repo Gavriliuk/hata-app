@@ -67,7 +67,7 @@ export class CategoriesPage extends BasePage {
   }
 
   ionViewDidLoad() {
-    this.showLoadingView();
+    // this.showLoadingView();
     this.loadData();
   }
 

@@ -1,7 +1,7 @@
 import { IonicPage } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { ViewController } from 'ionic-angular';
-import { Review } from '../../providers/review-service';
+// import { Review } from '../../providers/review-service';
 import { BasePage } from '../base-page/base-page';
 import {LocalStorage} from '../../providers/local-storage';
 

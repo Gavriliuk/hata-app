@@ -1,3 +1,5 @@
+@import "videogular2_scripts/fonts/videogular.scss";
+
 page-place-detail-page {
   ion-slides {
     height: auto;
@@ -61,5 +63,4 @@ page-place-detail-page {
   .cardHeader{
     padding:8px;
   }
-  @import "../../../node_modules/videogular2/fonts/videogular.css";
 }

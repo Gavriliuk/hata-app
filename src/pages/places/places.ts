@@ -7,7 +7,7 @@ import {Category} from '../../providers/categories';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
 import {LocalStorage} from '../../providers/local-storage';
 import {ChangeDetectorRef} from '@angular/core';
-import {Platform, Events, Slides} from 'ionic-angular';
+import {Platform, Events} from 'ionic-angular';
 
 import {MapStyle} from '../../providers/map-style';
 import {

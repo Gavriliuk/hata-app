@@ -41,13 +41,13 @@
       <div class="caption">
         <h2 ion-text color="light">{{ 'SLIDE_FIVE' | translate }}</h2>
       </div>
-      <button ion-button large icon-right color="dark" (click)="goToHome()">
+      <button ion-button large icon-right color="dark" (tap)="goToHome()">
         {{ "GET_STARTED" | translate }}
         <ion-icon name="arrow-forward"></ion-icon>
       </button>
     </ion-slide>
   </ion-slides>
-  <button class="skip-button" ion-button clear block color="light" (click)="goToHome()">
+  <button class="skip-button" ion-button clear block color="light" (tap)="goToHome()">
     {{ "SKIP" | translate }}
   </button>
 </ion-content>

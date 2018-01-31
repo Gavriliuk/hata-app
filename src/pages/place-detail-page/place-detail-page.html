@@ -43,8 +43,8 @@
   <ion-card class="mapObjectPlace">
     <img src="assets/img/avatar.png" offset="100"
       lazyLoad="http://maps.googleapis.com/maps/api/staticmap?center={{category.center_map}}&sensor=false
-&path=color:0xC401FF%7Cweight:5{{waypoints}}
-&markers=color:0xFFFF00%7C{{place.location.latitude}},{{place.location.longitude}}{{markers}}
+&path=color:0xff0cf4%7Cweight:7{{waypoints}}&markers=color:0x1af768%7C{{category.start_route}}
+&markers=color:0xFFFF00%7C{{place.location.latitude}},{{place.location.longitude}}{{markers}}&markers=color:0xff0000%7C{{category.end_route}}
 &zoom={{zoom}}&format=png&maptype=roadmap&style=element:geometry%7Ccolor:0x242f3e
 &style=element:labels.text.fill%7Ccolor:0x746855&style=element:labels.text.stroke%7Ccolor:0x242f3e
 &style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xd59563

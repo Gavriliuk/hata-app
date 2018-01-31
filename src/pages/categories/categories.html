@@ -33,7 +33,7 @@
       </ion-avatar>
       <h2 class="bold textCategory" ion-text color="secondaru">{{ category["title_"+lang] }}</h2>
       </div>
-        <ion-icon class="iconCategory" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(category['title_'+lang],category['information_'+lang],category.center_map,category.waypoints)" item-end></ion-icon>
+        <ion-icon class="iconCategory" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(category['title_'+lang],category['information_'+lang],category.center_map,category.waypoints,category.start_route,category.end_route)" item-end></ion-icon>
     </ion-item>
   </div>
 

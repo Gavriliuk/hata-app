@@ -114,8 +114,8 @@ export class CategoriesPage extends BasePage {
   //   alert.present();
   // }
 
-  openModalAddReviewRoute(title, information, center_map, waypoints) {
-    let modal = this.modalCtrl.create('AddReviewPage', {title, information, center_map, waypoints, places: this.places});
+  openModalAddReviewRoute(title, information, center_map, waypoints, start_route, end_route) {
+    let modal = this.modalCtrl.create('AddReviewPage', {title, information, center_map,start_route, end_route, waypoints, places: this.places});
     modal.present();
   }
 }

@@ -29,15 +29,15 @@ export class AddReviewPage extends BasePage {
        let mapZoom: any;
        let coordinates = [];
        this.waypoints = "";
-       this.zoom = 20;
+       this.zoom = 17;
        if (this.route.waypoints && this.route.waypoints !== "") {
           if(this.route.waypoints.indexOf('/') != -1){
             coordinates = this.route.waypoints.split('/');
             mapZoom = coordinates.length;
             if(mapZoom >= 3 ){
-              this.zoom = 18;
-            }else if(mapZoom >= 10 ){
               this.zoom = 16;
+            }else if(mapZoom >= 10 ){
+              this.zoom = 15;
             }
             coordinates.forEach(data => {
               this.waypoints += "%7C" + data;
@@ -51,7 +51,7 @@ export class AddReviewPage extends BasePage {
        this.route.places.forEach(place => {
          let routeTitle = place.category["title_"+this.lang];
          if (this.route.title == routeTitle) {
-            this.markers += "&markers=size:mid%7Ccolor:red%7C" + place.location.latitude + "," + place.location.longitude;
+            this.markers += "&markers=size:mid%7Ccolor:0xff8f2e%7C" + place.location.latitude + "," + place.location.longitude;
          }
        });
     });

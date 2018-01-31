@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.innapp.nearmeguide" version="4.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.innapp.nearmeguide" version="4.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Dromos</name>
     <description />
     <author email="valentinbragaru@gmail.com" href="http://innapp.com/">QuanLabs</author>
@@ -92,29 +92,40 @@
     <allow-navigation href="http://192.168.1.6:8100" />
     <allow-navigation href="http://192.168.1.100:8100" />
     <allow-navigation href="http://192.168.1.101:8100" />
-    <engine name="ios" spec="4.5.4" />
-    <plugin name="cordova-plugin-device" spec="1.1.6" />
-    <plugin name="cordova-plugin-whitelist" spec="1.3.2" />
-    <plugin name="cordova-plugin-splashscreen" spec="4.0.3" />
-    <plugin name="ionic-plugin-keyboard" spec="2.2.1" />
-    <plugin name="cordova-plugin-geolocation" spec="2.4.3">
+    <allow-navigation href="http://192.168.1.101:8101" />
+    <plugin name="cordova-plugin-device" spec="~1.1.6" />
+    <plugin name="cordova-plugin-splashscreen" spec="~4.0.3" />
+    <plugin name="cordova-plugin-statusbar" spec="~2.2.3" />
+    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+    <plugin name="cordova-plugin-geolocation" spec="~2.4.3">
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value=" " />
     </plugin>
-    <plugin name="cordova-plugin-google-analytics" spec="1.8.2" />
-    <plugin name="cordova-plugin-inappbrowser" spec="1.7.1" />
-    <plugin name="cordova.plugins.diagnostic" spec="3.6.5" />
-    <plugin name="cordova-plugin-headercolor" spec="1.0.0" />
-    <plugin name="cordova-plugin-browsertab" spec="0.2.0" />
+    <plugin name="cordova-plugin-camera" spec="~2.4.1">
+        <variable name="CAMERA_USAGE_DESCRIPTION" value=" " />
+        <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value=" " />
+    </plugin>
+    <plugin name="cordova-plugin-image-picker" spec="~1.1.3">
+        <variable name="PHOTO_LIBRARY_USAGE_DESCRIPTION" value=" " />
+    </plugin>
+    <plugin name="cordova-plugin-google-analytics" spec="~1.8.2" />
+    <plugin name="cordova-plugin-x-socialsharing" spec="~5.1.8" />
+    <plugin name="cordova.plugins.diagnostic" spec="~3.6.5" />
+    <plugin name="cordova-plugin-admob-free" spec="~0.9.0" />
+    <plugin name="cordova-plugin-headercolor" spec="~1.0.0" />
+    <plugin name="cordova-plugin-browsertab" spec="~0.2.0" />
     <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" spec="~3.2.2" />
-    <plugin name="cordova-plugin-request-location-accuracy" spec="~2.2.1" />
-    <plugin name="cordova-plugin-statusbar" spec="git+https://github.com/apache/cordova-plugin-statusbar.git" />
-    <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-disable-ios11-statusbar" spec="~1.0.0" />
+    <plugin name="cordova-plugin-request-location-accuracy" spec="~2.2.1" />
+    <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
+    <allow-navigation href="http://10.10.16.68:8100" />
     <plugin name="cordova-plugin-googlemaps" spec="^2.1.1">
-        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyDwqcBVvGUTpPuXd5S3EP7Bbd7gfOHm7Vw" />
-        <variable name="API_KEY_FOR_IOS" value="AIzaSyDwqcBVvGUTpPuXd5S3EP7Bbd7gfOHm7Vw" />
+        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyA9tB4R06hNpWMD6gHe5Pnsp6laNmYYtX8" />
+        <variable name="API_KEY_FOR_IOS" value="AIzaSyA9tB4R06hNpWMD6gHe5Pnsp6laNmYYtX8" />
         <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="Show your location on the map" />
         <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="Trace your location on the map" />
     </plugin>
-    <allow-navigation href="http://192.168.1.101:8101" />
+    <plugin name="cordova-plugin-inappbrowser" spec="1.7.1" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
+    <engine name="ios" spec="4.5.4" />
+    <engine name="android" spec="6.3.0" />
 </widget>

@@ -266,12 +266,12 @@ export class Place extends Parse.Object {
     this.set('category', val);
   }
 
-  get image() {
-    return this.get('image');
+  get images() {
+    return this.get('images');
   }
 
-  set image(val) {
-    this.set('image', val);
+  set images(val) {
+    this.set('images', val);
   }
 
   get location() {
@@ -284,18 +284,6 @@ export class Place extends Parse.Object {
       longitude: val.lng
     });
     this.set('location', geoPoint);
-  }
-
-  get imageTwo() {
-    return this.get('imageTwo');
-  }
-
-  get imageThree() {
-    return this.get('imageThree');
-  }
-
-  get imageFour() {
-    return this.get('imageFour');
   }
 
   get audio_ru() {

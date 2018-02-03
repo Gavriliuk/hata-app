@@ -9,12 +9,13 @@ export class AppConfig {
     //  return 'http://46.101.144.21:1337/parse/';
 
     //----------Setting Ngrok server Valentin-----------------------------
-     return 'https://perussi.serveo.net/parse/';
+    //  return 'https://perussi.serveo.net/parse/';
+     return 'https://erepo.serveo.net/parse/';
   }
 
   /* Parse App ID  */
   public static get APP_ID(): string {
-    return 'myAppId';
+    return 'dromos-cms';
   }
 
   /* AdMob Banner ID  */

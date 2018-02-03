@@ -72,7 +72,7 @@ export class PlaceDetailPage extends BasePage {
 
     this.place = this.navParams.data.place;
     this.unit = preference.unit;
-    this.images = [];
+    this.images = this.place.images;
     this.places = this.navParams.data.places;
     this.category = this.places[0].category;
     let mapZoom: any;
@@ -103,22 +103,6 @@ export class PlaceDetailPage extends BasePage {
     this.audio_ru = this.navParams.data.place.audio_ru.url();
     this.audio_ro = this.navParams.data.place.audio_ro.url();
     this.audio_en = this.navParams.data.place.audio_en.url();
-
-    if (this.place.image) {
-      this.images.push(this.place.image);
-    }
-
-    if (this.place.imageTwo) {
-      this.images.push(this.place.imageTwo);
-    }
-
-    if (this.place.imageThree) {
-      this.images.push(this.place.imageThree);
-    }
-
-    if (this.place.imageFour) {
-      this.images.push(this.place.imageFour);
-    }
   }
 
   enableMenuSwipe() {

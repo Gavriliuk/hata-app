@@ -31,3 +31,4 @@ ionic cordova prepare
 --> ionic cordova build android --release
 --> jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ./Dromos.keystore ./platforms/android/build/outputs/apk/android-release-unsigned.apk Dromos
 --> /Users/andreycernenco/Library/Android/sdk/build-tools/27.0.3/zipalign -v 4 ./platforms/android/build/outputs/apk/android-release-unsigned.apk Dromos.apk
+ssh -R incubo:80:localhost:8888 serveo.net

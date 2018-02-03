@@ -8,6 +8,14 @@
 </ion-header>
 
 <ion-content class="mapTop">
+  <!--<ol>-->
+
+    <!--<li *ngFor="let story of stories[lang]">{{story.year}}:{{story.audio.url()}}-->
+      <!--<audio controls>-->
+        <!--<source src="{{ story.audio.url() }}" type="audio/mpeg">-->
+      <!--</audio>-->
+    <!--</li>-->
+  <!--</ol>-->
   <div id="map" class="map" #map showWhen="android,ios"></div>
   <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core">
   </empty-view>

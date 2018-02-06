@@ -9,13 +9,15 @@
 
 <ion-content class="mapTop">
   <!--<ol>-->
-
     <!--<li *ngFor="let story of stories[lang]">{{story.year}}:{{story.audio.url()}}-->
       <!--<audio controls>-->
         <!--<source src="{{ story.audio.url() }}" type="audio/mpeg">-->
       <!--</audio>-->
     <!--</li>-->
   <!--</ol>-->
+
+
+
   <div id="map" class="map" #map showWhen="android,ios"></div>
   <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core">
   </empty-view>
@@ -36,8 +38,8 @@
 
         <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
       </vg-controls>
-      <audio #media [vgMedia]="media" id="myAudio" preload="auto" autoplay>
-        <source *ngFor="let audio of nearAudio" [src]="audio" type="audio/mp3">
+      <audio #media [vgMedia]="media" id="myAudio" preload="auto">
+        <source *ngFor="let audio of currentAudio" [src]="audio" type="audio/mp3">
       </audio>
     </vg-player>
 

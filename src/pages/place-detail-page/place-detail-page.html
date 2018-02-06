@@ -24,10 +24,13 @@
   </vg-player>
 
   <ion-slides pager>
-    <ion-slide *ngFor="let image of images">
+    <ion-slide *ngFor="let image of imageURL">
       <img src="assets/img/avatar.png" offset="100"
-           [lazyLoad]="image.url()"
+           [lazyLoad]="image[0]"
            [scrollTarget]="container.getScrollElement()" />
+      <!--<img src="assets/img/avatar.png" offset="100"-->
+           <!--[lazyLoad]="image.url()"-->
+           <!--[scrollTarget]="container.getScrollElement()" />-->
     </ion-slide>
   </ion-slides>
 

@@ -55,4 +55,18 @@ export class LocalStorage {
     this.storage.set('lang', val);
   }
 
+  get listenedPOI(): Promise<any> {
+    return this.storage.get('listenedPOI');
+  }
+  set listenedPOI(val) {
+    this.storage.set('listenedPOI', val);
+  }
+  get listenedStoryIndex(): Promise<any> {
+    return this.storage.get('listenedStoryIndex');
+  }
+  set listenedStoryIndex(val) {
+    this.storage.set('listenedStoryIndex', val);
+  }
+
+
 }

@@ -89,7 +89,7 @@ export class Place extends Parse.Object {
     });
   }
 
-  static loadNearPlace(params): Promise<Place> {
+  static loadNearPlaces(params): Promise<Place[]> {
 
     return new Promise((resolve, reject) => {
 
@@ -108,9 +108,9 @@ export class Place extends Parse.Object {
       // query.include('category');
       query.equalTo('isApproved', true);
 
-      // if (params.category) {
-      //   query.equalTo('category', params.category);
-      // }
+      if (params.except) {
+        query.notContainedIn("objectId", params.except);
+      }
       //
       // if (params.search && params.search !== '') {
       //   query.contains('canonical', params.search);

@@ -11,7 +11,7 @@ import {ChangeDetectorRef} from '@angular/core';
 import 'rxjs/add/operator/filter'
 import {Category} from '../../providers/categories';
 import Parse from 'parse';
-
+// import { Slides } from 'ionic-angular';
 
 // import {GoogleMaps,GoogleMap,GoogleMapsEvent,
 //         CameraPosition,GeocoderResult,Polyline,PolylineOptions,LatLng,
@@ -42,13 +42,13 @@ export class MapPage extends BasePage {
 
   params: any = {};
   places: Place[];
-  stories: any = {'ro':[],'ru':[],'en':[]};
+  stories: any = {'ro': [], 'ru': [], 'en': []};
   map: GoogleMap;
   isViewLoaded: boolean;
   audio: any;
-  nearAudio: any[];
-  listenedPOI: any[];
-  nearAudioIndex:any = 0;
+  currentAudio: any[];
+  listenedPOI: any = [];
+  listenedStoryIndex: any = 0;
   api: any;
   lang: any;
   category: Category;
@@ -67,9 +67,28 @@ export class MapPage extends BasePage {
               private platform: Platform,
               private cdr: ChangeDetectorRef) {
 
-
     super(injector);
-//TODO init nearAudioIndex,listenedPOI from localstorage
+    this.storage = storage;
+
+
+    this.storage.listenedPOI.then((listenedPOI) => {
+      this.listenedPOI = listenedPOI || [];
+    }).catch((e) => {
+      console.log(e)
+    });
+
+    this.storage.listenedStoryIndex.then((listenedStoryIndex) => {
+      this.listenedStoryIndex = listenedStoryIndex || 0;
+      this.loadStories();
+    }).catch((e) => {
+      console.log(e)
+    });
+
+    this.storage.lang.then((val) => {
+      this.lang = val;
+      console.log("LanguageMap: ", val);
+    });
+
     this.events.subscribe('onMenuOpened', (e) => {
       if (this.map) {
         this.map.setClickable(false);
@@ -82,14 +101,8 @@ export class MapPage extends BasePage {
       }
     });
 
-    this.storage.lang.then((val) => {
-      this.lang = val;
-      console.log("LanguageMap: ", val);
-    });
-
-    //----
     this.isViewLoaded = true;
-    this.loadStories();
+
     if (this.platform.is('cordova')) {
       console.log("Init cordova");
 
@@ -161,48 +174,60 @@ export class MapPage extends BasePage {
     );
     this.api.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
-        //TODO save nearAudioIndex in localstorage
-        const options: GeolocationOptions = {
-          enableHighAccuracy: true,
-          timeout: 7000
-        };
-
-        this.geolocation.getCurrentPosition(options).then(pos => {
-          let paramsClone = {...this.params};
-          this.storage.radius.then((val) => {
-            paramsClone.distance = val;
-            paramsClone.location = pos.coords;
-
-            Place.loadNearPlace(paramsClone).then(place => {
-              if (place && place[0]) {
-                let myDistance = place[0].distance(paramsClone.location, 'none');
-                let radius = place[0].attributes.radius;
-                let audioURL = place[0]['audio_' + this.lang].url();
-                if (this.nearAudio[0] != audioURL && myDistance <= radius && this.listenedPOI.indexOf(audioURL)===-1) {
-                  this.listenedPOI.push(audioURL);
-                  //TODO save listenedPOI in localstorage
-                  this.nearAudio = [audioURL];
-                  this.api.getDefaultMedia().loadMedia();
-                }else{
-                  this.nearAudio = [this.getFileURL(this.stories[this.lang][++this.nearAudioIndex].audio.name())];
-                  this.api.getDefaultMedia().loadMedia();
-                }
-              }else{
-                this.nearAudio = [this.getFileURL(this.stories[this.lang][++this.nearAudioIndex].audio.name())];
-                this.api.getDefaultMedia().loadMedia();
-              }
-            });
-          });
-        }, error => {
-          //----
-          this.nearAudio = [this.getFileURL(this.stories[this.lang][++this.nearAudioIndex].audio.name())];
-          this.api.getDefaultMedia().loadMedia();
-          // this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
-          // this.showErrorView();
-        });
+        this.findAndPlayNextAudio();
 
       }
     );
+  }
+
+  private findAndPlayNextAudio() {
+    const options: GeolocationOptions = {
+      enableHighAccuracy: true,
+      timeout: 7000
+    };
+
+    this.geolocation.getCurrentPosition(options).then(pos => {
+      let paramsClone = {...this.params};
+      this.storage.radius.then((val) => {
+        paramsClone.distance = val;
+        paramsClone.location = pos.coords;
+        //TODO take from localstorage
+        paramsClone.unit = "km";
+        paramsClone.limit = 5;
+        paramsClone.except = this.listenedPOI;
+
+        Place.loadNearPlaces(paramsClone).then(placesInRadius => {
+          if (!placesInRadius) {
+            this.playNextStory();
+          }else{
+            for (let i = 0; i < placesInRadius.length; i++) {
+              let myDistance = placesInRadius[i].distance(paramsClone.location, 'none');
+              let radius = placesInRadius[i].attributes.radius;
+              let audioPOIName = placesInRadius[i]['audio_' + this.lang].name();
+              let audioPOIURL = this.getFileURL(audioPOIName);
+
+              if (myDistance <= radius && this.listenedPOI.indexOf(placesInRadius[i].id) == -1) {
+                this.currentAudio = [audioPOIURL];
+                this.api.getDefaultMedia().loadMedia();
+                this.listenedPOI.push(placesInRadius[i].id);
+                this.storage.listenedPOI = this.listenedPOI;
+                return;
+              }
+            }
+              this.playNextStory();
+          }
+        });
+      });
+    }, error => {
+      this.playNextStory();
+    });
+  }
+
+  private playNextStory() {
+    //TODO check if last story
+    this.currentAudio = [this.getFileURL(this.stories[this.lang][++this.listenedStoryIndex].audio.name())];
+    this.api.getDefaultMedia().loadMedia();
+    this.storage.listenedStoryIndex = this.listenedStoryIndex;
   }
 
   enableMenuSwipe() {
@@ -222,125 +247,34 @@ export class MapPage extends BasePage {
 
   }
 
-//   onMove() {
-// // Options: throw an error if no update is received every 30 seconds.
-//     this.geolocation.watchPosition({
-//       maximumAge: 3000,
-//       timeout: 3000,
-//       enableHighAccuracy: true
-//     }).filter((p) => p.coords !== undefined).subscribe(position => {
-//       let paramsClone = {...this.params};
-//       this.storage.radius.then((val) => {
-//         paramsClone.distance = val;
-//         paramsClone.location = position.coords;
-//
-//         Place.loadNearPlace(paramsClone).then(place => {
-//           if (place && place[0]) {
-//             let myDistance = place[0].distance(paramsClone.location, 'none');
-//             let radius = place[0].attributes.radius;
-//             let audioURL = place[0]['audio_' + this.lang].url();
-//             if (this.nearAudio[0] != audioURL && myDistance <= radius) {
-//               this.nearAudio = [audioURL];
-//               this.api.getDefaultMedia().loadMedia();
-//             }
-//           }
-//         });
-//       });
-//     });
-//   }
-
   goToPlace(place) {
     this.navigateTo('PlaceDetailPage', place);
   }
 
-  // onSearchAddress(event: any) {
-  //   if (this.platform.is('cordova')) {
-  //     let query = event.target.value;
-  //     let request: GeocoderRequest = {
-  //       address: query
-  //     };
-  //     let geocoder = new Geocoder;
-  //     geocoder.geocode(request).then((results: GeocoderResult) => {
-  //
-  //       let target: LatLng = new LatLng(
-  //         results[0].position.lat,
-  //         results[0].position.lng
-  //       );
-  //       let position: CameraPosition<ILatLng> = {
-  //         target: target,
-  //         zoom: 18,
-  //         tilt: 30
-  //       };
-  //
-  //       this.map.moveCamera(position);
-  //
-  //       this.params.location = {
-  //         latitude: target.lat,
-  //         longitude: target.lng
-  //       };
-  //       this.showLoadingView();
-  //       this.onReload();
-  //     });
-  //   } else {
-  //     console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
-  //   }
-  // }
   loadStories() {
     Story.load().then(data => {
-      // var formatedStories=
-      data.forEach((story)=>{
-        Object.keys(this.stories).forEach((lang)=>{
-          story['audios_'+lang].forEach((audio)=>{
-            var tempObject:any={};
-            tempObject.audio=audio;
-            tempObject.year=story.year;
+      data.forEach((story) => {
+        Object.keys(this.stories).forEach((lang) => {
+          story['audios_' + lang].forEach((audio) => {
+            var tempObject: any = {};
+            tempObject.audio = audio;
+            tempObject.year = story.year;
             this.stories[lang].push(tempObject);
           })
         })
       })
-      // this.stories = data;
-      // this.stories = data.map((story)=>{
-      //   var fs={};
-      //   fs[story.year]=story;
-      //   return fs;
-      // });
-      let fileName = this.stories['ru'][this.nearAudioIndex].audio.name();
-      this.nearAudio = [this.getFileURL(fileName)];
+      //TODO brat tekushchii yazyk
+      let fileName = this.stories['ru'][this.listenedStoryIndex].audio.name();
+      this.currentAudio = [this.getFileURL(fileName)];
       this.api.getDefaultMedia().loadMedia();
     });
-
   }
 
-  getFileURL(fileName){
-    return Parse.serverURL+'files/'+Parse.applicationId+'/'+fileName;
+  getFileURL(fileName) {
+    return Parse.serverURL + 'files/' + Parse.applicationId + '/' + fileName;
   }
 
   loadData() {
-    // let paramsClone = {...this.params};
-    // this.storage.radius.then((val) => {
-    //   paramsClone.distance = val;
-    //   Place.loadNearPlace(paramsClone).then(place => {
-    //     if (place && place[0]) {
-    //       let myDistance = place[0].distance(this.params.location, 'none');
-    //       let radius = place[0].radius;
-    //       // let radius = place[0].attributes.radius;
-    //       if (myDistance <= radius) {
-    //         this.storage.lang.then((val) => {
-    //           this.lang = val;
-    //           this.nearAudio = [];
-    //           if (this.lang == "ru") {
-    //             this.nearAudio = [place[0].audio_ru.url()];
-    //           } else if (this.lang == "ro") {
-    //             this.nearAudio = [place[0].audio_ro.url()];
-    //           } else {
-    //             this.nearAudio = [place[0].audio_en.url()];
-    //           }
-    //         })
-    //       }
-    //     }
-    //   });
-    // });
-
     Category.load().then(data => {
       let num = 1;
       data.forEach(category => {
@@ -458,21 +392,4 @@ export class MapPage extends BasePage {
   ngAfterViewChecked(): void {
     this.cdr.detectChanges();
   }
-
-  // onSearchButtonTapped() {
-  //   if (this.platform.is('cordova')) {
-  //     this.map.getCameraPosition().then(camera => {
-  //       let position: LatLng = <LatLng>camera.target;
-  //
-  //       this.params.location = {
-  //         latitude: position.lat,
-  //         longitude: position.lng
-  //       };
-  //       this.showLoadingView();
-  //       this.onReload();
-  //     });
-  //   } else {
-  //     console.warn('Native: tried calling GoogleMaps.getCameraPosition, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
-  //   }
-  // }
 }

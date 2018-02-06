@@ -11,6 +11,7 @@ import {BrowserTab} from '@ionic-native/browser-tab';
 import {LaunchNavigator} from '@ionic-native/launch-navigator';
 import {BasePage} from '../base-page/base-page';
 import {ChangeDetectorRef} from '@angular/core';
+import Parse from 'parse';
 
 @IonicPage()
 @Component({
@@ -18,7 +19,7 @@ import {ChangeDetectorRef} from '@angular/core';
   templateUrl: 'place-detail-page.html'
 })
 export class PlaceDetailPage extends BasePage {
-  params: any = {};
+  params: any={};
   places: Place[];
   images: Array<any>;
   audio: any[];
@@ -33,6 +34,7 @@ export class PlaceDetailPage extends BasePage {
   markers: any;
   waypoints:any;
   zoom:any;
+  imageURL: any=[];
 
   constructor(injector: Injector,
               private modalCtrl: ModalController,
@@ -72,7 +74,17 @@ export class PlaceDetailPage extends BasePage {
 
     this.place = this.navParams.data.place;
     this.unit = preference.unit;
-    this.images = this.place.images;
+
+//TODO add image fileURL (podstaviti formulu urlServera i name img kak s videom)
+    let imagesArray = this.place.images;
+    imagesArray.forEach(data => {
+      let fileName = data.name();
+ console.log("fileName :",fileName);
+      this.imageURL.push([this.getFileURL(fileName)]);
+
+    });
+ console.log("imageName :",this.imageURL);
+    // this.images = this.place.images;
     this.places = this.navParams.data.places;
     this.category = this.places[0].category;
     let mapZoom: any;
@@ -111,6 +123,10 @@ export class PlaceDetailPage extends BasePage {
 
   openSignUpModal() {
     this.navigateTo('SignInPage');
+  }
+
+  getFileURL(fileName){
+    return Parse.serverURL+'files/'+Parse.applicationId+'/'+fileName;
   }
 
   // openAddReviewModal() {

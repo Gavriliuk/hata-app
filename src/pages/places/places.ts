@@ -160,7 +160,7 @@ export class PlacesPage extends BasePage {
         paramsClone.distance = val;
         paramsClone.location = position.coords;
 
-        Place.loadNearPlace(paramsClone).then(place => {
+        Place.loadNearPlaces(paramsClone).then(place => {
           if (place && place[0]) {
             let myDistance = place[0].distance(paramsClone.location, 'none');
             let radius = place[0].attributes.radius;

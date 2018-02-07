@@ -1,6 +1,6 @@
 import {IonicPage} from 'ionic-angular';
 import {Component, Injector} from '@angular/core';
-import {Platform, Events} from 'ionic-angular';
+import {Platform, Events, Slides} from 'ionic-angular';
 import {Place} from '../../providers/place-service';
 import {Story} from '../../providers/stories';
 import {MapStyle} from '../../providers/map-style';
@@ -11,7 +11,7 @@ import {ChangeDetectorRef} from '@angular/core';
 import 'rxjs/add/operator/filter'
 import {Category} from '../../providers/categories';
 import Parse from 'parse';
-// import { Slides } from 'ionic-angular';
+import {ViewChild} from '@angular/core';
 
 // import {GoogleMaps,GoogleMap,GoogleMapsEvent,
 //         CameraPosition,GeocoderResult,Polyline,PolylineOptions,LatLng,
@@ -40,6 +40,9 @@ import {
 })
 export class MapPage extends BasePage {
 
+  @ViewChild(Slides) slides: Slides;
+
+  listeningPOI: Place;
   params: any = {};
   places: Place[];
   stories: any = {'ro': [], 'ru': [], 'en': []};
@@ -59,12 +62,20 @@ export class MapPage extends BasePage {
   categories: any;
   colorLine = '#c401ff';
 
+  storySliders: any = [];
+  allStories: any = [];
+  selectedDate: any[];
+  selectedStory: any[];
+  showLeftButton: boolean;
+  showRightButton: boolean;
+
   constructor(public injector: Injector,
               private googleMaps: GoogleMaps,
               private events: Events,
               private storage: LocalStorage,
               private geolocation: Geolocation,
               private platform: Platform,
+              // private slides: Slides,
               private cdr: ChangeDetectorRef) {
 
     super(injector);
@@ -199,12 +210,13 @@ export class MapPage extends BasePage {
         Place.loadNearPlaces(paramsClone).then(placesInRadius => {
           if (!placesInRadius) {
             this.playNextStory();
-          }else{
+          } else {
             for (let i = 0; i < placesInRadius.length; i++) {
               let myDistance = placesInRadius[i].distance(paramsClone.location, 'none');
               let radius = placesInRadius[i].attributes.radius;
               let audioPOIName = placesInRadius[i]['audio_' + this.lang].name();
               let audioPOIURL = this.getFileURL(audioPOIName);
+              this.listeningPOI = placesInRadius[i];
 
               if (myDistance <= radius && this.listenedPOI.indexOf(placesInRadius[i].id) == -1) {
                 this.currentAudio = [audioPOIURL];
@@ -214,7 +226,7 @@ export class MapPage extends BasePage {
                 return;
               }
             }
-              this.playNextStory();
+            this.playNextStory();
           }
         });
       });
@@ -224,7 +236,10 @@ export class MapPage extends BasePage {
   }
 
   private playNextStory() {
-    //TODO check if last story
+    this.listeningPOI=null;
+    if(this.listenedStoryIndex==this.stories[this.lang].length-1){
+      return;
+    }
     this.currentAudio = [this.getFileURL(this.stories[this.lang][++this.listenedStoryIndex].audio.name())];
     this.api.getDefaultMedia().loadMedia();
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
@@ -251,8 +266,50 @@ export class MapPage extends BasePage {
     this.navigateTo('PlaceDetailPage', place);
   }
 
+  //-------Date Sliders---------
+//   initializeStory(){
+//     // Select it by defaut
+// this.selectedStory = this.stories['ru'].year;
+//     // Check which arrows should be shown
+//     this.showLeftButton = false;
+//     this.showRightButton = this.stories.length > 4;
+//   }
+  selectYear(selectedYearStory) {
+    for (let i = 0; i < this.stories[this.lang].length; i++) {
+      if (this.stories[this.lang][i].year >= selectedYearStory.year) {
+        this.listeningPOI=null;
+        this.listenedStoryIndex = i;
+        this.storage.listenedStoryIndex = this.listenedStoryIndex;
+        let fileName = this.stories[this.lang][this.listenedStoryIndex].audio.name();
+        this.currentAudio = [this.getFileURL(fileName)];
+        this.api.getDefaultMedia().loadMedia();
+        return;
+      }
+    }
+  }
+
+  // Method executed when the slides are changed
+  slideChanged() {
+    let currentIndex = this.slides.getActiveIndex();
+    this.showLeftButton = currentIndex !== 0;
+    this.showRightButton = currentIndex !== Math.ceil(this.slides.length() / 4);
+  }
+
+  // Method that shows the next slide
+  slideNext() {
+    this.slides.slideNext();
+  }
+
+  // Method that shows the previous slide
+  slidePrev() {
+    this.slides.slidePrev();
+  }
+
+//-------Date Sliders---------
+
   loadStories() {
     Story.load().then(data => {
+      this.allStories = data;
       data.forEach((story) => {
         Object.keys(this.stories).forEach((lang) => {
           story['audios_' + lang].forEach((audio) => {
@@ -392,4 +449,6 @@ export class MapPage extends BasePage {
   ngAfterViewChecked(): void {
     this.cdr.detectChanges();
   }
+
+
 }

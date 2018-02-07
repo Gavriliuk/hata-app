@@ -3,14 +3,14 @@ export class AppConfig {
   /* Parse Server URL */
   public static get SERVER_URL(): string {
     //----------Setting Localhost-----------------------------
-    return 'http://localhost:1337/parse/';
+    // return 'http://localhost:1337/parse/';
 
     //----------Setting server-----------------------------
     //  return 'http://46.101.144.21:1337/parse/';
 
     //----------Setting Ngrok server Valentin-----------------------------
     //  return 'https://perussi.serveo.net/parse/';
-    //  return 'https://erepo.serveo.net/parse/';
+     return 'https://erepo.serveo.net/parse/';
   }
 
   /* Parse App ID  */

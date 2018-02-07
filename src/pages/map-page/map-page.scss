@@ -31,21 +31,47 @@ page-map-page {
   .swiper-pagination-bullet-active{
     background-color: #bbbbbb;
   }
-
-  //
   //ion-slide.swiper-slide {
-  //  left: 25%;
+  // width: 100%;
+  //  right:0%;
   //}
-  //
   //.slide-zoom {
-  //  background: #e6e6e6;
-  //}
-  //
-  //.thumb-img {
-  //  top:15px;
-  //  padding: 10px;
+  //  width: 100%;
+  //  background: rgba(232, 91, 71, 0.72);
   //}
 
+  .filters {
+
+    ion-col {
+      text-align: center;
+      font-size: 1.9rem;
+      line-height: 1.9rem;
+
+      ion-icon {
+        color: #ccc;
+      }
+
+      &.col-with-arrow {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    p {
+      color: #000;
+      margin: 0px;
+      padding:0px;
+      font-size: 1.9rem;
+      line-height: 1.9rem;
+    }
+
+    .selected {
+      font-weight: 900;
+      border-bottom: solid 1px;
+      background: #FCE1E5;
+    }
+  }
 
 
 }

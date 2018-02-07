@@ -5,27 +5,47 @@
     </button>
     <ion-title>{{ "MAP" | translate }}</ion-title>
   </ion-navbar>
+
+  <ion-toolbar>
+    <ion-row class="filters">
+      <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
+        <ion-icon *ngIf="showLeftButton" name="arrow-back"></ion-icon>
+      </ion-col>
+      <ion-col no-padding col-10>
+        <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
+          <!--<ion-slide (click)="filterData(story)" *ngFor="let story of [1600,1650,1700,1750,1800]">-->
+          <ion-slide (click)="selectYear(story)" *ngFor="let story of allStories">
+            <p [class.selected]="selectedStory === story">{{story.year}}</p>
+          </ion-slide>
+        </ion-slides>
+      </ion-col>
+      <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
+        <ion-icon *ngIf="showRightButton" name="arrow-forward"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="mapTop">
-  <!--<ol>-->
-    <!--<li *ngFor="let story of stories[lang]">{{story.year}}:{{story.audio.url()}}-->
-      <!--<audio controls>-->
-        <!--<source src="{{ story.audio.url() }}" type="audio/mpeg">-->
-      <!--</audio>-->
-    <!--</li>-->
-  <!--</ol>-->
-
-
 
   <div id="map" class="map" #map showWhen="android,ios"></div>
   <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core">
   </empty-view>
+
 </ion-content>
 
 <ion-footer>
   <ion-toolbar color="secondary" text-center>
+    <div *ngIf="listeningPOI">
+      <ion-slides pager>
+        <ion-slide *ngFor="let image of listeningPOI.images">
+          <img [src]="getFileURL(image.name())" offset="100"
+               [lazyLoad]="getFileURL(image.name())"/>
+        </ion-slide>
+      </ion-slides>
 
+      <div>{{listeningPOI["title_"+lang]}}</div>
+    </div>
     <vg-player class="vgPlayer" (onPlayerReady)="onPlayerReady($event)">
       <vg-controls>
         <vg-play-pause [vgFor]="myAudio"></vg-play-pause>

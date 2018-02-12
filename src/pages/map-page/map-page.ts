@@ -276,6 +276,7 @@ export class MapPage extends BasePage {
   selectYear(selectedYearStory) {
     for (let i = 0; i < this.stories[this.lang].length; i++) {
       if (this.stories[this.lang][i].year >= selectedYearStory.year) {
+        this.selectedStory = this.stories[this.lang][i].year;
         this.listeningPOI=null;
         this.listenedStoryIndex = i;
         this.storage.listenedStoryIndex = this.listenedStoryIndex;

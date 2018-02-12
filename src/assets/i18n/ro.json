@@ -95,5 +95,6 @@
   "PLACE_ADDED": "Locul trimis",
   "ERROR_PLACE_ADD": "Nu s-a putut adăuga locul",
   "ENTER_ADDRESS": "Introduceți o adresă",
-  "ERROR_CORDOVA_MAPS": "Rulați aplicația într-un dispozitiv pentru a afișa harta"
+  "ERROR_CORDOVA_MAPS": "Rulați aplicația într-un dispozitiv pentru a afișa harta",
+  "Clear_the_history" : "Ștergeți istoricul"
 }

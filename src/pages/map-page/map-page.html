@@ -14,7 +14,7 @@
       <ion-col no-padding col-10>
         <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
           <ion-slide class="sliderDate" (click)="selectYear(story)" *ngFor="let story of allStories">
-            <p [class.selected]="selectedStory?.year === story.year">{{story.year}}</p>
+            <p [class.selected]="selectedStory === story.year">{{story.year}}</p>
           </ion-slide>
         </ion-slides>
       </ion-col>

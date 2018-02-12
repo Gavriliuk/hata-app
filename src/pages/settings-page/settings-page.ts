@@ -71,5 +71,7 @@ export class SettingsPage extends BasePage {
   goToWalkthrough() {
     this.navigateTo('WalkthroughPage');
   }
-
+  clearStorage() {
+    this.storage.clearLocalStorage();
+  }
 }

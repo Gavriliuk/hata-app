@@ -44,8 +44,8 @@ page-map-page {
 
     ion-col {
       text-align: center;
-      font-size: 1.9rem;
-      line-height: 1.9rem;
+      font-size: 1.6rem;
+      line-height: 1.6rem;
 
       ion-icon {
         color: #ccc;
@@ -62,16 +62,27 @@ page-map-page {
       color: #000;
       margin: 0px;
       padding:0px;
-      font-size: 1.9rem;
-      line-height: 1.9rem;
+      font-size: 1.6rem;
+      line-height: 1.6rem;
     }
 
     .selected {
-      font-weight: 900;
+      font-weight: 800;
+      //font-weight:bold;
       border-bottom: solid 1px;
       background: #FCE1E5;
+       background: rgba(224, 53, 41, 0.66);
     }
   }
-
+  .sliderDate{
+    width: 65px;
+    border-right: solid 1px rgba(0,0,0,0.3);
+  }
+  .tolbarDateSlider{
+    min-height:29px;
+  }
+  .swiper-slide:last-child {
+    border-right: none;
+  }
 
 }

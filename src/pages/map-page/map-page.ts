@@ -81,7 +81,6 @@ export class MapPage extends BasePage {
     super(injector);
     this.storage = storage;
 
-
     this.storage.listenedPOI.then((listenedPOI) => {
       this.listenedPOI = listenedPOI || [];
     }).catch((e) => {
@@ -328,7 +327,7 @@ export class MapPage extends BasePage {
   }
 
   getFileURL(fileName) {
-    return Parse.serverURL + 'files/' + Parse.applicationId + '/' + fileName;
+    return Parse.serverURL + '/files/' + Parse.applicationId + '/' + fileName;
   }
 
   loadData() {
@@ -341,7 +340,7 @@ export class MapPage extends BasePage {
           // this.colorLine = color1;
           this.colorLine = '#8eff90';
         } else if (num == 4) {
-          this.colorLine = '#cfff85';
+          this.colorLine = '#12fcff';
         }
         this.waypoints = [];
         let coordinates = [];

@@ -9,7 +9,6 @@ import { VgControlsModule } from 'videogular2/controls';
 import { VgOverlayPlayModule } from 'videogular2/overlay-play';
 import { VgBufferingModule } from 'videogular2/buffering';
 
-
 @NgModule({
   declarations: [
     MapPage,

@@ -9,8 +9,9 @@ export class AppConfig {
     //  return 'http://46.101.144.21:1337/parse/';
 
     //----------Setting Ngrok server Valentin-----------------------------
-    //  return 'https://perussi.serveo.net/parse/';
-     return 'https://erepo.serveo.net/parse/';
+     return 'https://dromos.innovapp.eu/parse';
+     // return 'https://perussi.serveo.net/parse/';
+    //  return 'https://erepo.serveo.net/parse/';
   }
 
   /* Parse App ID  */
@@ -40,7 +41,7 @@ export class AppConfig {
 
   /* Radius: */
   public static get DEFAULT_RADIUS(): string {
-    return '0.5';
+    return '0.05';
   }
 
   /* Map style: satellite or roadmap */

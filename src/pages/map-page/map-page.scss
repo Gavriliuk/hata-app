@@ -4,28 +4,15 @@ page-map-page {
   .map {
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
   }
   .mapTop{
     position:relative;
     padding-top:0px !important;
     margin-top:0px !important;
   }
-  .vgPlayer {
-    height: 50px;
-    //background-color: #4e6382;
-    background-color: #717171;
-  }
   .scrum-bar {
     padding-top: 18px;
-
-  }
-  vg-scrub-bar-current-time, vg-scrub-bar-buffering-time {
-    height: 20px;
-  }
-  vg-scrub-bar-current-time .background, vg-scrub-bar-buffering-time .background {
-    border-radius: 10px !important;
-    min-width: 20px;
 
   }
   .swiper-pagination-bullet-active{
@@ -73,5 +60,27 @@ page-map-page {
     }
   }
 
+  .play-pause-btn {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    box-shadow: 0 0 10px #999;
+    font-size: 2.3em;
+    border-radius: 50%;
+  }
 
+  .skip-btn {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 0 10px #999;
+  }
+
+
+  ion-toolbar > div {
+    background-color: rgba(0, 0, 0, 0)!important;
+    border-color: rgba(0, 0, 0, 0)!important;
+  }
 }

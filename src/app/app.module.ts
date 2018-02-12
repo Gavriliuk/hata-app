@@ -62,6 +62,7 @@ export function HttpLoaderFactory(http: Http) {
     VgControlsModule,
     VgOverlayPlayModule,
     VgBufferingModule,
+
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -91,4 +92,5 @@ export function HttpLoaderFactory(http: Http) {
     File,
     Preference, MapStyle, { provide: ErrorHandler, useClass: IonicErrorHandler }]
 })
+
 export class AppModule {}

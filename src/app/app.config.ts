@@ -10,7 +10,7 @@ export class AppConfig {
 
     //----------Setting Ngrok server Valentin-----------------------------
     //  return 'https://perussi.serveo.net/parse/';
-     return 'https://erepo.serveo.net/parse/';
+     return 'https://dromos.innovapp.eu/parse/';
   }
 
   /* Parse App ID  */

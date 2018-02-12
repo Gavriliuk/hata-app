@@ -29,15 +29,13 @@ export class AddReviewPage extends BasePage {
        let mapZoom: any;
        let coordinates = [];
        this.waypoints = "";
-       this.zoom = 17;
+       this.zoom = 16;
        if (this.route.waypoints && this.route.waypoints !== "") {
           if(this.route.waypoints.indexOf('/') != -1){
             coordinates = this.route.waypoints.split('/');
             mapZoom = coordinates.length;
-            if(mapZoom >= 3 ){
-              this.zoom = 16;
-            }else if(mapZoom >= 10 ){
-              this.zoom = 15;
+            if(mapZoom >= 15 ){
+              this.zoom = 14;
             }
             coordinates.forEach(data => {
               this.waypoints += "%7C" + data;

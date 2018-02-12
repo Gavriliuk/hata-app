@@ -368,7 +368,7 @@ export class MapPage extends BasePage {
           // this.colorLine = color1;
           this.colorLine = '#8eff90';
         } else if (num == 4) {
-          this.colorLine = '#cfff85';
+          this.colorLine = '#12fcff';
         }
         this.waypoints = [];
         let coordinates = [];

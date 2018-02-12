@@ -65,8 +65,8 @@ export class MyApp {
         { title: values.MAP, icon: 'map', component: 'MapPage' },
         // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },
         // { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },
-        { title: values.SETTINGS, icon: 'settings', component: 'SettingsPage' },
-        { title: values.SETTINGS, icon: 'heart', component: 'AudioPage' },
+        { title: values.SETTINGS, icon: 'settings', component: 'SettingsPage' }
+        // { title: values.SETTINGS, icon: 'heart', component: 'AudioPage' },
       ];
 
       // if (User.getCurrentUser()) {

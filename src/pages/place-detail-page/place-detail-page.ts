@@ -90,14 +90,12 @@ export class PlaceDetailPage extends BasePage {
     let mapZoom: any;
     let coordinates = [];
     this.waypoints = "";
-    this.zoom = 18;
+    this.zoom = 16;
     if (this.category.waypoints && this.category.waypoints !== "") {
        if(this.category.waypoints.indexOf('/') != -1){
          coordinates = this.category.waypoints.split('/');
          mapZoom = coordinates.length;
-         if(mapZoom >= 3 ){
-             this.zoom = 16;
-         }else if(mapZoom >= 12 ){
+         if(mapZoom >= 15){
            this.zoom = 14;
          }
          coordinates.forEach(data => {
@@ -112,9 +110,9 @@ export class PlaceDetailPage extends BasePage {
        this.markers += "&markers=size:mid%7Ccolor:0xff8f2e%7C" + place.location.latitude + "," + place.location.longitude;
     });
 
-    this.audio_ru = this.navParams.data.place.audio_ru.url();
-    this.audio_ro = this.navParams.data.place.audio_ro.url();
-    this.audio_en = this.navParams.data.place.audio_en.url();
+    // this.audio_ru = this.navParams.data.place.audio_ru.url();
+    // this.audio_ro = this.navParams.data.place.audio_ro.url();
+    // this.audio_en = this.navParams.data.place.audio_en.url();
   }
 
   enableMenuSwipe() {

@@ -6,16 +6,15 @@
     <ion-title>{{ "MAP" | translate }}</ion-title>
   </ion-navbar>
 
-  <ion-toolbar>
+  <ion-toolbar class="tolbarDateSlider">
     <ion-row class="filters">
       <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
         <ion-icon *ngIf="showLeftButton" name="arrow-back"></ion-icon>
       </ion-col>
       <ion-col no-padding col-10>
         <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
-          <!--<ion-slide (click)="filterData(story)" *ngFor="let story of [1600,1650,1700,1750,1800]">-->
-          <ion-slide (click)="selectYear(story)" *ngFor="let story of allStories">
-            <p [class.selected]="selectedStory === story">{{story.year}}</p>
+          <ion-slide class="sliderDate" (click)="selectYear(story)" *ngFor="let story of allStories">
+            <p [class.selected]="selectedStory?.year === story.year">{{story.year}}</p>
           </ion-slide>
         </ion-slides>
       </ion-col>

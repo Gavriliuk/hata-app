@@ -10,7 +10,6 @@ import { VgOverlayPlayModule } from 'videogular2/overlay-play';
 import { VgBufferingModule } from 'videogular2/buffering';
 import { IonicAudioModule, defaultAudioProviderFactory } from 'ionic-audio';
 
-
 @NgModule({
   declarations: [
     MapPage,

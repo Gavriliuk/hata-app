@@ -81,6 +81,14 @@
             </button>
           </ion-col>
 
+          <ion-col>
+            <button ion-button class="skip-btn" color="primary">
+              <vg-controls>
+                <vg-playback-button [playbackValues]="['1', '1.5', '2', '3','4']"
+                                    [vgFor]="myAudio"></vg-playback-button>
+              </vg-controls>
+            </button>
+          </ion-col>
         </ion-row>
       </ion-grid>
 

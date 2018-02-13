@@ -95,5 +95,6 @@
   "PLACE_ADDED": "Place submitted",
   "ERROR_PLACE_ADD": "Couldn't add the place",
   "ENTER_ADDRESS": "Enter an address",
-  "ERROR_CORDOVA_MAPS": "Run the app in a device to show the map"
+  "ERROR_CORDOVA_MAPS": "Run the app in a device to show the map",
+  "Clear_the_history": "Clear the history"
 }

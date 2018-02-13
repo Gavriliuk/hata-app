@@ -31,12 +31,24 @@
       <ion-radio value="0.05"></ion-radio>
     </ion-item>
     <ion-item no-lines>
-      <ion-label>0.1 {{ preference.unit | translate }} </ion-label>
+      <ion-label>0.1 {{ preference.unit | translate}}</ion-label>
       <ion-radio value="0.1"></ion-radio>
     </ion-item>
     <ion-item no-lines>
-      <ion-label>0.2 {{ preference.unit | translate }} </ion-label>
+      <ion-label>0.2 {{ preference.unit | translate}}</ion-label>
       <ion-radio value="0.2"></ion-radio>
+    </ion-item>
+    <ion-item no-lines>
+      <ion-label>0.5 {{ preference.unit | translate}}</ion-label>
+      <ion-radio value="0.5"></ion-radio>
+    </ion-item>
+    <ion-item no-lines>
+      <ion-label>1 {{ preference.unit | translate }} </ion-label>
+      <ion-radio value="1"></ion-radio>
+    </ion-item>
+    <ion-item no-lines>
+      <ion-label>5 {{ preference.unit | translate }} </ion-label>
+      <ion-radio value="5"></ion-radio>
     </ion-item>
   </ion-list>
 
@@ -82,6 +94,10 @@
     </ion-list-header>
     <button ion-item no-lines (tap)="goToWalkthrough()">
       {{ 'OPEN_WALKTHROUGH' | translate }}
+    </button>
+
+    <button ion-item no-lines (tap)="clearStorage()">
+      {{ 'Clear_the_history' | translate }}
     </button>
   </ion-list>
 </ion-content>

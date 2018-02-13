@@ -42,7 +42,7 @@ export class AppConfig {
 
   /* Radius: */
   public static get DEFAULT_RADIUS(): string {
-    return '0.05';
+    return '0.5';
   }
 
   /* Map style: satellite or roadmap */

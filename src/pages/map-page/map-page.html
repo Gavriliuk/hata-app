@@ -13,8 +13,9 @@
       </ion-col>
       <ion-col no-padding col-10>
         <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
-          <ion-slide class="sliderDate" (click)="selectYear(story)" *ngFor="let story of allStories">
-            <p [class.selected]="selectedStory?.year === story.year">{{story.year}}</p>
+          <ion-slide class="sliderDate" (click)="selectYear(story)"
+                     *ngFor="let story of allStories">
+            <p [class.selected]="selectedStory === story.year">{{story.year}}</p>
           </ion-slide>
         </ion-slides>
       </ion-col>
@@ -29,7 +30,7 @@
 
   <div id="map" class="map" #map showWhen="android,ios"></div>
   <!--<div id="map" class="map" #map>-->
-    <!--<img src="assets/img/slide-5.png" height="700px"/>-->
+  <!--<img src="assets/img/slide-5.png" height="700px"/>-->
   <!--</div>-->
   <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core">
   </empty-view>
@@ -42,41 +43,108 @@
       <ion-slides pager>
         <ion-slide *ngFor="let image of listeningPOI.images">
           <img [src]="getFileURL(image.name())" offset="100"
-               [lazyLoad]="getFileURL(image.name())"/>
+               [lazyLoad]="getFileURL(image.name())" />
         </ion-slide>
       </ion-slides>
 
       <div>{{listeningPOI["title_"+lang]}}</div>
     </div>
-    <audio-track #audioTrack [track]="currentAudio" [autoplay]="true" (onFinish)="onTrackFinished($event)">
+    <vg-player class="vgPlayerMap" (onPlayerReady)="onPlayerReady($event)">
       <ion-grid>
         <ion-row justify-content-center align-items-center style="height: 100%">
           <ion-col>
             <!-- Backwards -->
             <button ion-button class="skip-btn" color="primary">
-              &nbsp;&nbsp;<ion-icon name="skip-backward" (click)="playPrevStory()"></ion-icon>&nbsp;&nbsp;
+              &nbsp;&nbsp;
+              <ion-icon name="skip-backward" (click)="playPrevStory()"></ion-icon>
+              &nbsp;&nbsp;
             </button>
           </ion-col>
           <ion-col>
             <!-- Play/Pause -->
-            <button ion-button class="play-pause-btn" color="primary" (click)="audioTrack.play()" [disabled]="!audioTrack.canPlay" *ngIf="!audioTrack.isPlaying">
+            <button ion-button class="play-pause-btn" color="primary" (click)="api.play()"
+                    [disabled]="!api.canPlay" *ngIf="api && api.state=='paused'">
               <ion-icon name="play"></ion-icon>
             </button>
-
-            <button ion-button class="play-pause-btn"  color="secondary" (click)="audioTrack.pause()" [disabled]="!audioTrack.canPlay" *ngIf="audioTrack.isPlaying">
+            <button ion-button class="play-pause-btn" color="secondary" (click)="api.pause()"
+                    [disabled]="!api.canPlay" *ngIf="api && api.state=='playing'">
               <ion-icon name="pause"></ion-icon>
             </button>
           </ion-col>
           <ion-col>
-            <!-- Forwards -->
-            <button ion-button class="skip-btn" color="primary" >
-              &nbsp;&nbsp;<ion-icon name="skip-forward" (click)="playNextStory()"></ion-icon>&nbsp;&nbsp;
+
+              <!-- Forwards -->
+            <button ion-button class="skip-btn" color="primary">
+              &nbsp;&nbsp;
+              <ion-icon name="skip-forward" (click)="playNextStory()"></ion-icon>
+              &nbsp;&nbsp;
             </button>
           </ion-col>
 
         </ion-row>
       </ion-grid>
 
-    </audio-track>
+      <!--<vg-controls>-->
+      <!--<vg-play-pause [vgFor]="myAudio">-->
+      <!--<div>Test Buttn</div>-->
+      <!--</vg-play-pause>-->
+      <!--<vg-playback-button [playbackValues]="['1', '1.5', '2', '3','4']"-->
+      <!--[vgFor]="myAudio"></vg-playback-button>-->
+
+      <!--&lt;!&ndash;<vg-scrub-bar class="scrum-bar">&ndash;&gt;-->
+      <!--&lt;!&ndash;<vg-scrub-bar-current-time [vgFor]="myAudio"></vg-scrub-bar-current-time>&ndash;&gt;-->
+      <!--&lt;!&ndash;<vg-scrub-bar-buffering-time [vgFor]="myAudio"></vg-scrub-bar-buffering-time>&ndash;&gt;-->
+      <!--&lt;!&ndash;</vg-scrub-bar>&ndash;&gt;-->
+
+      <!--&lt;!&ndash;<vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>&ndash;&gt;-->
+      <!--</vg-controls>-->
+
+      <audio #media [vgMedia]="media" id="myAudio" [src]="currentAudio.src" crossorigin
+             type="audio/mp3"
+             webkit-playsinline
+             playsinline
+             autoplay
+             autobuffer>
+        <!--<source *ngFor="let audio of currentAudio" [src]="audio" type="audio/mp3">-->
+      </audio>
+    </vg-player>
+<div>isMetadataLoaded: {{api.isMetadataLoaded}}</div>
+<div>isWaiting: {{api.isWaiting}}</div>
+<div>canPlay: {{api.canPlay}}</div>
+<div>canPlayThrough: {{api.canPlayThrough}}</div>
+<div>isLive: {{api.isLive}}</div>
+<div>buffer: {{api.buffer.end}}</div>
+<div>buffered: {{api.buffered.length}}</div>
+
+    <!--<audio-track #audioTrack [track]="currentAudio" [autoplay]="true" (onFinish)="onTrackFinished($event)">-->
+    <!--<ion-grid>-->
+    <!--<ion-row justify-content-center align-items-center style="height: 100%">-->
+    <!--<ion-col>-->
+    <!--&lt;!&ndash; Backwards &ndash;&gt;-->
+    <!--<button ion-button class="skip-btn" color="primary">-->
+    <!--&nbsp;&nbsp;<ion-icon name="skip-backward" (click)="playPrevStory()"></ion-icon>&nbsp;&nbsp;-->
+    <!--</button>-->
+    <!--</ion-col>-->
+    <!--<ion-col>-->
+    <!--&lt;!&ndash; Play/Pause &ndash;&gt;-->
+    <!--<button ion-button class="play-pause-btn" color="primary" (click)="audioTrack.play()" [disabled]="!audioTrack.canPlay" *ngIf="!audioTrack.isPlaying">-->
+    <!--<ion-icon name="play"></ion-icon>-->
+    <!--</button>-->
+
+    <!--<button ion-button class="play-pause-btn"  color="secondary" (click)="audioTrack.pause()" [disabled]="!audioTrack.canPlay" *ngIf="audioTrack.isPlaying">-->
+    <!--<ion-icon name="pause"></ion-icon>-->
+    <!--</button>-->
+    <!--</ion-col>-->
+    <!--<ion-col>-->
+    <!--&lt;!&ndash; Forwards &ndash;&gt;-->
+    <!--<button ion-button class="skip-btn" color="primary" >-->
+    <!--&nbsp;&nbsp;<ion-icon name="skip-forward" (click)="playNextStory()"></ion-icon>&nbsp;&nbsp;-->
+    <!--</button>-->
+    <!--</ion-col>-->
+
+    <!--</ion-row>-->
+    <!--</ion-grid>-->
+
+    <!--</audio-track>-->
   </ion-toolbar>
 </ion-footer>

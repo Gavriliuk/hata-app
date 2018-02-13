@@ -49,7 +49,7 @@ export class MapPage extends BasePage {
   map: GoogleMap;
   isViewLoaded: boolean;
   audio: any;
-  currentAudio: any;
+  currentAudio: any = {'src': null, 'title': null};
   listenedPOI: any = [];
   listenedStoryIndex: any = 0;
   api: any;
@@ -80,6 +80,7 @@ export class MapPage extends BasePage {
 
     super(injector);
     this.storage = storage;
+
 
     this.storage.listenedPOI.then((listenedPOI) => {
       this.listenedPOI = listenedPOI || [];
@@ -175,23 +176,22 @@ export class MapPage extends BasePage {
     }
   }
 
-  // onPlayerReady(api) {
-  //   this.api = api;
-  //   this.api.getDefaultMedia().subscriptions.canPlay.subscribe(
-  //     () => {
-  //       this.api.play();
-  //     }
-  //   );
-  //   this.api.getDefaultMedia().subscriptions.ended.subscribe(
-  //     () => {
-  //       this.findAndPlayNextAudio();
-  //
-  //     }
-  //   );
-  // }
+  onPlayerReady(api) {
+    this.api = api;
+    // this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
+    //   () => {
+    //     this.api.play();
+    //   }
+    // );
+    this.api.getDefaultMedia().subscriptions.ended.subscribe(
+      () => {
+        this.findAndPlayNextAudio();
+
+      }
+    );
+  }
 
   private findAndPlayNextAudio() {
-
     const options: GeolocationOptions = {
       enableHighAccuracy: true,
       timeout: 7000
@@ -200,8 +200,13 @@ export class MapPage extends BasePage {
     this.geolocation.getCurrentPosition(options).then(pos => {
       let paramsClone = {...this.params};
       this.storage.radius.then((val) => {
+
         paramsClone.distance = val;
         paramsClone.location = pos.coords;
+        // paramsClone.location = {
+        //   latitude:47.054842,
+        //   longitude:28.870902
+        // };
         //TODO take from localstorage
         paramsClone.unit = "km";
         paramsClone.limit = 5;
@@ -219,15 +224,8 @@ export class MapPage extends BasePage {
               this.listeningPOI = placesInRadius[i];
 
               if (myDistance <= radius && this.listenedPOI.indexOf(placesInRadius[i].id) == -1) {
-                var tempObject: any = {
-                  src:audioPOIURL,
-                  artist: '',
-                  title: '',
-                  art: '',
-                  preload: 'metadata' // tell the plugin to preload metadata such as duration for this track, set to 'none' to turn off
-                }
-                this.currentAudio = tempObject;
-                // this.api.getDefaultMedia().loadMedia();
+                this.currentAudio.src = audioPOIURL;
+                this.api.getDefaultMedia().loadMedia();
                 this.listenedPOI.push(placesInRadius[i].id);
                 this.storage.listenedPOI = this.listenedPOI;
                 return;
@@ -242,21 +240,25 @@ export class MapPage extends BasePage {
     });
   }
 
-   playNextStory() {
+  private playNextStory() {
     this.listeningPOI = null;
     if (this.listenedStoryIndex == this.stories[this.lang].length - 1) {
       return;
     }
-    this.currentAudio = this.stories['ru'][++this.listenedStoryIndex];
+    this.currentAudio.src = this.getFileURL(this.stories[this.lang][++this.listenedStoryIndex].audio.name());
+    console.log("currentAudio:", this.currentAudio);
+    this.api.getDefaultMedia().loadMedia();
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
   }
 
-   playPrevStory() {
+  playPrevStory() {
     this.listeningPOI = null;
     if (this.listenedStoryIndex == 0) {
       return;
     }
-    this.currentAudio = this.stories['ru'][--this.listenedStoryIndex];
+    this.currentAudio.src = this.getFileURL(this.stories[this.lang][--this.listenedStoryIndex].audio.name());
+    console.log("currentAudio:", this.currentAudio);
+    this.api.getDefaultMedia().loadMedia();
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
   }
 
@@ -266,7 +268,6 @@ export class MapPage extends BasePage {
 
   ionViewDidLeave() {
     this.isViewLoaded = false;
-    this.currentAudio=null;
     // if (this.map) {
     //   this.map.clear();
     //   this.map.setZoom(0.5);
@@ -296,7 +297,9 @@ export class MapPage extends BasePage {
         this.listeningPOI = null;
         this.listenedStoryIndex = i;
         this.storage.listenedStoryIndex = this.listenedStoryIndex;
-        this.currentAudio = this.stories[this.lang][this.listenedStoryIndex];
+        let fileName = this.stories[this.lang][this.listenedStoryIndex].audio.name();
+        this.currentAudio.src = this.getFileURL(fileName);
+        this.api.getDefaultMedia().loadMedia();
         return;
       }
     }
@@ -327,31 +330,18 @@ export class MapPage extends BasePage {
       data.forEach((story) => {
         Object.keys(this.stories).forEach((lang) => {
           story['audios_' + lang].forEach((audio) => {
-            var tempObject: any = {
-              artist: '',
-              title: '',
-              art: '',
-              preload: 'metadata' // tell the plugin to preload metadata such as duration for this track, set to 'none' to turn off
-            }
-            // var tempObject: any = {};
-            tempObject.parse_audio = audio;
+            var tempObject: any = {};
+            tempObject.audio = audio;
             tempObject.year = story.year;
-            tempObject.src = this.getFileURL(audio.name());
             this.stories[lang].push(tempObject);
           })
         })
       })
       //TODO brat tekushchii yazyk
-      // let fileName = this.stories['ru'][this.listenedStoryIndex].audio.name();
-      this.currentAudio = this.stories['ru'][this.listenedStoryIndex];
-      // this.api.getDefaultMedia().loadMedia();
+      let fileName = this.stories['ru'][this.listenedStoryIndex].audio.name();
+      this.currentAudio.src = this.getFileURL(fileName);
+      this.api.getDefaultMedia().loadMedia();
     });
-  }
-
-  onTrackFinished(track: any) {
-    console.log('Track finished', track);
-
-    this.findAndPlayNextAudio();
   }
 
   getFileURL(fileName) {
@@ -368,7 +358,7 @@ export class MapPage extends BasePage {
           // this.colorLine = color1;
           this.colorLine = '#8eff90';
         } else if (num == 4) {
-          this.colorLine = '#12fcff';
+          this.colorLine = '#cfff85';
         }
         this.waypoints = [];
         let coordinates = [];

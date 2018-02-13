@@ -11,8 +11,25 @@ page-map-page {
     padding-top:0px !important;
     margin-top:0px !important;
   }
+  .vgPlayer {
+    height: 50px;
+    //background-color: #4e6382;
+    background-color: #717171;
+  }
+  .vgPlayerMap {
+    background-color: rgba(0, 0, 0, 0)!important;
+    border-color: rgba(0, 0, 0, 0)!important;
+  }
   .scrum-bar {
     padding-top: 18px;
+
+  }
+  vg-scrub-bar-current-time, vg-scrub-bar-buffering-time {
+    height: 20px;
+  }
+  vg-scrub-bar-current-time .background, vg-scrub-bar-buffering-time .background {
+    border-radius: 10px !important;
+    min-width: 20px;
 
   }
   .swiper-pagination-bullet-active{
@@ -53,8 +70,8 @@ page-map-page {
       line-height: 1.6rem;
     }
 
-    .selected {
-      font-weight: 800;
+    .selectedStory {
+      font-weight: 900;
       //font-weight:bold;
       border-bottom: solid 1px;
       background: #FCE1E5;

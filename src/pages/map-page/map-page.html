@@ -15,7 +15,7 @@
         <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
           <ion-slide class="sliderDate" (click)="selectYear(story)"
                      *ngFor="let story of allStories">
-            <p [class.selected]="selectedStory === story.year">{{story.year}}</p>
+            <p [class.selected]="selectedStory?.year === story.year">{{story.year}}</p>
           </ion-slide>
         </ion-slides>
       </ion-col>
@@ -72,7 +72,6 @@
             </button>
           </ion-col>
           <ion-col>
-
               <!-- Forwards -->
             <button ion-button class="skip-btn" color="primary">
               &nbsp;&nbsp;

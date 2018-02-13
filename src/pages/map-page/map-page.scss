@@ -17,6 +17,7 @@ page-map-page {
     background-color: #717171;
   }
   .vgPlayerMap {
+    line-height: 65px;
     background-color: rgba(0, 0, 0, 0)!important;
     border-color: rgba(0, 0, 0, 0)!important;
   }
@@ -67,32 +68,34 @@ page-map-page {
       margin: 0px;
       padding:0px;
       font-size: 1.6rem;
-      line-height: 1.6rem;
+      line-height: 1.9rem;
     }
 
-    .selectedStory {
-      font-weight: 900;
-      //font-weight:bold;
-      border-bottom: solid 1px;
-      background: #FCE1E5;
-       background: rgba(224, 53, 41, 0.66);
+    .selected {
+        font-weight: 900;
+        //line-height: 25px;
+        background: #bdbdbdc7;
     }
   }
 
   .play-pause-btn {
     display: inline-block;
-    width: 80px;
-    height: 80px;
+    width: 69px;
+    height: 69px;
     box-shadow: 0 0 10px #999;
     font-size: 2.3em;
     border-radius: 50%;
   }
   .sliderDate{
     width: 65px;
-    border-right: solid 1px rgba(0,0,0,0.3);
+    //border-right: solid 1px rgba(0,0,0,0.3);
   }
   .tolbarDateSlider{
-    min-height:29px;
+    min-height: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-bottom: solid 1px rgba(158, 158, 158, 0.17);
+    background-color: rgba(0, 0, 0, 0.06);
   }
   .swiper-slide:last-child {
     border-right: none;
@@ -115,5 +118,4 @@ page-map-page {
   vg-controls {
     background-color: rgba(0, 0, 0, 0);
   }
-
 }

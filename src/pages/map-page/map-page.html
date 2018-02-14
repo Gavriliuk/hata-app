@@ -99,12 +99,7 @@
       <!--&lt;!&ndash;<vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>&ndash;&gt;-->
       <!--</vg-controls>-->
 
-      <audio #media [vgMedia]="media" id="myAudio" [src]="currentAudio.src" crossorigin
-             type="audio/mp3"
-             webkit-playsinline
-             playsinline
-             autoplay
-             autobuffer>
+      <audio #media [vgMedia]="media" id="myAudio" [src]="currentAudio.src" type="audio/mp3" autoplay>
         <!--<source *ngFor="let audio of currentAudio" [src]="audio" type="audio/mp3">-->
       </audio>
     </vg-player>

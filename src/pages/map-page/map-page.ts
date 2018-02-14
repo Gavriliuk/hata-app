@@ -53,6 +53,8 @@ export class MapPage extends BasePage {
   listenedPOI: any = [];
   listenedStoryIndex: any = 0;
   api: any;
+  playBackValues: any[] = [1, 1.5, 2, 3, 4];
+  playBackRateIndex: any = 0;
   lang: any;
   category: Category;
   place: any;
@@ -119,7 +121,7 @@ export class MapPage extends BasePage {
 
       this.showLoadingView();
       this.map = new GoogleMap('map', {
-        styles: MapStyle.dark()
+        styles: MapStyle.default()
       });
 
 
@@ -178,14 +180,21 @@ export class MapPage extends BasePage {
 
   onPlayerReady(api) {
     this.api = api;
-    // this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
-    //   () => {
-    //     this.api.play();
-    //   }
-    // );
+    this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
+      () => {
+        this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
+      }
+    );
     this.api.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
         this.findAndPlayNextAudio();
+      }
+    );
+
+    this.api.getDefaultMedia().subscriptions.loadedData.subscribe(
+      () => {
+        console.log("buffered", this.api.buffer);
+        // this.playBackRate=this.api.playbackRate;
 
       }
     );
@@ -225,7 +234,7 @@ export class MapPage extends BasePage {
 
               if (myDistance <= radius && this.listenedPOI.indexOf(placesInRadius[i].id) == -1) {
                 this.currentAudio.src = audioPOIURL;
-                this.api.getDefaultMedia().loadMedia();
+                // this.api.getDefaultMedia().loadMedia();
                 this.listenedPOI.push(placesInRadius[i].id);
                 this.storage.listenedPOI = this.listenedPOI;
                 return;
@@ -240,14 +249,20 @@ export class MapPage extends BasePage {
     });
   }
 
-  private playNextStory() {
+  changeRate() {
+    this.playBackRateIndex = this.playBackRateIndex == this.playBackValues.length - 1 ? 0 : ++this.playBackRateIndex;
+    this.api.getDefaultMedia().playbackRate=this.playBackValues[this.playBackRateIndex];
+  }
+
+  playNextStory() {
     this.listeningPOI = null;
     if (this.listenedStoryIndex == this.stories[this.lang].length - 1) {
       return;
     }
     this.currentAudio.src = this.getFileURL(this.stories[this.lang][++this.listenedStoryIndex].audio.name());
     console.log("currentAudio:", this.currentAudio);
-    this.api.getDefaultMedia().loadMedia();
+    // this.api.getDefaultMedia().loadMedia();
+    // this.api.playBackRate = this.playBackRate;
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
   }
 
@@ -258,7 +273,7 @@ export class MapPage extends BasePage {
     }
     this.currentAudio.src = this.getFileURL(this.stories[this.lang][--this.listenedStoryIndex].audio.name());
     console.log("currentAudio:", this.currentAudio);
-    this.api.getDefaultMedia().loadMedia();
+    // this.api.getDefaultMedia().loadMedia();
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
   }
 
@@ -294,7 +309,7 @@ export class MapPage extends BasePage {
         this.storage.listenedStoryIndex = this.listenedStoryIndex;
         let fileName = this.stories[this.lang][this.listenedStoryIndex].audio.name();
         this.currentAudio.src = this.getFileURL(fileName);
-        this.api.getDefaultMedia().loadMedia();
+        // this.api.getDefaultMedia().loadMedia();
         return;
       }
     }
@@ -304,7 +319,7 @@ export class MapPage extends BasePage {
   slideChanged() {
     let currentIndex = this.slides.getActiveIndex();
     this.showLeftButton = currentIndex !== 0;
-    this.showRightButton = currentIndex !== Math.ceil(this.slides.length() / 4);
+    this.showRightButton = currentIndex !== Math.ceil(this.slides.length() / 6);
   }
 
   // Method that shows the next slide
@@ -335,7 +350,7 @@ export class MapPage extends BasePage {
       //TODO brat tekushchii yazyk
       let fileName = this.stories['ru'][this.listenedStoryIndex].audio.name();
       this.currentAudio.src = this.getFileURL(fileName);
-      this.api.getDefaultMedia().loadMedia();
+      // this.api.getDefaultMedia().loadMedia();
       this.selectedStory = this.stories['ru'][this.listenedStoryIndex];
       this.showRightButton = this.stories['ru'].length > 4;
     });

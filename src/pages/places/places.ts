@@ -99,7 +99,7 @@ export class PlacesPage extends BasePage {
 
   private initGoogleMap() {
     this.map = new GoogleMap('map', {
-      styles: MapStyle.dark()
+      styles: MapStyle.default()
     });
 
     this.map.one(GoogleMapsEvent.MAP_READY).then(() => {

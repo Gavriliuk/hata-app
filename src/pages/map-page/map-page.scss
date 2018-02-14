@@ -67,14 +67,15 @@ page-map-page {
       color: #000;
       margin: 0px;
       padding:0px;
-      font-size: 1.6rem;
-      line-height: 1.9rem;
+      //font-size: 1.6rem;
+      //line-height: 1.9rem;
     }
 
     .selected {
         font-weight: 900;
         //line-height: 25px;
         background: #bdbdbdc7;
+      line-height: 4em;
     }
   }
 
@@ -117,5 +118,11 @@ page-map-page {
   }
   vg-controls {
     background-color: rgba(0, 0, 0, 0);
+  }
+
+  .year-row{
+    height: 4em;
+    position: absolute;
+    z-index: 10;
   }
 }

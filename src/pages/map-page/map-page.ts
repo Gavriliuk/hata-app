@@ -284,16 +284,11 @@ export class MapPage extends BasePage {
   }
 
   //-------Date Sliders---------
-//   initializeStory(){
-//     // Select it by defaut
-// this.selectedStory = this.stories['ru'].year;
-//     // Check which arrows should be shown
-//     this.showLeftButton = false;
-//     this.showRightButton = this.stories.length > 4;
-//   }
+
   selectYear(selectedYearStory) {
     for (let i = 0; i < this.stories[this.lang].length; i++) {
       if (this.stories[this.lang][i].year >= selectedYearStory.year) {
+        this.selectedStory = this.stories[this.lang][i];
         this.listeningPOI = null;
         this.listenedStoryIndex = i;
         this.storage.listenedStoryIndex = this.listenedStoryIndex;
@@ -341,6 +336,8 @@ export class MapPage extends BasePage {
       let fileName = this.stories['ru'][this.listenedStoryIndex].audio.name();
       this.currentAudio.src = this.getFileURL(fileName);
       this.api.getDefaultMedia().loadMedia();
+      this.selectedStory = this.stories['ru'][this.listenedStoryIndex];
+      this.showRightButton = this.stories['ru'].length > 4;
     });
   }
 
@@ -358,7 +355,7 @@ export class MapPage extends BasePage {
           // this.colorLine = color1;
           this.colorLine = '#8eff90';
         } else if (num == 4) {
-          this.colorLine = '#cfff85';
+          this.colorLine = '#43fcff';
         }
         this.waypoints = [];
         let coordinates = [];

@@ -319,7 +319,7 @@ export class MapPage extends BasePage {
   slideChanged() {
     let currentIndex = this.slides.getActiveIndex();
     this.showLeftButton = currentIndex !== 0;
-    this.showRightButton = currentIndex !== Math.ceil(this.slides.length() / 6);
+    this.showRightButton = currentIndex !== Math.ceil(this.slides.length() / 5);
   }
 
   // Method that shows the next slide

@@ -53,7 +53,7 @@ page-map-page {
       line-height: 1.6rem;
 
       ion-icon {
-        color: #ccc;
+        color: #bdbdbd;
       }
 
       &.col-with-arrow {
@@ -89,14 +89,15 @@ page-map-page {
   }
   .sliderDate{
     width: 65px;
-    //border-right: solid 1px rgba(0,0,0,0.3);
+    border-right: solid 1px rgba(0,0,0,0.02);
+
   }
   .tolbarDateSlider{
-    min-height: 20px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    border-bottom: solid 1px rgba(158, 158, 158, 0.17);
-    background-color: rgba(0, 0, 0, 0.06);
+    width:100%;
+    height: 3em;
+    position: absolute;
+    z-index: 10;
+    border-bottom: solid 1px rgba(0,0,0,0.02);
   }
   .swiper-slide:last-child {
     border-right: none;
@@ -121,7 +122,8 @@ page-map-page {
   }
 
   .year-row{
-    height: 4em;
+    height: 3em;
+    width:100%;
     position: absolute;
     z-index: 10;
   }

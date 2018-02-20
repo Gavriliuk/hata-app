@@ -18,6 +18,7 @@ export class Category extends Parse.Object {
       }, error => {
         reject(error);
       });
+      query.include('story');
     });
   }
 

@@ -89,7 +89,7 @@ page-map-page {
   }
   .sliderDate{
     width: 65px;
-    border-right: solid 1px rgba(0,0,0,0.02);
+    border-right: solid 1px rgba(0,0,0,0.06);
 
   }
   .tolbarDateSlider{
@@ -97,7 +97,7 @@ page-map-page {
     height: 3em;
     position: absolute;
     z-index: 10;
-    border-bottom: solid 1px rgba(0,0,0,0.02);
+    border-bottom: solid 1px rgba(0,0,0,0.06);
   }
   .swiper-slide:last-child {
     border-right: none;
@@ -126,5 +126,8 @@ page-map-page {
     width:100%;
     position: absolute;
     z-index: 10;
+  }
+  ion-footer{
+    background-color: rgba(0, 0, 0, 0)!important;
   }
 }

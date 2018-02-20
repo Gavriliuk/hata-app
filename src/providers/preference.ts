@@ -7,6 +7,7 @@ export class Preference {
   private _mapStyle;
   private _distance;
   private _lang;
+  private _filterCategory;
 
   get unit(): any {
     return this._unit;
@@ -46,6 +47,13 @@ export class Preference {
 
   set lang(val) {
     this._lang = val;
+  }
+  get filterCategory(): any {
+    return this._filterCategory;
+  }
+
+  set filterCategory(val) {
+    this._filterCategory = val;
   }
 
 }

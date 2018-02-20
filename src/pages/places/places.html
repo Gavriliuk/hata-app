@@ -4,9 +4,29 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content #container class="placesContent" scroll="false" >
-
+<ion-content class="ionContent" scroll="false">
+<!--<ion-content #container class="placesContent" scroll="false" >-->
+  <div class="tolbarDateSlider">
+    <ion-row class="filters year-row">
+      <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
+        <ion-icon *ngIf="showLeftButton" name="arrow-back"></ion-icon>
+      </ion-col>
+      <ion-col no-padding col-10>
+        <ion-slides slidesPerView="5">
+          <!--<ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="5">-->
+          <ion-slide class="sliderDate" (click)="selectYear(story)"
+                     *ngFor="let story of allStories">
+            <p [class.selected]="selectedStory.year === story.year">{{story.year}}</p>
+          </ion-slide>
+        </ion-slides>
+      </ion-col>
+      <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
+        <ion-icon *ngIf="showRightButton" name="arrow-forward"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </div>
   <div id="map" class="map" #map showWhen="android,ios"></div>
+  <!--<img src="assets/img/slide-5.png" height="700px"/>-->
   <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core"></empty-view>
 
   <empty-view *ngIf="isErrorViewVisible" icon="alert"
@@ -17,13 +37,34 @@
               [text]="'EMPTY_PLACES' | translate">
   </empty-view>
 
-  <ion-slides pager class="ionSlides">
-    <ion-slide *ngFor="let place of places" style="margin-top: 38px;width: 320px;">
+  <!--<ion-slides *ngIf="!listeningPOI" pager class="ionSlides">-->
+    <!--<ion-slide *ngFor="let place of places">-->
+      <!--<ion-item (tap)="goToPlace(place)" color="dark" no-lines>-->
+        <!--<ion-thumbnail item-left>-->
+          <!--<img src="{{place.imageThumb.url()}}" offset="100"-->
+               <!--[lazyLoad]="place.imageThumb.url()">-->
+               <!--&lt;!&ndash;[scrollTarget]="container.getScrollElement()">&ndash;&gt;-->
+        <!--</ion-thumbnail>-->
+        <!--<h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>-->
+        <!--<p>{{ place["description_"+lang] }}</p>-->
+        <!--<ion-note ion-text color="light" item-right>-->
+          <!--{{ place.distance(params.location, params.unit) }}-->
+        <!--</ion-note>-->
+      <!--</ion-item>-->
+    <!--</ion-slide>-->
+  <!--</ion-slides>-->
+
+</ion-content>
+
+<ion-footer>
+
+  <ion-slides *ngIf="!listeningPOI" pager class="ionSlides">
+    <ion-slide *ngFor="let place of places">
       <ion-item (tap)="goToPlace(place)" color="dark" no-lines>
         <ion-thumbnail item-left>
           <img src="{{place.imageThumb.url()}}" offset="100"
-               [lazyLoad]="place.imageThumb.url()"
-               [scrollTarget]="container.getScrollElement()">
+               [lazyLoad]="place.imageThumb.url()">
+          <!--[scrollTarget]="container.getScrollElement()">-->
         </ion-thumbnail>
         <h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>
         <p>{{ place["description_"+lang] }}</p>
@@ -34,27 +75,72 @@
     </ion-slide>
   </ion-slides>
 
-</ion-content>
+  <div *ngIf="listeningPOI">
+    <ion-slides pager>
+      <ion-slide *ngFor="let image of listeningPOI.images">
+        <img [src]="getFileURL(image.name())" offset="100"
+             [lazyLoad]="getFileURL(image.name())" />
+      </ion-slide>
+    </ion-slides>
+    <div text-center>{{listeningPOI["title_"+lang]}}</div>
+  </div>
+  <vg-player class="vgPlayerMap" (onPlayerReady)="onPlayerReady($event)">
+    <ion-grid>
+      <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col>
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay" (click)="changeRate()">
+            <p style="text-transform: lowercase;">{{playBackValues[playBackRateIndex]}}x</p>
+          </button>
+        </ion-col>
+        <ion-col>
+          <!-- Backwards -->
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay" (click)="playPrevStory()">
+            &nbsp;&nbsp;
+            <ion-icon name="skip-backward" ></ion-icon>
+            &nbsp;&nbsp;
+          </button>
+        </ion-col>
+        <ion-col>
+          <!-- Play/Pause -->
+          <button ion-button class="play-pause-btn" color="primary" (click)="api.play()"
+                  [disabled]="!api.canPlay" *ngIf="api && api.state!='playing'">
+            <ion-icon name="play"></ion-icon>
+          </button>
+          <button ion-button class="play-pause-btn" color="secondary" (click)="api.pause()"
+                  [disabled]="!api.canPlay" *ngIf="api && api.state=='playing'">
+            <ion-icon name="pause"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col>
+          <!-- Forwards -->
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay" (click)="playNextStory()">
+            &nbsp;&nbsp;
+            <ion-icon name="skip-forward" ></ion-icon>
+            &nbsp;&nbsp;
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
-<ion-footer>
-  <ion-toolbar color="secondary" text-center>
+    <audio #media [vgMedia]="media" id="myAudio" [src]="[currentAudio.src]" type="audio/mp3" autoplay preload="metadata">
+      <!--<source *ngFor="let audio of nearAudio" [src]="audio" type="audio/mp3">-->
+    </audio>
+  </vg-player>
 
-    <vg-player class="vgPlayer">
-      <vg-controls>
-        <vg-play-pause [vgFor]="myAudio"></vg-play-pause>
-        <vg-playback-button [vgFor]="myAudio"></vg-playback-button>
+    <!--<vg-player class="vgPlayer">-->
+      <!--<vg-controls>-->
+        <!--<vg-play-pause [vgFor]="myAudio"></vg-play-pause>-->
+        <!--<vg-playback-button [vgFor]="myAudio"></vg-playback-button>-->
 
-        <vg-scrub-bar class="scrum-bar">
-          <vg-scrub-bar-current-time [vgFor]="myAudio"></vg-scrub-bar-current-time>
-          <vg-scrub-bar-buffering-time [vgFor]="myAudio"></vg-scrub-bar-buffering-time>
-        </vg-scrub-bar>
+        <!--<vg-scrub-bar class="scrum-bar">-->
+          <!--<vg-scrub-bar-current-time [vgFor]="myAudio"></vg-scrub-bar-current-time>-->
+          <!--<vg-scrub-bar-buffering-time [vgFor]="myAudio"></vg-scrub-bar-buffering-time>-->
+        <!--</vg-scrub-bar>-->
 
-        <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
-      </vg-controls>
-      <audio #media [vgMedia]="media" id="myAudio" preload="auto">
-        <source *ngFor="let audio of nearAudio" [src]="audio" type="audio/mp3">
-      </audio>
-    </vg-player>
-
-  </ion-toolbar>
+        <!--<vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>-->
+      <!--</vg-controls>-->
+      <!--<audio #media [vgMedia]="media" id="myAudio" preload="auto">-->
+        <!--<source *ngFor="let audio of nearAudio" [src]="audio" type="audio/mp3">-->
+      <!--</audio>-->
+    <!--</vg-player>-->
 </ion-footer>

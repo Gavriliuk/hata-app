@@ -67,9 +67,15 @@ export class LocalStorage {
   set listenedStoryIndex(val) {
     this.storage.set('listenedStoryIndex', val);
   }
+  get filterCategory(): Promise<any> {
+    return this.storage.get('filterCategory');
+  }
 
+  set filterCategory(val) {
+    this.storage.set('filterCategory', val);
+  }
 
-   clearLocalStorage() {
+  clearLocalStorage() {
     this.storage.clear().then(() => {
       console.log('Keys have been cleared');
     });

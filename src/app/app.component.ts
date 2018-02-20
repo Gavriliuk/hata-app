@@ -126,6 +126,13 @@ export class MyApp {
       this.preference.radius = radius;
     }).catch((e) => console.log(e));
 
+    this.storage.filterCategory.then(val => {
+      let filterCategory = val || AppConfig.DEFAULT_FILTERCATEGORY;
+
+      this.storage.filterCategory = filterCategory;
+      this.preference.filterCategory = filterCategory;
+    }).catch((e) => console.log(e));
+
     this.storage.mapStyle.then(val => {
 
       let mapStyle = val || AppConfig.DEFAULT_MAP_STYLE;

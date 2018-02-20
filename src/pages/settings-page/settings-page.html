@@ -74,6 +74,20 @@
     <!--</ion-item>-->
   </ion-list>
 
+  <ion-list radio-group (ionChange)="onChangeFilterCategory()" [(ngModel)]="settings.filterCategory">
+    <ion-list-header>
+      <p ion-text class="bold" color="primary">{{ 'TYPE_CATEGORY' | translate }}</p>
+    </ion-list-header>
+    <ion-item no-lines>
+      <ion-label>{{ 'COMBINED' | translate }}</ion-label>
+      <ion-radio value="combined"></ion-radio>
+    </ion-item>
+    <ion-item no-lines>
+      <ion-label>{{ 'SIMPLE' | translate }}</ion-label>
+      <ion-radio value="simple"></ion-radio>
+    </ion-item>
+  </ion-list>
+
   <ion-list radio-group (ionChange)="onChangeMapStyle()" [(ngModel)]="settings.mapStyle">
     <ion-list-header>
       <p ion-text class="bold" color="primary">{{ 'MAP_STYLE' | translate }}</p>

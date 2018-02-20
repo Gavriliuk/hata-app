@@ -1,6 +1,6 @@
 import {IonicPage} from 'ionic-angular';
 import {Component, Injector} from '@angular/core';
-import {Platform, Events, Slides} from 'ionic-angular';
+import {Platform, Events,Slides} from 'ionic-angular';
 import {Place} from '../../providers/place-service';
 import {Story} from '../../providers/stories';
 import {MapStyle} from '../../providers/map-style';
@@ -77,7 +77,6 @@ export class MapPage extends BasePage {
               private storage: LocalStorage,
               private geolocation: Geolocation,
               private platform: Platform,
-              // private slides: Slides,
               private cdr: ChangeDetectorRef) {
 
     super(injector);

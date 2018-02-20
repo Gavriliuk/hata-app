@@ -25,6 +25,9 @@ export class Story extends Parse.Object {
     return this.get('year');
   }
 
+  get category() {
+    return this.get('category');
+  }
 
   get audios_ru(): string {
     return this.get('audios_ru');

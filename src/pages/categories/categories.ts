@@ -24,7 +24,6 @@ export class CategoriesPage extends BasePage {
   audio_ro: any;
   audio_en: any;
 
-
   constructor(injector: Injector,
               private storage: LocalStorage,
               private events: Events,
@@ -73,6 +72,7 @@ export class CategoriesPage extends BasePage {
 
   goToPlaces(category) {
     this.navigateTo('PlacesPage', category);
+console.log("GoToPlaces(category): ",category);
   }
 
   loadData() {
@@ -104,15 +104,6 @@ export class CategoriesPage extends BasePage {
     this.refresher = refresher;
     this.loadData();
   }
-
-  // showAlert(title,info,category) {
-  //   let alert = this.alertCtrl.create({
-  //     title: title,
-  //     subTitle: info,
-  //     buttons: ['OK']
-  //   });
-  //   alert.present();
-  // }
 
   openModalAddReviewRoute(title, information, center_map, waypoints, start_route, end_route) {
     let modal = this.modalCtrl.create('AddReviewPage', {title, information, center_map,start_route, end_route, waypoints, places: this.places});

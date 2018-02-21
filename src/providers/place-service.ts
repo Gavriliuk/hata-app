@@ -130,6 +130,11 @@ export class Place extends Parse.Object {
         }
       }
 
+      if (params && params.selectedYear && params.selectedYear != null) {
+        query.lessThanOrEqualTo('startPeriod', new Date('01/01/'+params.selectedYear));
+        query.greaterThanOrEqualTo('endPeriod', new Date('01/01/'+params.selectedYear));
+      }
+
       // else {
       //   query.descending('createdAt');
       // }

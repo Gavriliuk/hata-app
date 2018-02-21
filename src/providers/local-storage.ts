@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import {Injectable} from '@angular/core';
+import {Storage} from '@ionic/storage';
+import { AsyncPipe } from '@angular/common';
+
 
 @Injectable()
 export class LocalStorage {
@@ -31,11 +33,12 @@ export class LocalStorage {
     this.storage.set('radius', val);
   }
 
-  get mapStyle(): Promise<any> {
+   get mapStyle(): Promise<any> {
     return this.storage.get('mapStyle');
   }
 
   set mapStyle(val) {
+
     this.storage.set('mapStyle', val);
   }
 
@@ -58,15 +61,27 @@ export class LocalStorage {
   get listenedPOI(): Promise<any> {
     return this.storage.get('listenedPOI');
   }
+
   set listenedPOI(val) {
     this.storage.set('listenedPOI', val);
   }
+
   get listenedStoryIndex(): Promise<any> {
     return this.storage.get('listenedStoryIndex');
   }
+
   set listenedStoryIndex(val) {
     this.storage.set('listenedStoryIndex', val);
   }
+
+  set selectedYear(val) {
+    this.storage.set('selectedYear', val);
+  }
+
+  get selectedYear():Promise<any>  {
+    return this.storage.get('selectedYear');
+  }
+
   get filterCategory(): Promise<any> {
     return this.storage.get('filterCategory');
   }

@@ -347,6 +347,8 @@ export class MapPage extends BasePage {
         })
       })
       //TODO brat tekushchii yazyk
+      console.log("this.stories['ru']",this.stories['ru']);
+      console.log("this.listenedStoryIndex",this.listenedStoryIndex);
       let fileName = this.stories['ru'][this.listenedStoryIndex].audio.name();
       this.currentAudio.src = this.getFileURL(fileName);
       // this.api.getDefaultMedia().loadMedia();

@@ -13,6 +13,7 @@ export class Story extends Parse.Object {
 
     return new Promise((resolve, reject) => {
       let query = new Parse.Query(this);
+      query.ascending('startPeriod');
       query.find().then(data => {
         resolve(data);
       }, error => {
@@ -29,16 +30,24 @@ export class Story extends Parse.Object {
     return this.get('category');
   }
 
-  get audios_ru(): string {
-    return this.get('audios_ru');
+  get audio_ru(): string {
+    return this.get('audio_ru');
   }
 
-  get audios_ro(): string {
-    return this.get('audios_ro');
+  get audio_ro(): string {
+    return this.get('audio_ro');
   }
 
-  get audios_en(): string {
-    return this.get('audios_en');
+  get audio_en(): string {
+    return this.get('audio_en');
+  }
+
+  get startPeriod(): string {
+    return this.get('startPeriod');
+  }
+
+  get endPeriod(): string {
+    return this.get('endPeriod');
   }
 }
 

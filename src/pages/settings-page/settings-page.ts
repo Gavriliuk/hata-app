@@ -32,7 +32,7 @@ export class SettingsPage extends BasePage {
     this.storage.radius.then(radius => this.settings.radius = radius).catch((e) => console.log(e));
     this.storage.mapStyle.then(mapStyle => this.settings.mapStyle = mapStyle).catch((e) => console.log(e));
     this.storage.distance.then(distance => this.settings.distance = distance).catch((e) => console.log(e));
-    this.storage.filterCategory.then(filterCategory => this.settings.filterCategory = filterCategory).catch((e) => console.log(e));
+    // this.storage.filterCategory.then(filterCategory => this.settings.filterCategory = filterCategory).catch((e) => console.log(e));
   }
 
   enableMenuSwipe() {
@@ -55,10 +55,10 @@ export class SettingsPage extends BasePage {
     this.preference.radius = this.settings.radius;
   }
 
-  onChangeFilterCategory() {
-    this.storage.filterCategory = this.settings.filterCategory;
-    this.preference.filterCategory = this.settings.filterCategory;
-  }
+  // onChangeFilterCategory() {
+  //   this.storage.filterCategory = this.settings.filterCategory;
+  //   this.preference.filterCategory = this.settings.filterCategory;
+  // }
 
   onChangeUnit() {
     this.storage.unit = this.settings.unit;

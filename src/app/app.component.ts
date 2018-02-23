@@ -52,7 +52,8 @@ export class MyApp {
   buildMenu() {
 
     // let trans = ['ROUTES', 'MAP', 'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
-    let trans = ['ROUTES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
+    // let trans = ['ROUTES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
+    let trans = ['ROUTES', 'ADD_PLACE', 'MY_FAVORITES',
       'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
 
     this.translate.get(trans).subscribe(values => {
@@ -62,7 +63,7 @@ export class MyApp {
       this.pages = [
         { title: values.ROUTES, icon: 'pricetag', component: 'CategoriesPage' },
         // { title: values.CATEGORIES, icon: 'pricetag', component: 'CategoriesPage' },
-        { title: values.MAP, icon: 'map', component: 'MapPage' },
+        // { title: values.MAP, icon: 'map', component: 'MapPage' },
         // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },
         // { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },
         { title: values.SETTINGS, icon: 'settings', component: 'SettingsPage' }
@@ -126,11 +127,11 @@ export class MyApp {
       this.preference.radius = radius;
     }).catch((e) => console.log(e));
 
-    this.storage.filterCategory.then(val => {
-      let filterCategory = val || AppConfig.DEFAULT_FILTERCATEGORY;
+    this.storage.filterPlaying.then(val => {
+      let filterPlaying = val || AppConfig.DEFAULT_FILTERPLAYING;
 
-      this.storage.filterCategory = filterCategory;
-      this.preference.filterCategory = filterCategory;
+      this.storage.filterPlaying = filterPlaying;
+      this.preference.filterPlaying = filterPlaying;
     }).catch((e) => console.log(e));
 
     this.storage.mapStyle.then(val => {

@@ -1,6 +1,11 @@
 <ion-header class="placeHeader">
   <ion-navbar color="primary">
     <ion-title>{{ params.category["title_"+lang] }}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showCheckbox()">
+        <ion-icon name="ios-checkmark-circle"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -13,10 +18,10 @@
       </ion-col>
 
         <ion-col no-padding col-10>
-        <ion-slides slidesPerView="5">
-          <!--<ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="5">-->
+          <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="5">
           <ion-slide class="sliderDate" (click)="selectYear(period)"
                      *ngFor="let period of periods">
+            <!--<p [class.selected]="period">{{period}}</p>-->
             <p [class.selected]="selectedYear === period">{{period}}</p>
             </ion-slide>
         </ion-slides>
@@ -75,4 +80,5 @@
       <!--<source *ngFor="let audio of nearAudio" [src]="audio" type="audio/mp3">-->
     </audio>
   </vg-player>
+  <!--<div>{{currentAudio.period}}</div>-->
 </ion-footer>

@@ -3,8 +3,6 @@
     <ion-buttons right>
       <button style="float:left;" ion-button clear (tap)="onDismiss()" icon-only>
 
-
-
         <ion-icon name="ios-close-circle-outline" showWhen="ios,core,android"></ion-icon>
       </button>
     </ion-buttons>
@@ -23,8 +21,7 @@
     </ion-item>
 
       <img src="assets/img/avatar.png" offset="100"
-           src="http://maps.googleapis.com/maps/api/staticmap?center={{route.center_map}}&sensor=false
-&path=color:0xff0cf4%7Cweight:7{{waypoints}}&markers=color:0x1af768%7C{{route.start_route}}{{markers}}&markers=color:0xff0000%7C{{route.end_route}}&zoom={{zoom}}&format=png&maptype=roadmap&size=800x590&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
+           src="http://maps.googleapis.com/maps/api/staticmap?center={{route.center_map}}&sensor=false&markers=color:0x1af768%7C{{route.start_route}}{{markers}}&markers=color:0xff0000%7C{{route.end_route}}&zoom={{zoom}}&format=png&maptype=roadmap&size=800x590&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
            ng-reflect-lazy-image="http://maps.googleapis.com/map"
            ng-reflect-scroll-target="[object HTMLDivElement]" ng-reflect-offset="100" class="ng-lazyloaded">
 <!--Key Map Dromos Valentin "&size=600x350&key=AIzaSyCJT6L8B515TjUQFPKKckPzORDWzV2FLZ8""-->
@@ -35,6 +32,12 @@
     </div>
   </ion-list>
 </ion-content>
+
+//Map RouteSetingLine
+<!--src="http://maps.googleapis.com/maps/api/staticmap?center={{route.center_map}}&sensor=false-->
+<!--&path=color:0xff0cf4%7Cweight:7{{waypoints}}&markers=color:0x1af768%7C{{route.start_route}}{{markers}}&markers=color:0xff0000%7C{{route.end_route}}&zoom={{zoom}}&format=png&maptype=roadmap&size=800x590&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"-->
+<!--ng-reflect-lazy-image="http://maps.googleapis.com/map"-->
+
 <!--&style=element:geometry%7Ccolor:0x242f3e-->
 <!--&style=element:labels.text.fill%7Ccolor:0x746855&style=element:labels.text.stroke%7Ccolor:0x242f3e-->
 <!--&style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xd59563-->

@@ -82,12 +82,12 @@ export class LocalStorage {
     return this.storage.get('selectedYear');
   }
 
-  get filterCategory(): Promise<any> {
-    return this.storage.get('filterCategory');
+  get filterPlaying(): Promise<any> {
+    return this.storage.get('filterPlaying');
   }
 
-  set filterCategory(val) {
-    this.storage.set('filterCategory', val);
+  set filterPlaying(val) {
+    this.storage.set('filterPlaying', val);
   }
 
   clearLocalStorage() {

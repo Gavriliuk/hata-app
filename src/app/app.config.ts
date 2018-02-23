@@ -53,7 +53,7 @@ export class AppConfig {
   public static get DEFAULT_LANG(): string {
     return 'ru';
   }
-  public static get DEFAULT_FILTERCATEGORY(): string {
-    return 'combined';
+  public static get DEFAULT_FILTERPLAYING(): string{
+    return 'storyOnly';
   }
 }

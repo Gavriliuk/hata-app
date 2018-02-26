@@ -56,4 +56,7 @@ export class AppConfig {
   public static get DEFAULT_FILTERPLAYING(): string{
     return 'storyOnly';
   }
+  // public static get DEFAULT_FILTERPLAYING(): any{
+  //   return 'storyOnly';
+  // }
 }

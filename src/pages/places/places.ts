@@ -14,7 +14,7 @@ import Parse from 'parse';
 
 import {MapStyle} from '../../providers/map-style';
 import {
-  CameraPosition, GoogleMap, GoogleMapsEvent,
+  GoogleMapsEvent, CameraPosition, GoogleMap,
   LatLng, LatLngBounds, Marker
 } from '@ionic-native/google-maps';
 import {ViewChild} from '@angular/core';
@@ -39,7 +39,7 @@ export class PlacesPage extends BasePage {
   // waypoints: any = [];
   slideOptions: any;
   // slides: Slides;
-  periods: number[] = [1400, 1450, 1600, 1650, 1700, 1750, 1800, 1850, 1900, 1918];
+  periods: number[] = [1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 1850, 1900, 1918];
   playBackValues: any[] = [1, 1.5, 2, 3, 4];
   playBackRateIndex: any = 0;
   listeningPOI: Place;
@@ -57,7 +57,7 @@ export class PlacesPage extends BasePage {
   showRightButton: boolean = true;
   filterPlaying: any;
   storyCheckboxOpen:boolean;
-  storyCheckboxResult: any;
+  // storyCheckboxResult: any=['storyOnly','poiOnly','storyPoi'];
 
   constructor(injector: Injector,
               private storage: LocalStorage,
@@ -177,7 +177,7 @@ export class PlacesPage extends BasePage {
           paramsClone.selectedYear = this.selectedYear;
           Place.loadNearPlaces(paramsClone).then(placesInRadius => {
             if (!placesInRadius) {
-              if(this.filterPlaying = "storyOnly" || this.filterPlaying == "storyPoi") {
+              if(this.filterPlaying == "storyOnly" || this.filterPlaying == "storyPoi") {
                 this.playNextStory();
               }
             } else {
@@ -195,18 +195,18 @@ export class PlacesPage extends BasePage {
                   return;
                 }
               }
-              if(this.filterPlaying = 'storyOnly' || this.filterPlaying == 'storyPoi') {
+              if(this.filterPlaying == 'storyOnly' || this.filterPlaying == 'storyPoi') {
                 this.playNextStory();
               }
             }
           });
         }, error => {
-          if(this.filterPlaying = 'storyOnly' || this.filterPlaying == 'storyPoi') {
+          if(this.filterPlaying == 'storyOnly' || this.filterPlaying == 'storyPoi') {
               this.playNextStory();
             }
           });
-     }else
-        if(this.filterPlaying ='storyOnly' || this.filterPlaying == 'storyPoi') {
+     } else
+       if(this.filterPlaying ='storyOnly' || this.filterPlaying == 'storyPoi') {
             this.playNextStory();
         }
   }
@@ -229,16 +229,16 @@ export class PlacesPage extends BasePage {
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
   }
 
-  // playPrevStory() {
-  //   this.listeningPOI = null;
-  //   if (this.listenedStoryIndex == 0) {
-  //     return;
-  //   }
-  //   this.currentAudio.src = this.getFileURL(this.stories[this.lang][--this.listenedStoryIndex].audio.name());
-  //   console.log("currentAudio:", this.currentAudio);
-  //   // this.api.getDefaultMedia().loadMedia();
-  //   this.storage.listenedStoryIndex = this.listenedStoryIndex;
-  // }
+  playPrevStory() {
+    this.listeningPOI = null;
+    if (this.listenedStoryIndex == 0) {
+      return;
+    }
+    this.currentAudio.src = this.getFileURL(this.stories[this.lang][--this.listenedStoryIndex].audio.name());
+    console.log("currentAudio:", this.currentAudio);
+    // this.api.getDefaultMedia().loadMedia();
+    this.storage.listenedStoryIndex = this.listenedStoryIndex;
+  }
 
 
   ngOnInit() {
@@ -299,33 +299,33 @@ export class PlacesPage extends BasePage {
       this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
       this.showErrorView();
     });
-    // this.onMove();
+    this.onMove();
   }
 
-//   onMove() {
-// // Options: throw an error if no update is received every 30 seconds.
-//     this.geolocation.watchPosition({
-//       maximumAge: 3000,
-//       timeout: 3000,
-//       enableHighAccuracy: true
-//     }).filter((p) => p.coords !== undefined).subscribe(position => {
-//       let paramsClone = {...this.params};
-//       paramsClone.distance = this.radius;
-//       paramsClone.location = position.coords;
-//
-//       Place.loadNearPlaces(paramsClone).then(place => {
-//         if (place && place[0]) {
-//           let myDistance = place[0].distance(paramsClone.location, 'none');
-//           let radius = place[0].attributes.radius;
-//           let audioURL = place[0]['audio_' + this.lang].url();
-//           if (this.nearAudio[0] != audioURL && myDistance <= radius) {
-//             this.nearAudio = [audioURL];
-//             this.api.getDefaultMedia().loadMedia();
-//           }
-//         }
-//       });
-//     });
-//   }
+  onMove() {
+// Options: throw an error if no update is received every 30 seconds.
+    this.geolocation.watchPosition({
+      maximumAge: 3000,
+      timeout: 3000,
+      enableHighAccuracy: true
+    }).filter((p) => p.coords !== undefined).subscribe(position => {
+      let paramsClone = {...this.params};
+      paramsClone.distance = this.radius;
+      paramsClone.location = position.coords;
+
+      Place.loadNearPlaces(paramsClone).then(place => {
+        if (place && place[0]) {
+          let myDistance = place[0].distance(paramsClone.location, 'none');
+          let radius = place[0].attributes.radius;
+          let audioURL = place[0]['audio_' + this.lang].url();
+          if (this.nearAudio[0] != audioURL && myDistance <= radius) {
+            this.nearAudio = [audioURL];
+            this.api.getDefaultMedia().loadMedia();
+          }
+        }
+      });
+    });
+  }
 
   goToPlace(place) {
     this.navigateTo('PlaceDetailPage', {place: place, places: this.places});
@@ -337,7 +337,7 @@ export class PlacesPage extends BasePage {
 
   selectYear(selectedYearStory) {
 
-    if(this.filterPlaying = 'storyOnly' || this.filterPlaying == 'storyPoi') {
+    if(this.filterPlaying == 'storyOnly' || this.filterPlaying == 'storyPoi') {
 
       this.filterStoriesByPeriod(selectedYearStory);
       this.listeningPOI = null;
@@ -389,15 +389,13 @@ export class PlacesPage extends BasePage {
 
   //-------Date Sliders---------
   loadStories() {
-    // this.storage.selectedYear.then((selectedYear)=> {
     Story.load().then(data => {
       this.allStories = data;
 
       this.filterStoriesByPeriod(this.selectedYear);
 
-      //TODO brat tekushchii yazyk
 
-      if(this.filterPlaying = "storyOnly" || this.filterPlaying == "storyPoi") {
+      if(this.filterPlaying == "storyOnly" || this.filterPlaying == "storyPoi") {
 
       let fileName = this.stories[this.lang][this.listenedStoryIndex].audio.name();
       this.currentAudio.src = this.getFileURL(fileName);
@@ -410,8 +408,6 @@ export class PlacesPage extends BasePage {
         this.findAndPlayNextAudio();
       }
     });
-    // });
-
   }
 
   getFileURL(fileName) {
@@ -537,7 +533,7 @@ export class PlacesPage extends BasePage {
 
   showCheckbox() {
     let alert = this.alertCtrl.create();
-    alert.setTitle('Playback Type :');
+    alert.setTitle('Select type playback :');
 
     alert.addInput({
       type: 'radio',
@@ -566,12 +562,41 @@ export class PlacesPage extends BasePage {
         this.storage.filterPlaying = data;
         this.filterPlaying = data;
         this.preference.filterPlaying = this.filterPlaying;
-
         // this.findAndPlayNextAudio();
       }
     });
     alert.present();
-
+    // for (let i = 0; i < this.storyCheckboxResult.length; i++) {
+    //   alert.addInput({
+    //     type: 'checkbox',
+    //     label: this.storyCheckboxResult[i].toString(),
+    //     value: i.toString(),
+    //     handler: () => {
+    //
+    //       let inputArray = alert.data.inputs;
+    //       let myValue = inputArray[i]['value'];
+    //
+    //       inputArray.map((input) => {
+    //         if (input['value'] !== myValue) {
+    //           input['checked'] = false;
+    //         }
+    //       })
+    //     }
+    //   })
+    // }
+    // alert.addButton('Cancel');
+    // alert.addButton({
+    //   text: 'Ok',
+    //   handler: data => {
+    //     console.log('Checkbox data:', data);
+    //     this.storyCheckboxOpen = false;
+    //     this.storage.filterPlaying = data;
+    //     this.filterPlaying = data;
+    //     this.preference.filterPlaying = data;
+    //
+    //     // this.findAndPlayNextAudio();
+    //   }
+    // });
+    // alert.present();
   }
-
 }

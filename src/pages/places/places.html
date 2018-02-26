@@ -59,9 +59,9 @@
     <ion-grid>
       <ion-row align-items-center style="height: 100%">
         <ion-col text-center>
-          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay"
-                  (click)="changePlayBackRate()">
-            <p style="text-transform: lowercase;">{{playBackValues[playBackRateIndex]}}x</p>
+          <!-- Backwards -->
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay" (click)="playPrevStory()">
+            <ion-icon name="skip-backward" ></ion-icon>
           </button>
           <!-- Play/Pause -->
           <button ion-button class="play-pause-btn" color="primary" (click)="api.play()"
@@ -71,6 +71,14 @@
           <button ion-button class="play-pause-btn" color="secondary" (click)="api.pause()"
                   [disabled]="!api.canPlay" *ngIf="api && api.state=='playing'">
             <ion-icon name="pause"></ion-icon>
+          </button>
+          <!-- Forwards -->
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay" (click)="playNextStory()">
+            <ion-icon name="skip-forward" ></ion-icon>
+          </button>
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay"
+                  (click)="changePlayBackRate()">
+            <p style="text-transform: lowercase;">{{playBackValues[playBackRateIndex]}}x</p>
           </button>
         </ion-col>
       </ion-row>

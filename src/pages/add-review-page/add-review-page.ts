@@ -29,7 +29,7 @@ export class AddReviewPage extends BasePage {
        let mapZoom: any;
        let coordinates = [];
        this.waypoints = "";
-       this.zoom = 16;
+       this.zoom = 15;
        if (this.route.waypoints && this.route.waypoints !== "") {
           if(this.route.waypoints.indexOf('/') != -1){
             coordinates = this.route.waypoints.split('/');

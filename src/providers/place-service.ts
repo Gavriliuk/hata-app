@@ -312,6 +312,20 @@ export class Place extends Parse.Object {
     this.set('audio_en', val);
   }
 
+  get startPeriod() {
+    return this.get('startPeriod');
+  }
+  set startPeriod(val) {
+    this.set('startPeriod', val);
+  }
+
+  get endPeriod() {
+    return this.get('endPeriod');
+  }
+  set endPeriod(val) {
+    this.set('endPeriod', val);
+  }
+
   get imageThumb() {
     return this.get('imageThumb');
   }

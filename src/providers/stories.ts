@@ -26,6 +26,10 @@ export class Story extends Parse.Object {
     return this.get('year');
   }
 
+  get name(): string {
+    return this.get('name');
+  }
+
   get category() {
     return this.get('category');
   }

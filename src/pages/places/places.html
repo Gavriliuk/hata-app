@@ -17,13 +17,13 @@
         <ion-icon *ngIf="showLeftButton" name="arrow-back"></ion-icon>
       </ion-col>
 
-        <ion-col no-padding col-10>
-          <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="5">
+      <ion-col no-padding col-10>
+        <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="5">
           <ion-slide class="sliderDate" (click)="selectYear(period)"
                      *ngFor="let period of periods">
             <!--<p [class.selected]="period">{{period}}</p>-->
             <p [class.selected]="selectedYear === period">{{period}}</p>
-            </ion-slide>
+          </ion-slide>
         </ion-slides>
       </ion-col>
       <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
@@ -54,14 +54,21 @@
     </ion-slides>
     <div text-center>{{listeningPOI["title_"+lang]}}</div>
   </div>
+  <div>{{currentAudio.type}}: {{currentAudio.title}}</div>
+  <div>{{currentAudio.period}}</div>
 
   <vg-player class="vgPlayerMap" (onPlayerReady)="onPlayerReady($event)">
     <ion-grid>
       <ion-row align-items-center style="height: 100%">
         <ion-col text-center>
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay"
+                  (click)="changePlayBackRate()">
+            <p style="text-transform: lowercase;">{{playBackValues[playBackRateIndex]}}x</p>
+          </button>
           <!-- Backwards -->
-          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay" (click)="playPrevStory()">
-            <ion-icon name="skip-backward" ></ion-icon>
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay"
+                  (click)="playPrevStory()">
+            <ion-icon name="skip-backward"></ion-icon>
           </button>
           <!-- Play/Pause -->
           <button ion-button class="play-pause-btn" color="primary" (click)="api.play()"
@@ -73,20 +80,19 @@
             <ion-icon name="pause"></ion-icon>
           </button>
           <!-- Forwards -->
-          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay" (click)="playNextStory()">
-            <ion-icon name="skip-forward" ></ion-icon>
-          </button>
           <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay"
-                  (click)="changePlayBackRate()">
-            <p style="text-transform: lowercase;">{{playBackValues[playBackRateIndex]}}x</p>
+                  (click)="findAndPlayNextAudio()">
+            <ion-icon name="skip-forward"></ion-icon>
           </button>
+
         </ion-col>
       </ion-row>
     </ion-grid>
 
-    <audio #media [vgMedia]="media" [src]="currentAudio.src" type="audio/mp3" autoplay preload="metadata">
+    <audio #media [vgMedia]="media" [src]="currentAudio.src" type="audio/mp3" autoplay
+           preload="metadata">
       <!--<source *ngFor="let audio of nearAudio" [src]="audio" type="audio/mp3">-->
     </audio>
+
   </vg-player>
-  <!--<div>{{currentAudio.period}}</div>-->
 </ion-footer>

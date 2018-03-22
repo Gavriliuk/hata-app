@@ -29,35 +29,41 @@ export class PlacesPage extends BasePage {
   @ViewChild(Slides) slides: Slides;
 
   params: any = {};
-  places: Place[];
+  places: any = [];
   allMarkers: any[];
   category: Category;
-  api: any;
+
   lang: any;
   map: GoogleMap;
+  mapStyle: any;
+  unit: any;
+  radius: any;
   isViewLoaded: boolean;
-  nearAudio: any[];
-  // waypoints: any = [];
-  slideOptions: any;
-  // slides: Slides;
-  periods: number[] = [1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 1850, 1900, 1918];
+
+  videogularApi: any;
   playBackValues: any[] = [1, 1.5, 2, 3, 4];
   playBackRateIndex: any = 0;
   listeningPOI: Place;
   currentAudio: any = {'src': null, 'title': null, 'type': null};
-  stories: any = {'ro': [], 'ru': [], 'en': []};
-  listenedPOI: any = [];
-  radius: any;
-  selectedYear: any;
-  mapStyle: any;
+  nearAudio: any[];
+  playMode: any;
+
+  formatedStories: any = {'ro': [], 'ru': [], 'en': []};
+  allDatabaseStories: any = [];
   listenedStoryIndex: any = 0;
-  unit: any;
-  allStories: any = [];
-  selectedStory: any[];
-  showLeftButton: boolean = true;
-  showRightButton: boolean = true;
-  filterPlaying: any;
-  storyCheckboxOpen: boolean;
+  categoryDatabasePlaces: any = [];
+  listenedPOI: any = [];
+
+  yearSelectionSlider = {
+    periods: [1436, 1666, 1812, 1823, 1877, 1900, 1918],
+    selectedYear: null,
+    maximumPeriodsOnScreen: 4,
+    showLeftButton: true,
+    showRightButton: true,
+
+  }
+
+
   // storyCheckboxResult: any=['storyOnly','poiOnly','storyPoi'];
 
   constructor(injector: Injector,
@@ -87,7 +93,11 @@ export class PlacesPage extends BasePage {
     this.params.category = this.navParams.data;
     this.params.unit = this.preference.unit;
     this.places = [];
-    this.allMarkers=[];
+    this.allMarkers = [];
+  }
+
+  ionViewWillLeave() {
+    this.videogularApi.pause();
   }
 
   ionViewDidLeave() {
@@ -111,27 +121,27 @@ export class PlacesPage extends BasePage {
     Promise.all([
       this.storage.mapStyle,
       this.storage.radius,
-      this.storage.filterPlaying,
+      this.storage.playMode,
       this.storage.listenedPOI,
       this.storage.selectedYear,
       this.storage.listenedStoryIndex,
       this.storage.unit,
       this.storage.lang
     ]).then(([
-      mapStyle,
-      radius,
-      filterPlaying,
-      listenedPOI,
-      selectedYear,
-      listenedStoryIndex,
-      unit,
-      lang
-    ]) => {
+               mapStyle,
+               radius,
+                playMode,
+               listenedPOI,
+               selectedYear,
+               listenedStoryIndex,
+               unit,
+               lang
+             ]) => {
       this.mapStyle = mapStyle;
       this.radius = radius;
-      this.filterPlaying = filterPlaying;
+      this.playMode = playMode;
       this.listenedPOI = listenedPOI || [];
-      this.selectedYear = selectedYear;
+      this.yearSelectionSlider.selectedYear = selectedYear || this.yearSelectionSlider.periods[0];
       this.listenedStoryIndex = listenedStoryIndex || 0;
       this.unit = unit;
       this.lang = lang;
@@ -139,16 +149,25 @@ export class PlacesPage extends BasePage {
     });
   }
 
+//-------Date Sliders---------
+  loadStories() {
+    Story.load().then(data => {
+      this.allDatabaseStories = data;
+      this.filterStoriesByYear(this.yearSelectionSlider.selectedYear);
+      this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
+    });
+  }
+
   //-----Auto Play player-------
   onPlayerReady(api) {
-    this.api = api;
-    this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
+    this.videogularApi = api;
+    this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
       () => {
-        this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
+        this.videogularApi.playbackRate = this.playBackValues[this.playBackRateIndex];
       }
     );
 
-    this.api.getDefaultMedia().subscriptions.ended.subscribe(
+    this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
         this.findAndPlayNextAudio();
       }
@@ -157,7 +176,7 @@ export class PlacesPage extends BasePage {
 
   findAndPlayNextAudio() {
     this.currentAudio.title = "Finding next Audio to play ...";
-    switch (this.filterPlaying) {
+    switch (this.playMode) {
       case "storyPoi": {
         const options: GeolocationOptions = {
           enableHighAccuracy: true,
@@ -166,23 +185,23 @@ export class PlacesPage extends BasePage {
         this.geolocation.getCurrentPosition(options).then(pos => {
           let paramsClone = {...this.params};
           paramsClone.distance = this.radius;
-          paramsClone.location = pos.coords;
-          // paramsClone.location = {
-          //   latitude:47.054842,
-          //   longitude:28.870902
-          // };
+          // paramsClone.location = pos.coords;
+          paramsClone.location = {
+            latitude: 47.024815,
+            longitude: 28.832664
+          };
           //TODO take from localstorage
           paramsClone.unit = "km";
           paramsClone.limit = 5;
           paramsClone.except = this.listenedPOI;
-          paramsClone.selectedYear = this.selectedYear;
+          paramsClone.selectedYear = this.yearSelectionSlider.selectedYear;
           Place.loadNearPlaces(paramsClone).then(placesInRadius => {
             if (!placesInRadius) {
               this.playNextStory();
             } else {
               for (let i = 0; i < placesInRadius.length; i++) {
                 let myDistance = placesInRadius[i].distance(paramsClone.location, 'none');
-                let radius = placesInRadius[i].attributes.radius;
+                let radius = placesInRadius[i].radius;
                 let audioPOIName = placesInRadius[i]['audio_' + this.lang].name();
                 let audioPOIURL = this.getFileURL(audioPOIName);
                 let title = placesInRadius[i]['title_' + this.lang];
@@ -194,6 +213,7 @@ export class PlacesPage extends BasePage {
                   this.currentAudio.type = 'POI';
                   this.listenedPOI.push(placesInRadius[i].id);
                   this.storage.listenedPOI = this.listenedPOI;
+                  this.goToPlace(placesInRadius[i]);
                   return;
                 }
               }
@@ -214,37 +234,39 @@ export class PlacesPage extends BasePage {
         break;
       }
       default: {
-        this.playNextStory();
+        //this.playNextStory();
+        break;
       }
     }
   }
 
-
   changePlayBackRate() {
     this.playBackRateIndex = this.playBackRateIndex == this.playBackValues.length - 1 ? 0 : ++this.playBackRateIndex;
-    this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
+    this.videogularApi.playbackRate = this.playBackValues[this.playBackRateIndex];
   }
 
   private getAudioFromStoriesByIndex(index) {
     let audio = {'src': null, 'title': null, 'type': null, 'period': null};
-    audio.src = this.getFileURL(this.stories[this.lang][index].audio.name());
-    audio.title = this.stories[this.lang][index].name;
+    audio.src = this.getFileURL(this.formatedStories[this.lang][index].audio.name());
+    audio.title = this.formatedStories[this.lang][index].name;
     audio.type = "Story";
-    audio.period = new Date(this.stories[this.lang][index].startPeriod).getFullYear() + " - " + new Date(this.stories[this.lang][index].endPeriod).getFullYear();
+    audio.period = new Date(this.formatedStories[this.lang][index].startPeriod).getFullYear() + " - " + new Date(this.formatedStories[this.lang][index].endPeriod).getFullYear();
     return audio;
   }
 
 //------Add Player--------
   playNextStory() {
     this.listeningPOI = null;
-    if (this.listenedStoryIndex == this.stories[this.lang].length - 1) {
-      alert("No more stories...");
+    if (this.listenedStoryIndex == this.formatedStories[this.lang].length - 1) {
+      alert("No more formatedStories...");
       return;
     }
     this.currentAudio = this.getAudioFromStoriesByIndex(++this.listenedStoryIndex);
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
-  }
 
+    // this.onReload();
+    this.reLoadPlacesSortDate();
+  }
 
   playPrevStory() {
     this.listeningPOI = null;
@@ -254,23 +276,14 @@ export class PlacesPage extends BasePage {
     }
     this.currentAudio = this.getAudioFromStoriesByIndex(--this.listenedStoryIndex);
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
+
+    // this.onReload();
+    this.reLoadPlacesSortDate();
   }
-
-
-  ngOnInit() {
-    this.slideOptions = {
-      initialSlide: 0,
-      loop: false,
-      direction: 'horizontal',
-      pager: true,
-      speed: 800
-    }
-  };
 
   enableMenuSwipe() {
     return true;
   }
-
 
   private initGoogleMap() {
     this.map = new GoogleMap('map', {
@@ -280,7 +293,7 @@ export class PlacesPage extends BasePage {
 
     this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
       this.map.setMyLocationEnabled(true);
-      // console.log("Init Gmap");
+      console.log("Init Gmap");
       this.getCurrentPosition();
     });
 // TODO zakomentiroval Valentin
@@ -318,77 +331,84 @@ export class PlacesPage extends BasePage {
     // this.onMove();
   }
 
-  onMove() {
-// Options: throw an error if no update is received every 30 seconds.
-    this.geolocation.watchPosition({
-      maximumAge: 3000,
-      timeout: 3000,
-      enableHighAccuracy: true
-    }).filter((p) => p.coords !== undefined).subscribe(position => {
-      let paramsClone = {...this.params};
-      paramsClone.distance = this.radius;
-      paramsClone.location = position.coords;
-
-      Place.loadNearPlaces(paramsClone).then(place => {
-        if (place && place[0]) {
-          let myDistance = place[0].distance(paramsClone.location, 'none');
-          let radius = place[0].attributes.radius;
-          let audioURL = place[0]['audio_' + this.lang].url();
-          if (this.nearAudio[0] != audioURL && myDistance <= radius) {
-            this.nearAudio = [audioURL];
-            this.api.getDefaultMedia().loadMedia();
-          }
-        }
-      });
-    });
-  }
+//   onMove() {
+// // Options: throw an error if no update is received every 30 seconds.
+//     this.geolocation.watchPosition({
+//       maximumAge: 3000,
+//       timeout: 3000,
+//       enableHighAccuracy: true
+//     }).filter((p) => p.coords !== undefined).subscribe(position => {
+//       let paramsClone = {...this.params};
+//       paramsClone.distance = this.radius;
+//       paramsClone.location = position.coords;
+//
+//       Place.loadNearPlaces(paramsClone).then(place => {
+//         if (place && place[0]) {
+//           let myDistance = place[0].distance(paramsClone.location, 'none');
+//           let radius = place[0].attributes.radius;
+//           let audioURL = place[0]['audio_' + this.lang].url();
+//           if (this.nearAudio[0] != audioURL && myDistance <= radius) {
+//             this.nearAudio = [audioURL];
+//             this.videogularApi.getDefaultMedia().loadMedia();
+//           }
+//         }
+//       });
+//     });
+//   }
 
   goToPlace(place) {
-    this.navigateTo('PlaceDetailPage', {place: place, places: this.places});
+    this.navigateTo('PlaceDetailPage', {place: place, places: this.places, category: this.params.category});
     console.log("PlaceGoToPlace(place): ", this.places);
   }
 
 
-  //-------Date Sliders---------
-
+//-------Date Sliders---------
   selectYear(selectedYearStory) {
-    this.selectedYear = selectedYearStory;
+    this.yearSelectionSlider.selectedYear = selectedYearStory;
 
     // this.filterPOIsByYear(selectedYearStory);
-    //
-    this.filterStoriesByPeriod(selectedYearStory);
+
+    this.filterStoriesByYear(selectedYearStory);
     this.listeningPOI = null;
     this.listenedStoryIndex = 0;
     this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
 
     this.storage.selectedYear = selectedYearStory;
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
+
+//-------Clear Date & Map---------
+//     this.onReload();
+    this.reLoadPlacesSortDate();
   }
 
-  private filterStoriesByPeriod(selectedYearStory: any) {
-    var filteredStories = selectedYearStory ? this.allStories.filter((story)=> {
+  private filterStoriesByYear(selectedYearStory: any) {
+    var filteredStories = selectedYearStory ? this.allDatabaseStories.filter((story) => {
       return story.startPeriod.getFullYear() >= selectedYearStory;
-      // return story.startPeriod.getFullYear() <= selectedYearStory && story.endPeriod.getFullYear() >= selectedYearStory;
-    }) : this.allStories;
+      // return story.startPeriod.getFullYear() >= selectedYearStory && story.endPeriod.getFullYear() <= selectedYearStory;
+    }) : this.allDatabaseStories;
 
-    for (let lang of Object.keys(this.stories)) {
-      this.stories[lang] = [];
+    for (let lang of Object.keys(this.formatedStories)) {
+      this.formatedStories[lang] = [];
+      // var filteredStoriesSort = filteredStories.sort(function(a, b){return a.name.slice(0,2) - b.name.slice(0,2)})
       for (let story of filteredStories) {
         var tempObject: any = {};
         tempObject.name = story.name;
         tempObject.audio = story['audio_' + lang];
         tempObject.startPeriod = story.startPeriod;
         tempObject.endPeriod = story.endPeriod;
-        this.stories[lang].push(tempObject);
+        this.formatedStories[lang].push(tempObject);
       }
+      this.formatedStories[lang] = this.formatedStories[lang].sort(function (a, b) {
+        return a.name.slice(0, 2) - b.name.slice(0, 2)
+      });
     }
   }
 
   // Method executed when the slides are changed
   slideChanged() {
     let currentIndex = this.slides.getActiveIndex();
-    this.showLeftButton = currentIndex !== 0;
-    this.showRightButton = currentIndex !== Math.ceil(this.slides.length() / 5);
+    this.yearSelectionSlider.showLeftButton = currentIndex !== 0;
+    this.yearSelectionSlider.showRightButton = currentIndex !== Math.ceil(this.slides.length() / 4);
   }
 
   // Method that shows the next slide
@@ -401,32 +421,17 @@ export class PlacesPage extends BasePage {
     this.slides.slidePrev();
   }
 
-
-  //-------Date Sliders---------
-  loadStories() {
-    Story.load().then(data => {
-      this.allStories = data;
-
-      this.filterStoriesByPeriod(this.selectedYear);
-      this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
-
-      this.selectedStory = this.stories[this.lang][this.listenedStoryIndex];
-      this.showRightButton = this.stories[this.lang].length > 4;
-    });
-  }
-
   getFileURL(fileName) {
     return Parse.serverURL + 'files/' + Parse.applicationId + '/' + fileName;
   }
 
   loadRoutePlaces() {
-    Place.load(this.params).then(data => {
+    Category.getPlacesRelation(this.params.category).then(data => {
+      this.categoryDatabasePlaces = data;
       if (this.platform.is('cordova')) {
-        this.onPlacesLoaded(data);
+        this.addPlacesMarkers(data);
       }
-      for (let place of data) {
-        this.places.push(place);
-      }
+      this.places = data;
 
       if (this.places.length) {
         this.showContentView();
@@ -439,12 +444,32 @@ export class PlacesPage extends BasePage {
     });
   }
 
+  reLoadPlacesSortDate() {
+    var filteredPlace = this.yearSelectionSlider.selectedYear ? this.categoryDatabasePlaces.filter((place) => {
+      return place.startPeriod.getFullYear() >= this.yearSelectionSlider.selectedYear;
+    }) : this.categoryDatabasePlaces;
+
+    if (this.platform.is('cordova')) {
+      this.addPlacesMarkers(filteredPlace);
+    }
+    // for (let place of filteredPlace) {
+    //   this.places.push(place);
+    // }
+    this.places = filteredPlace;
+console.log("reLoadPlacesSortDate: ",this.places);
+    if (this.places.length) {
+      this.showContentView();
+    } else {
+      this.showEmptyView();
+    }
+  }
+
   // private updateAudioURL(data) {
   //   let audioURL = data[0]['audio_' + this.lang].url();
   //   this.nearAudio = [audioURL];
   // }
 
-  onPlacesLoaded(places) {
+  addPlacesMarkers(places) {
 
     let points: Array<LatLng> = [];
 
@@ -474,8 +499,8 @@ export class PlacesPage extends BasePage {
       };
 
       this.map.addMarker(markerOptions).then((marker: Marker) => {
-        this.allMarkers.push({marker:marker});
-        console.log("this.allMarkers",this.allMarkers.length);
+        this.allMarkers.push({marker: marker});
+        console.log("this.allMarkers", this.allMarkers.length);
         marker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
 
           let marker = e[1];
@@ -493,13 +518,13 @@ export class PlacesPage extends BasePage {
       //     this.goToPlace({"place": place, "places": places});
       //   });
 
-        // this.map.addCircle({
-        //   center: marker.getPosition(),
-        //   radius: place.radius * 1000,
-        //   fillColor: "rgba(0, 0, 255, 0.2)",
-        //   strokeColor: "rgba(0, 0, 255, 0.75)",
-        //   strokeWidth: 1
-        // });
+      // this.map.addCircle({
+      //   center: marker.getPosition(),
+      //   radius: place.radius * 1000,
+      //   fillColor: "rgba(0, 0, 255, 0.2)",
+      //   strokeColor: "rgba(0, 0, 255, 0.75)",
+      //   strokeWidth: 1
+      // });
 
       // });
 
@@ -518,24 +543,22 @@ export class PlacesPage extends BasePage {
     this.cdr.detectChanges();
   }
 
-
   onReload() {
     this.map && this.map.clear();
 
     this.places = [];
     this.params.page = 0;
-//TODO komentat
-    const options: GeolocationOptions = {
-      enableHighAccuracy: true,
-      timeout: 10000
-    };
-    this.geolocation.getCurrentPosition(options).then(pos => {
-      this.params.location = pos.coords;
-    }, error => {
-      this.showErrorView();
-      this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(res => this.showToast(res));
-    });
-
+    //TODO komentat
+//     const options: GeolocationOptions = {
+//       enableHighAccuracy: true,
+//       timeout: 10000
+//     };
+//     this.geolocation.getCurrentPosition(options).then(pos => {
+//       this.params.location = pos.coords;
+//     }, error => {
+//       this.showErrorView();
+//       this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(res => this.showToast(res));
+//     });
   }
 
   showCheckbox() {
@@ -546,42 +569,41 @@ export class PlacesPage extends BasePage {
       type: 'radio',
       label: 'Story-only',
       value: 'storyOnly',
-      checked: this.filterPlaying.indexOf('storyOnly') !== -1
+      checked: this.playMode.indexOf('storyOnly') !== -1
     });
     alert.addInput({
       type: 'radio',
       label: 'Story-POI',
       value: 'storyPoi',
-      checked: this.filterPlaying.indexOf('storyPoi') !== -1
+      checked: this.playMode.indexOf('storyPoi') !== -1
     });
     alert.addInput({
       type: 'radio',
       label: 'POI-only',
       value: 'poiOnly',
       disabled: true,
-      checked: this.filterPlaying.indexOf('poiOnly') !== -1
+      checked: this.playMode.indexOf('poiOnly') !== -1
     });
     alert.addButton('Cancel');
     alert.addButton({
       text: 'Ok',
       handler: data => {
         console.log('Checkbox data:', data);
-        this.storyCheckboxOpen = false;
-        this.storage.filterPlaying = data;
-        this.filterPlaying = data;
-        this.preference.filterPlaying = this.filterPlaying;
+        this.storage.playMode = data;
+        this.playMode = data;
+        this.preference.playMode = this.playMode;
         // this.findAndPlayNextAudio();
       }
     });
     alert.present();
   }
 
-   filterPOIsByYear(year) {
-    console.log("this.allMarkers",this.allMarkers.length);
-    console.log("this.allMarkers",this.allMarkers);
+  filterPOIsByYear(year) {
+    console.log("this.allMarkers", this.allMarkers.length);
+    console.log("this.allMarkers", this.allMarkers);
     for (let marker of this.allMarkers) {
       let place = marker.marker.get("place");
-      console.log("place",place);
+      console.log("place", place);
       marker.marker.remove();
       if (place.startPeriod.getFullYear() >= year) {
         let target: LatLng = new LatLng(
@@ -612,10 +634,10 @@ export class PlacesPage extends BasePage {
           marker.marker = addedMarker;
           // this.allMarkers.push(marker);
           addedMarker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
-console.log("GoogleMapsEvent.INFO_CLICK",e);
+            console.log("GoogleMapsEvent.INFO_CLICK", e);
             let tmpMarker = e[1];
             let place = tmpMarker.get("place");
-            console.log('tmpMarker.get("place")',place);
+            console.log('tmpMarker.get("place")', place);
             this.goToPlace(place);
           });
         });

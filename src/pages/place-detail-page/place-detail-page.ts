@@ -12,7 +12,7 @@ import {LaunchNavigator} from '@ionic-native/launch-navigator';
 import {BasePage} from '../base-page/base-page';
 import {ChangeDetectorRef} from '@angular/core';
 import Parse from 'parse';
-
+import { NavController } from 'ionic-angular';
 @IonicPage()
 @Component({
   selector: 'page-place-detail-page',
@@ -35,6 +35,9 @@ export class PlaceDetailPage extends BasePage {
   waypoints:any;
   zoom:any;
   imageURL: any=[];
+  api: any;
+  playBackValue: any[] = [1, 1.5, 2, 3, 4];
+  playBackIndex: any = 0;
 
   constructor(injector: Injector,
               private modalCtrl: ModalController,
@@ -45,19 +48,20 @@ export class PlaceDetailPage extends BasePage {
               private browserTab: BrowserTab,
               private launchNavigator: LaunchNavigator,
               private events: Events,
+              private navPageBack:NavController,
               private cdr: ChangeDetectorRef) {
     super(injector);
 
-    const options: GeolocationOptions = {
-      enableHighAccuracy: true,
-      timeout: 10000
-    };
+    // const options: GeolocationOptions = {
+    //   enableHighAccuracy: true,
+    //   timeout: 10000
+    // };
 
-    this.geolocation.getCurrentPosition(options).then(pos => {
-      this.location = pos.coords;
-    }, err => {
-      console.log("Error Geolocation");
-    });
+    // this.geolocation.getCurrentPosition(options).then(pos => {
+    //   this.location = pos.coords;
+    // }, err => {
+    //   console.log("Error Geolocation");
+    // });
 
     this.storage.lang.then((val) => {
       this.lang = val;
@@ -86,11 +90,12 @@ export class PlaceDetailPage extends BasePage {
  console.log("imageName :",this.imageURL);
     // this.images = this.place.images;
     this.places = this.navParams.data.places;
-    this.category = this.places[0].category;
+    this.category = this.navParams.data.category;
+    // this.category = this.places[0].category;
     let mapZoom: any;
     let coordinates = [];
     this.waypoints = "";
-    this.zoom = 16;
+    this.zoom = 17;
     if (this.category.waypoints && this.category.waypoints !== "") {
        if(this.category.waypoints.indexOf('/') != -1){
          coordinates = this.category.waypoints.split('/');
@@ -113,6 +118,24 @@ export class PlaceDetailPage extends BasePage {
     // this.audio_ru = this.navParams.data.place.audio_ru.url();
     // this.audio_ro = this.navParams.data.place.audio_ro.url();
     // this.audio_en = this.navParams.data.place.audio_en.url();
+  }
+
+//-----Auto Play player-------
+  onPlayerReady(api) {
+    this.api = api;
+    this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(() => {
+        this.api.playbackRate = this.playBackValue[this.playBackIndex];
+      }
+    );
+    this.api.getDefaultMedia().subscriptions.ended.subscribe(
+      () => {
+        this.navPageBack.pop();
+      }
+    );
+  }
+  changePlayBackRate() {
+    this.playBackIndex = this.playBackIndex == this.playBackValue.length - 1 ? 0 : ++this.playBackIndex;
+    this.api.playbackRate = this.playBackValue[this.playBackIndex];
   }
 
   enableMenuSwipe() {
@@ -186,11 +209,11 @@ export class PlaceDetailPage extends BasePage {
   //
   // }
 
-  goToMap() {
-    this.launchNavigator.navigate([this.place.location.latitude, this.place.location.longitude], {
-      start: [this.location.latitude, this.location.longitude]
-    });
-  }
+  // goToMap() {
+  //   this.launchNavigator.navigate([this.place.location.latitude, this.place.location.longitude], {
+  //     start: [this.location.latitude, this.location.longitude]
+  //   });
+  // }
 
   goToReviews() {
     this.navigateTo('ReviewsPage', this.place);

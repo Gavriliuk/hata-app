@@ -7,7 +7,7 @@ export class Preference {
   private _mapStyle;
   private _distance;
   private _lang;
-  private _filterPlaying;
+  private _playMode;
 
   get unit(): any {
     return this._unit;
@@ -48,12 +48,12 @@ export class Preference {
   set lang(val) {
     this._lang = val;
   }
-  get filterPlaying(): any {
-    return this._filterPlaying;
+  get playMode(): any {
+    return this._playMode;
   }
 
-  set filterPlaying(val) {
-    this._filterPlaying = val;
+  set playMode(val) {
+    this._playMode = val;
   }
 
 }

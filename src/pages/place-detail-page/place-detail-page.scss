@@ -24,10 +24,6 @@ page-place-detail-page {
     }
 
   }
-  .vgPlayer {
-    height: 50px;
-    background-color: #656565;
-  }
   .scrum-bar {
     padding-top: 18px;
 
@@ -47,9 +43,11 @@ page-place-detail-page {
     margin: 8px 8px 8px 0;
   }
   .mapObjectPlace{
-    margin-top: -14px !important;
-    height:auto;
-    overflow:hidden;
+    margin-top: -11px !important;
+    height: auto;
+    margin-left: 0px;
+    width: 100%;
+    overflow: hidden;
   }
   #map-page {
     margin-top:0px;
@@ -63,4 +61,50 @@ page-place-detail-page {
   .cardHeader{
     padding:8px;
   }
+  .infoCard{
+    margin-top: 30px;
+    width: 100%;
+    font-size: 1.4rem;
+    margin-left: 0px;
+    border-radius:0px;
+  }
+  .play-pause-btn {
+    display: inline-block;
+    width: 69px;
+    height: 69px;
+    box-shadow: 0 0 10px #999;
+    font-size: 2.3em;
+    border-radius: 50%;
+  }
+  vg-player{
+    height: 5.5em;
+    background-color: transparent !important;
+  }
+  vg-controls {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  ion-footer{
+    position: absolute;
+    background-color: transparent !important;
+  }
+  .skip-btn {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 0 10px #999;
+  }
+  .swiper-pagination-bullet-active {
+    padding-bottom: 6px;
+    background-color: rgba(245, 61, 61, 0.51);
+  }
+ion-content{
+    height:114% !important;
+  }
+  .header-md::after, .tabs-md[tabsPlacement="top"] > .tabbar::after, .footer-md::before,
+  .tabs-md[tabsPlacement="bottom"] > .tabbar::before{
+    width:auto;
+  }
+
 }

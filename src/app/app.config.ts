@@ -3,16 +3,16 @@ export class AppConfig {
   /* Parse Server URL */
   public static get SERVER_URL(): string {
     //----------Setting Localhost---------------------------
-    //  return 'http://localhost:1337/parse/';
+     return 'http://localhost:1337/parse/';
 
     //----------Setting server-----------------------------
-    //  return 'http://46.101.144.21:1337/parse/';
+    //  return 'https://de11afa7.ngrok.io/parse/';
 
     //----------Last Setting Ngrok server Valentin----------
     //  return 'https://erepo.serveo.net/parse/';
 
    //----------This Setting Ngrok server Dromos-------------
-  return 'https://dromos.innovapp.eu/parse/';
+  // return 'https://dromos.innovapp.eu/parse/';
   }
 
   /* Parse App ID  */
@@ -42,7 +42,8 @@ export class AppConfig {
 
   /* Radius: */
   public static get DEFAULT_RADIUS(): string {
-    return '0.5';
+    return '5';
+    // return '0.5';
   }
 
   /* Map style: satellite or roadmap */
@@ -53,7 +54,7 @@ export class AppConfig {
   public static get DEFAULT_LANG(): string {
     return 'ru';
   }
-  public static get DEFAULT_FILTERPLAYING(): string{
+  public static get DEFAULT_PLAY_MODE(): string{
     return 'storyOnly';
   }
   // public static get DEFAULT_FILTERPLAYING(): any{

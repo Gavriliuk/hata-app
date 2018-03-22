@@ -82,12 +82,12 @@ export class LocalStorage {
     return this.storage.get('selectedYear');
   }
 
-  get filterPlaying(): Promise<any> {
-    return this.storage.get('filterPlaying');
+  get playMode(): Promise<any> {
+    return this.storage.get('playMode');
   }
 
-  set filterPlaying(val) {
-    this.storage.set('filterPlaying', val);
+  set playMode(val) {
+    this.storage.set('playMode', val);
   }
 
   clearLocalStorage() {

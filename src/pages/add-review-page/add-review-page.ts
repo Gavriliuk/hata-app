@@ -15,8 +15,9 @@ export class AddReviewPage extends BasePage {
     review: any = {};
     markers: any;
     waypoints:any;
-    zoom:any;
+    mapZoom:any;
     lang:any;
+    category: any;
     placeMarkers:any;
   constructor(injector: Injector,
               private viewCtrl: ViewController,
@@ -25,17 +26,20 @@ export class AddReviewPage extends BasePage {
     this.storage.lang.then((val) => {
         this.lang = val;
         this.route = this.navParams.data;
+      this.category = this.navParams.data;
     console.log("Route",this.route);
-       let mapZoom: any;
+       let zoom: any;
        let coordinates = [];
        this.waypoints = "";
-       this.zoom = 15;
+       this.mapZoom = 17;
        if (this.route.waypoints && this.route.waypoints !== "") {
           if(this.route.waypoints.indexOf('/') != -1){
             coordinates = this.route.waypoints.split('/');
-            mapZoom = coordinates.length;
-            if(mapZoom >= 15 ){
-              this.zoom = 14;
+            zoom = coordinates.length;
+            if(zoom >= 10 ){
+              this.mapZoom = 15;
+            }else if(zoom >= 15){
+              this.mapZoom = 14;
             }
             coordinates.forEach(data => {
               this.waypoints += "%7C" + data;
@@ -47,9 +51,9 @@ export class AddReviewPage extends BasePage {
        this.markers = "";
        this.placeMarkers = {};
        this.route.places.forEach(place => {
-         let routeTitle = place.category["title_"+this.lang];
+         let routeTitle = this.category.title;
          if (this.route.title == routeTitle) {
-            this.markers += "&markers=size:mid%7Ccolor:0xff8f2e%7C" + place.location.latitude + "," + place.location.longitude;
+            this.markers += "&markers=size:mid%7Ccolor:0xff0000%7C" + place.location.latitude + "," + place.location.longitude;
          }
        });
     });
@@ -61,49 +65,10 @@ export class AddReviewPage extends BasePage {
   }
 
   ionViewDidLoad() {
-
   }
 
   onDismiss() {
     this.viewCtrl.dismiss();
   }
 }
-
-//==========================
-//   review: any = {
-//     rating: 3,
-//     comment: ''
-//   };
-//
-//   constructor(injector: Injector, private viewCtrl: ViewController) {
-//     super(injector);
-//     this.review.place = this.navParams.get('place');
-//   }
-//
-//   enableMenuSwipe() {
-//     return false;
-//   }
-//
-//   ionViewDidLoad() {
-//   }
-//
-//   onSubmit() {
-//
-//     this.showLoadingView();
-//
-//     Review.create(this.review).then(review => {
-//       this.showContentView();
-//       this.onDismiss();
-//       this.translate.get('REVIEW_ADDED').subscribe(str => this.showToast(str));
-//     }, error => {
-//       this.showErrorView();
-//       this.translate.get('ERROR_REVIEW_ADD').subscribe(str => this.showToast(str));
-//     });
-//   }
-//
-//   onDismiss() {
-//     this.viewCtrl.dismiss();
-//   }
-//
-//==========================
 

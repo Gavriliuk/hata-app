@@ -1,4 +1,4 @@
-ionic cordova run ios --target "iPhone-6, 11.0" --livereload
+ionic cordova run ios --target "iPhone-6, 11.1" --livereload
 ionic cordova run ios --target "iPhone-6s, 11.1" --livereload
 ionic cordova build ios
 ionic cordova build ios --prod

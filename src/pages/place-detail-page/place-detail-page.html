@@ -6,35 +6,15 @@
 
 <ion-content #container>
 
-  <vg-player class="vgPlayer">
-    <vg-controls>
-      <vg-play-pause [vgFor]="myAudio"></vg-play-pause>
-      <vg-playback-button [vgFor]="myAudio"></vg-playback-button>
-
-      <vg-scrub-bar class="scrum-bar">
-        <vg-scrub-bar-current-time [vgFor]="myAudio"></vg-scrub-bar-current-time>
-        <vg-scrub-bar-buffering-time [vgFor]="myAudio"></vg-scrub-bar-buffering-time>
-      </vg-scrub-bar>
-
-      <vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>
-    </vg-controls>
-    <audio #media [vgMedia]="media" id="myAudio" preload="auto">
-      <source *ngFor="let aud of audio" [src]="aud" type="audio/mp3">
-    </audio>
-  </vg-player>
-
   <ion-slides pager>
     <ion-slide *ngFor="let image of imageURL">
       <img src="assets/img/avatar.png" offset="100"
            [lazyLoad]="image[0]"
            [scrollTarget]="container.getScrollElement()" />
-      <!--<img src="assets/img/avatar.png" offset="100"-->
-           <!--[lazyLoad]="image.url()"-->
-           <!--[scrollTarget]="container.getScrollElement()" />-->
     </ion-slide>
   </ion-slides>
 
-  <ion-card class="card-secondary" text-center>
+  <ion-card class="card-secondary infoCard" text-center>
     <ion-card-header class="cardHeader">
       <h2 ion-text color="primary" style="font-weight:bold;">{{ place["title_"+lang] }}</h2>
     </ion-card-header>
@@ -46,7 +26,7 @@
   <ion-card class="mapObjectPlace">
     <img src="assets/img/avatar.png" offset="100"
       lazyLoad="http://maps.googleapis.com/maps/api/staticmap?center={{place.location.latitude}},{{place.location.longitude}}&sensor=false
-      &markers=color:0xFFFF00%7C{{place.location.latitude}},{{place.location.longitude}}{{markers}}
+      &markers=size:large%7Ccolor:0xf70bff%7C{{place.location.latitude}},{{place.location.longitude}}{{markers}}
       &zoom={{zoom}}&format=png&maptype=roadmap&size=600x350&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
          [scrollTarget]="container.getScrollElement()">
     <!--lazyLoad="http://maps.googleapis.com/maps/api/staticmap?center={{category.center_map}}&sensor=false-->
@@ -59,7 +39,55 @@
       <p>{{ place["address_"+lang] }}</p>
     </ion-item>
   </ion-card>
+  <div padding></div>
+  <div padding></div>
 </ion-content>
+
+<ion-footer>
+  <vg-player class="vgPlayerMap" (onPlayerReady)="onPlayerReady($event)">
+    <ion-grid>
+      <ion-row align-items-center style="height: 100%">
+        <ion-col text-center>
+          <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay"
+                  (click)="changePlayBackRate()">
+            <p style="text-transform: lowercase;">{{playBackValue[playBackIndex]}}x</p>
+          </button>
+          <!-- Play/Pause -->
+          <button ion-button class="play-pause-btn" color="primary" (click)="api.play()"
+                  [disabled]="!api.canPlay" *ngIf="api && api.state!='playing'">
+            <ion-icon name="play"></ion-icon>
+          </button>
+          <button ion-button class="play-pause-btn" color="secondary" (click)="api.pause()"
+                  [disabled]="!api.canPlay" *ngIf="api && api.state=='playing'">
+            <ion-icon name="pause"></ion-icon>
+          </button>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <audio #media [vgMedia]="media" id="myAudio" autoplay preload="auto">
+       <source *ngFor="let aud of audio" [src]="aud" type="audio/mp3">
+    </audio>
+  </vg-player>
+  <!--<vg-player class="vgPlayer">-->
+    <!--<vg-controls>-->
+      <!--<vg-play-pause [vgFor]="myAudio"></vg-play-pause>-->
+      <!--<vg-playback-button [vgFor]="myAudio"></vg-playback-button>-->
+
+      <!--<vg-scrub-bar class="scrum-bar">-->
+        <!--<vg-scrub-bar-current-time [vgFor]="myAudio"></vg-scrub-bar-current-time>-->
+        <!--<vg-scrub-bar-buffering-time [vgFor]="myAudio"></vg-scrub-bar-buffering-time>-->
+      <!--</vg-scrub-bar>-->
+
+      <!--<vg-time-display vgProperty="left" vgFormat="mm:ss" [vgFor]="myAudio"></vg-time-display>-->
+    <!--</vg-controls>-->
+    <!--<audio #media [vgMedia]="media" id="myAudio" autoplay preload="auto">-->
+      <!--<source *ngFor="let aud of audio" [src]="aud" type="audio/mp3">-->
+    <!--</audio>-->
+  <!--</vg-player>-->
+</ion-footer>
+
 <!--style=element:geometry%7Ccolor:0x242f3e-->
 <!--&style=element:labels.text.fill%7Ccolor:0x746855&style=element:labels.text.stroke%7Ccolor:0x242f3e-->
 <!--&style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xd59563-->

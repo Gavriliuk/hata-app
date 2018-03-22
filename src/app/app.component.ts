@@ -127,11 +127,11 @@ export class MyApp {
       this.preference.radius = radius;
     }).catch((e) => console.log(e));
 
-    this.storage.filterPlaying.then(val => {
-      let filterPlaying = val || AppConfig.DEFAULT_FILTERPLAYING;
+    this.storage.playMode.then(val => {
+      let playMode = val || AppConfig.DEFAULT_PLAY_MODE;
 
-      this.storage.filterPlaying = filterPlaying;
-      this.preference.filterPlaying = filterPlaying;
+      this.storage.playMode = playMode;
+      this.preference.playMode = playMode;
     }).catch((e) => console.log(e));
 
     this.storage.mapStyle.then(val => {

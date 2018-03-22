@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import Parse from 'parse';
-
 
 @Injectable()
 export class Category extends Parse.Object {
@@ -20,6 +19,22 @@ export class Category extends Parse.Object {
       });
       query.include('story');
     });
+  }
+
+  static getPlacesRelation(category) {
+    return new Promise((resolve, reject) => {
+      var relation = category.relation('placesRelation');
+      var query = relation.query();
+      query.find().then(data => {
+        resolve(data);
+      }, error => {
+        reject(error);
+      });
+    });
+  }
+
+  get placesRelation(): string {
+    return this.get('placesRelation');
   }
 
   get title_ru(): string {
@@ -57,7 +72,6 @@ export class Category extends Parse.Object {
   get center_map(): string {
     return this.get('center_map');
   }
-
 
   get icon() {
     return this.get('icon');

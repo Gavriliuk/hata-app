@@ -5,14 +5,14 @@ export class AppConfig {
     //----------Setting Localhost---------------------------
      return 'http://localhost:1337/parse/';
 
-    //----------Setting server-----------------------------
-    //  return 'https://de11afa7.ngrok.io/parse/';
+    // ----------Setting server-----------------------------
+    //  return 'https://incubo.serveo.net/parse/';
 
     //----------Last Setting Ngrok server Valentin----------
     //  return 'https://erepo.serveo.net/parse/';
 
    //----------This Setting Ngrok server Dromos-------------
-  // return 'https://dromos.innovapp.eu/parse/';
+   // return 'https://dromos.innovapp.eu/parse/';
   }
 
   /* Parse App ID  */

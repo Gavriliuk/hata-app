@@ -35,7 +35,7 @@
     "@ionic/storage": "2.0.1",
     "@ngx-translate/core": "6.0.1",
     "@ngx-translate/http-loader": "0.0.3",
-    "cordova-android": "6.3.0",
+    "cordova-android": "7.0.0",
     "cordova-ios": "4.5.4",
     "cordova-plugin-admob-free": "~0.9.0",
     "cordova-plugin-browsertab": "0.2.0",
@@ -137,8 +137,7 @@
       }
     },
     "platforms": [
-      "ios",
-      "android"
+      "ios"
     ]
   }
 }

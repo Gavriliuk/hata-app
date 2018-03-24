@@ -55,14 +55,12 @@ export class PlacesPage extends BasePage {
   listenedPOI: any = [];
 
   yearSelectionSlider = {
-    periods: [1436, 1666, 1812, 1823, 1877, 1900, 1918],
+    periods: [1436, 1667, 1812, 1823, 1877, 1900, 1918],
     selectedYear: null,
     maximumPeriodsOnScreen: 4,
     showLeftButton: true,
     showRightButton: true,
-
   }
-
 
   // storyCheckboxResult: any=['storyOnly','poiOnly','storyPoi'];
 
@@ -95,7 +93,10 @@ export class PlacesPage extends BasePage {
     this.places = [];
     this.allMarkers = [];
   }
-
+  ionViewWillEnter(){
+    this.findAndPlayNextAudio();
+    console.log("ionViewDidEnter - start");
+  }
   ionViewWillLeave() {
     this.videogularApi.pause();
   }
@@ -153,8 +154,9 @@ export class PlacesPage extends BasePage {
   loadStories() {
     Story.load().then(data => {
       this.allDatabaseStories = data;
-      this.filterStoriesByYear(this.yearSelectionSlider.selectedYear);
+      this.filterStoriesByYear( this.yearSelectionSlider.selectedYear);
       this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
+      this.yearSelectionSlider.selectedYear = this.currentAudio.selectedPeriodYear;
     });
   }
 
@@ -190,7 +192,6 @@ export class PlacesPage extends BasePage {
             latitude: 47.024815,
             longitude: 28.832664
           };
-          //TODO take from localstorage
           paramsClone.unit = "km";
           paramsClone.limit = 5;
           paramsClone.except = this.listenedPOI;
@@ -235,7 +236,7 @@ export class PlacesPage extends BasePage {
       }
       default: {
         //this.playNextStory();
-        break;
+        // break;
       }
     }
   }
@@ -246,11 +247,12 @@ export class PlacesPage extends BasePage {
   }
 
   private getAudioFromStoriesByIndex(index) {
-    let audio = {'src': null, 'title': null, 'type': null, 'period': null};
+    let audio = {'src': null, 'title': null, 'type': null, 'period': null, 'selectedPeriodYear': null};
     audio.src = this.getFileURL(this.formatedStories[this.lang][index].audio.name());
     audio.title = this.formatedStories[this.lang][index].name;
     audio.type = "Story";
     audio.period = new Date(this.formatedStories[this.lang][index].startPeriod).getFullYear() + " - " + new Date(this.formatedStories[this.lang][index].endPeriod).getFullYear();
+    audio.selectedPeriodYear = Number(new Date(this.formatedStories[this.lang][index].startPeriod).getFullYear());
     return audio;
   }
 
@@ -263,8 +265,8 @@ export class PlacesPage extends BasePage {
     }
     this.currentAudio = this.getAudioFromStoriesByIndex(++this.listenedStoryIndex);
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
+    this.yearSelectionSlider.selectedYear = this.currentAudio.selectedPeriodYear;
 
-    // this.onReload();
     this.reLoadPlacesSortDate();
   }
 
@@ -276,8 +278,8 @@ export class PlacesPage extends BasePage {
     }
     this.currentAudio = this.getAudioFromStoriesByIndex(--this.listenedStoryIndex);
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
+    this.yearSelectionSlider.selectedYear = this.currentAudio.selectedPeriodYear;
 
-    // this.onReload();
     this.reLoadPlacesSortDate();
   }
 
@@ -376,8 +378,6 @@ export class PlacesPage extends BasePage {
     this.storage.selectedYear = selectedYearStory;
     this.storage.listenedStoryIndex = this.listenedStoryIndex;
 
-//-------Clear Date & Map---------
-//     this.onReload();
     this.reLoadPlacesSortDate();
   }
 
@@ -452,15 +452,14 @@ export class PlacesPage extends BasePage {
     if (this.platform.is('cordova')) {
       this.addPlacesMarkers(filteredPlace);
     }
-    // for (let place of filteredPlace) {
-    //   this.places.push(place);
-    // }
+
     this.places = filteredPlace;
 console.log("reLoadPlacesSortDate: ",this.places);
     if (this.places.length) {
       this.showContentView();
     } else {
       this.showEmptyView();
+      alert("There are no POI falling in this period !");
     }
   }
 
@@ -494,7 +493,7 @@ console.log("reLoadPlacesSortDate: ",this.places);
         icon: icon,
         place: place,
         styles: {
-          maxWidth: '80%'
+          maxWidth: '60%'
         },
       };
 

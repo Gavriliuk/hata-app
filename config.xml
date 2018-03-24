@@ -130,5 +130,4 @@
         <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="Trace your location on the map" />
     </plugin>
     <engine name="ios" spec="4.5.4" />
-    <engine name="android" spec="6.3.0" />
 </widget>

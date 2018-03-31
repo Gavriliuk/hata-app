@@ -29,9 +29,9 @@
       &markers=size:large%7Ccolor:0xf70bff%7C{{place.location.latitude}},{{place.location.longitude}}{{markers}}
       &zoom={{zoom}}&format=png&maptype=roadmap&size=600x350&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
          [scrollTarget]="container.getScrollElement()">
-    <!--lazyLoad="http://maps.googleapis.com/maps/api/staticmap?center={{category.center_map}}&sensor=false-->
-    <!--&path=color:0xff0cf4%7Cweight:7{{waypoints}}&markers=color:0x1af768%7C{{category.start_route}}-->
-    <!--&markers=color:0xFFFF00%7C{{place.location.latitude}},{{place.location.longitude}}{{markers}}&markers=color:0xff0000%7C{{category.end_route}}-->
+    <!--lazyLoad="http://maps.googleapis.com/maps/api/staticmap?center={{route.center_map}}&sensor=false-->
+    <!--&path=color:0xff0cf4%7Cweight:7{{waypoints}}&markers=color:0x1af768%7C{{route.start_route}}-->
+    <!--&markers=color:0xFFFF00%7C{{place.location.latitude}},{{place.location.longitude}}{{markers}}&markers=color:0xff0000%7C{{route.end_route}}-->
     <!--&zoom={{zoom}}&format=png&maptype=roadmap&size=600x350&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"-->
 
     <ion-item color="dark" *ngIf="place['address_'+lang]">
@@ -44,10 +44,10 @@
 </ion-content>
 
 <ion-footer>
-  <vg-player class="vgPlayerMap" (onPlayerReady)="onPlayerReady($event)">
+  <vg-player (onPlayerReady)="onPlayerReadyDetail($event)">
     <ion-grid>
       <ion-row align-items-center style="height: 100%">
-        <ion-col text-center>
+        <ion-col text-center class="colDetailVGplayer">
           <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay"
                   (click)="changePlayBackRate()">
             <p style="text-transform: lowercase;">{{playBackValue[playBackIndex]}}x</p>
@@ -55,7 +55,7 @@
           <!-- Play/Pause -->
           <button ion-button class="play-pause-btn" color="primary" (click)="api.play()"
                   [disabled]="!api.canPlay" *ngIf="api && api.state!='playing'">
-            <ion-icon name="play"></ion-icon>
+            <ion-icon class="playButton" name="play"></ion-icon>
           </button>
           <button ion-button class="play-pause-btn" color="secondary" (click)="api.pause()"
                   [disabled]="!api.canPlay" *ngIf="api && api.state=='playing'">

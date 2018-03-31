@@ -9,7 +9,7 @@ import {LocalStorage} from '../../providers/local-storage';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
 import {ChangeDetectorRef} from '@angular/core';
 import 'rxjs/add/operator/filter'
-import {Category} from '../../providers/categories';
+import {Route} from '../../providers/routes';
 import Parse from 'parse';
 import {ViewChild} from '@angular/core';
 
@@ -56,12 +56,12 @@ export class MapPage extends BasePage {
   playBackValues: any[] = [1, 1.5, 2, 3, 4];
   playBackRateIndex: any = 0;
   lang: any;
-  category: Category;
+  route: Route;
   place: any;
   waypoints: any = [];
   start: any;
   end: any;
-  categories: any;
+  routes: any;
   colorLine = '#c401ff';
 
   storySliders: any = [];
@@ -362,9 +362,9 @@ export class MapPage extends BasePage {
   }
 
   loadData() {
-    Category.load().then(data => {
+    Route.load().then(data => {
       let num = 1;
-      data.forEach(category => {
+      data.forEach(  route => {
         num++;
         if (num == 3) {
           // let color1 = '#fff72'+num;
@@ -375,9 +375,9 @@ export class MapPage extends BasePage {
         }
         this.waypoints = [];
         let coordinates = [];
-        if (category.waypoints && category.waypoints !== "") {
-          if (category.waypoints.indexOf('/') != -1) {
-            coordinates = category.waypoints.split('/');
+        if (route.waypoints && route.waypoints !== "") {
+          if (route.waypoints.indexOf('/') != -1) {
+            coordinates = route.waypoints.split('/');
             coordinates.forEach(data => {
               let loc = data.split(",");
               let lat = parseFloat(loc[0]);
@@ -416,8 +416,8 @@ export class MapPage extends BasePage {
         place.location.longitude
       );
 
-      let icon = (place.category && place.category.get('icon')) ? {
-        url: place.category.get('icon').url(),
+      let icon = (place.route && place.route.get('icon')) ? {
+        url: place.route.get('icon').url(),
         size: {
           width: 32,
           height: 32

@@ -4,7 +4,6 @@ import {ModalController, Events} from 'ionic-angular';
 import {Place} from '../../providers/place-service';
 import {Preference} from '../../providers/preference';
 import {LocalStorage} from '../../providers/local-storage';
-// import {CallNumber} from '@ionic-native/call-number';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
 import {InAppBrowser} from '@ionic-native/in-app-browser';
 import {BrowserTab} from '@ionic-native/browser-tab';
@@ -30,7 +29,7 @@ export class PlaceDetailPage extends BasePage {
   audio_ru: any;
   audio_ro: any;
   audio_en: any;
-  category: any;
+  route: any;
   markers: any;
   waypoints:any;
   zoom:any;
@@ -51,30 +50,8 @@ export class PlaceDetailPage extends BasePage {
               private navPageBack:NavController,
               private cdr: ChangeDetectorRef) {
     super(injector);
-
-    // const options: GeolocationOptions = {
-    //   enableHighAccuracy: true,
-    //   timeout: 10000
-    // };
-
-    // this.geolocation.getCurrentPosition(options).then(pos => {
-    //   this.location = pos.coords;
-    // }, err => {
-    //   console.log("Error Geolocation");
-    // });
-
-    this.storage.lang.then((val) => {
-      this.lang = val;
-      this.place = this.navParams.data.place;
-
-      if (this.lang == "ru") {
-        this.audio = [this.navParams.data.place.audio_ru.url()];
-      } else if (this.lang == "ro"){
-        this.audio = [this.navParams.data.place.audio_ro.url()];
-      }else{
-        this.audio = [this.navParams.data.place.audio_en.url()];
-      }
-    });
+    this.storage = storage;
+    this.initLocalStorage();
 
     this.place = this.navParams.data.place;
     this.unit = preference.unit;
@@ -83,45 +60,58 @@ export class PlaceDetailPage extends BasePage {
     let imagesArray = this.place.images;
     imagesArray.forEach(data => {
       let fileName = data.name();
- console.log("fileName :",fileName);
+      console.log("fileName :",fileName);
       this.imageURL.push([this.getFileURL(fileName)]);
 
     });
- console.log("imageName :",this.imageURL);
-    // this.images = this.place.images;
+    console.log("imageName :",this.imageURL);
     this.places = this.navParams.data.places;
-    this.category = this.navParams.data.category;
-    // this.category = this.places[0].category;
+    this.route = this.navParams.data.route;
     let mapZoom: any;
     let coordinates = [];
     this.waypoints = "";
     this.zoom = 17;
-    if (this.category.waypoints && this.category.waypoints !== "") {
-       if(this.category.waypoints.indexOf('/') != -1){
-         coordinates = this.category.waypoints.split('/');
-         mapZoom = coordinates.length;
-         if(mapZoom >= 15){
-           this.zoom = 14;
-         }
-         coordinates.forEach(data => {
-             this.waypoints += "%7C" + data;
-         })
-       }else{
-          this.waypoints = "%7C"+this.category.waypoints;
-       }
+    if (this.route.waypoints && this.route.waypoints !== "") {
+      if(this.route.waypoints.indexOf('/') != -1){
+        coordinates = this.route.waypoints.split('/');
+        mapZoom = coordinates.length;
+        if(mapZoom >= 15){
+          this.zoom = 14;
+        }
+        coordinates.forEach(data => {
+          this.waypoints += "%7C" + data;
+        })
+      }else{
+        this.waypoints = "%7C"+this.route.waypoints;
+      }
     }
     this.markers = "";
     this.places.forEach(place => {
-       this.markers += "&markers=size:mid%7Ccolor:0xff8f2e%7C" + place.location.latitude + "," + place.location.longitude;
+      this.markers += "&markers=size:mid%7Ccolor:0xff8f2e%7C" + place.location.latitude + "," + place.location.longitude;
     });
-
-    // this.audio_ru = this.navParams.data.place.audio_ru.url();
-    // this.audio_ro = this.navParams.data.place.audio_ro.url();
-    // this.audio_en = this.navParams.data.place.audio_en.url();
   }
 
+  initLocalStorage() {
+    Promise.all([
+      this.storage.lang
+    ]).then(([
+      lang
+    ]) => {
+      this.lang = lang;
+      this.loadPlace();
+    });
+  }
+loadPlace(){
+  this.place = this.navParams.data.place;
+       let audioPOIURL = this.navParams.data.place["audio_"+this.lang].name();
+       this.audio = [this.getFileURL(audioPOIURL)];
+}
+
+  getFileURL(fileName){
+    return Parse.serverURL+'files/'+Parse.applicationId+'/'+fileName;
+  }
 //-----Auto Play player-------
-  onPlayerReady(api) {
+onPlayerReadyDetail(api) {
     this.api = api;
     this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(() => {
         this.api.playbackRate = this.playBackValue[this.playBackIndex];
@@ -144,10 +134,6 @@ export class PlaceDetailPage extends BasePage {
 
   openSignUpModal() {
     this.navigateTo('SignInPage');
-  }
-
-  getFileURL(fileName){
-    return Parse.serverURL+'files/'+Parse.applicationId+'/'+fileName;
   }
 
   // openAddReviewModal() {

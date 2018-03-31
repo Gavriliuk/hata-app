@@ -2,13 +2,13 @@ import {Injectable} from '@angular/core';
 import Parse from 'parse';
 
 @Injectable()
-export class Category extends Parse.Object {
+export class Route extends Parse.Object {
 
   constructor() {
-    super('Category');
+    super('Route');
   }
 
-  static load(): Promise<Category[]> {
+  static load(): Promise<Route[]> {
 
     return new Promise((resolve, reject) => {
       let query = new Parse.Query(this);
@@ -21,9 +21,21 @@ export class Category extends Parse.Object {
     });
   }
 
-  static getPlacesRelation(category) {
+  static getPlacesRelation(route) {
     return new Promise((resolve, reject) => {
-      var relation = category.relation('placesRelation');
+      var relation = route.relation('placesRelation');
+      var query = relation.query();
+      query.find().then(data => {
+        resolve(data);
+      }, error => {
+        reject(error);
+      });
+    });
+  }
+
+  static getStoriesRelation(route) {
+    return new Promise((resolve, reject) => {
+      var relation = route.relation('storiesRelation');
       var query = relation.query();
       query.find().then(data => {
         resolve(data);
@@ -35,6 +47,9 @@ export class Category extends Parse.Object {
 
   get placesRelation(): string {
     return this.get('placesRelation');
+  }
+  get storiesRelation(): string {
+    return this.get('storiesRelation');
   }
 
   get title_ru(): string {
@@ -87,4 +102,4 @@ export class Category extends Parse.Object {
 
 }
 
-Parse.Object.registerSubclass('Category', Category);
+Parse.Object.registerSubclass('Route', Route);

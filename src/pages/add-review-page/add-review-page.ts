@@ -11,30 +11,32 @@ import {LocalStorage} from '../../providers/local-storage';
   templateUrl: 'add-review-page.html'
 })
 export class AddReviewPage extends BasePage {
-    route: any = [];
+    routeModal: any = [];
     review: any = {};
     markers: any;
     waypoints:any;
     mapZoom:any;
     lang:any;
-    category: any;
+    route: any;
     placeMarkers:any;
+    routePlaces: any =[];
   constructor(injector: Injector,
               private viewCtrl: ViewController,
               private storage: LocalStorage) {
     super(injector);
     this.storage.lang.then((val) => {
         this.lang = val;
-        this.route = this.navParams.data;
-      this.category = this.navParams.data;
-    console.log("Route",this.route);
+        this.routeModal = this.navParams.data.route;
+        this.routePlaces = this.navParams.data.places;
+      this.route = this.navParams.data.route;
+    console.log("Route",this.routeModal);
        let zoom: any;
        let coordinates = [];
        this.waypoints = "";
        this.mapZoom = 17;
-       if (this.route.waypoints && this.route.waypoints !== "") {
-          if(this.route.waypoints.indexOf('/') != -1){
-            coordinates = this.route.waypoints.split('/');
+       if (this.routeModal.waypoints && this.routeModal.waypoints !== "") {
+          if(this.routeModal.waypoints.indexOf('/') != -1){
+            coordinates = this.routeModal.waypoints.split('/');
             zoom = coordinates.length;
             if(zoom >= 10 ){
               this.mapZoom = 15;
@@ -45,14 +47,13 @@ export class AddReviewPage extends BasePage {
               this.waypoints += "%7C" + data;
             })
           }else{
-            this.waypoints = "%7C"+this.route.waypoints;
+            this.waypoints = "%7C"+this.routeModal.waypoints;
           }
        }
        this.markers = "";
        this.placeMarkers = {};
-       this.route.places.forEach(place => {
-         let routeTitle = this.category.title;
-         if (this.route.title == routeTitle) {
+       this.routePlaces.forEach(place => {
+         if (place) {
             this.markers += "&markers=size:mid%7Ccolor:0xff0000%7C" + place.location.latitude + "," + place.location.longitude;
          }
        });

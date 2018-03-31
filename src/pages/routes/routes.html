@@ -23,17 +23,18 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <div *ngIf="isContentViewVisible" class="divCategory">
-    <ion-item *ngFor="let category of categories" color="dark" no-lines class="itemCategory">
-      <div (tap)="goToPlaces(category)">
-      <ion-avatar item-start class="avatarCategory">
+  <div *ngIf="isContentViewVisible" class="divRoute">
+    <ion-item *ngFor="let route of routes" color="dark" no-lines class="itemRoute">
+      <div (tap)="goToPlaces(route)">
+      <ion-avatar item-start class="avatarRoute">
         <img src="assets/img/tag.png" offset="100"
-             [lazyLoad]="category.imageThumb.url()"
+             [lazyLoad]="route.imageThumb.url()"
              [scrollTarget]="container.getScrollElement()">
       </ion-avatar>
-      <h2 class="bold textCategory" ion-text color="secondaru">{{ category["title_"+lang] }}</h2>
+      <h2 class="bold textRoute" ion-text color="secondaru">{{ route["title_"+lang] }}</h2>
       </div>
-        <ion-icon class="iconCategory" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(category['title_'+lang],category['information_'+lang],category.center_map,category.waypoints,category.start_route,category.end_route)" item-end></ion-icon>
+        <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route)" item-end></ion-icon>
+        <!-- <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route['title_'+lang],route['information_'+lang],route.center_map,route.waypoints,route.start_route,route.end_route)" item-end></ion-icon> -->
     </ion-item>
   </div>
 

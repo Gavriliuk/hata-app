@@ -22,6 +22,18 @@ export class Review extends Parse.Object {
     });
   }
 
+  static getPlacesRelation(route) {
+    return new Promise((resolve, reject) => {
+      var relation = route.relation('placesRelation');
+      var query = relation.query();
+      query.find().then(data => {
+        resolve(data);
+      }, error => {
+        reject(error);
+      });
+    });
+  }
+
   static load(params): Promise<Review[]> {
 
     return new Promise((resolve, reject) => {

@@ -1,24 +1,24 @@
-import {IonicPage} from 'ionic-angular';
-import {Component, Injector} from '@angular/core';
-import {BasePage} from '../base-page/base-page';
-import {Place} from '../../providers/place-service';
-import {Preference} from '../../providers/preference';
-import {Category} from '../../providers/categories';
-import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
-import {LocalStorage} from '../../providers/local-storage';
-import {ChangeDetectorRef} from '@angular/core';
-import {Platform, Events, Slides} from 'ionic-angular';
+import { IonicPage } from 'ionic-angular';
+import { Component, Injector } from '@angular/core';
+import { BasePage } from '../base-page/base-page';
+import { Place } from '../../providers/place-service';
+import { Preference } from '../../providers/preference';
+import { Route } from '../../providers/routes';
+import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
+import { LocalStorage } from '../../providers/local-storage';
+import { ChangeDetectorRef } from '@angular/core';
+import { Platform, Events, Slides } from 'ionic-angular';
 
-import {Story} from '../../providers/stories';
+import { Story } from '../../providers/stories';
 import Parse from 'parse';
 
-import {MapStyle} from '../../providers/map-style';
+import { MapStyle } from '../../providers/map-style';
 import {
   GoogleMapsEvent, CameraPosition, GoogleMap,
   LatLng, LatLngBounds, Marker
 } from '@ionic-native/google-maps';
-import {ViewChild} from '@angular/core';
-import {AlertController} from 'ionic-angular';
+import { ViewChild } from '@angular/core';
+import { AlertController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -31,7 +31,7 @@ export class PlacesPage extends BasePage {
   params: any = {};
   places: any = [];
   allMarkers: any[];
-  category: Category;
+  route: Route;
 
   lang: any;
   map: GoogleMap;
@@ -44,14 +44,16 @@ export class PlacesPage extends BasePage {
   playBackValues: any[] = [1, 1.5, 2, 3, 4];
   playBackRateIndex: any = 0;
   listeningPOI: Place;
-  currentAudio: any = {'src': null, 'title': null, 'type': null};
+  currentAudio: any = { 'src': null, 'title': null, 'type': null };
   nearAudio: any[];
   playMode: any;
 
-  formatedStories: any = {'ro': [], 'ru': [], 'en': []};
+  formatedStories: any = { 'ro': [], 'ru': [], 'en': [] };
   allDatabaseStories: any = [];
   listenedStoryIndex: any = 0;
-  categoryDatabasePlaces: any = [];
+  routeDatabasePlaces: any = [];
+  routeDatabaseStories: any = [];
+  storiesRelation: any = [];
   listenedPOI: any = [];
 
   yearSelectionSlider = {
@@ -60,18 +62,18 @@ export class PlacesPage extends BasePage {
     maximumPeriodsOnScreen: 4,
     showLeftButton: true,
     showRightButton: true,
-  }
+  };
 
   // storyCheckboxResult: any=['storyOnly','poiOnly','storyPoi'];
 
   constructor(injector: Injector,
-              private storage: LocalStorage,
-              private geolocation: Geolocation,
-              private preference: Preference,
-              private events: Events,
-              private platform: Platform,
-              public alertCtrl: AlertController,
-              private cdr: ChangeDetectorRef) {
+    private storage: LocalStorage,
+    private geolocation: Geolocation,
+    private preference: Preference,
+    private events: Events,
+    private platform: Platform,
+    public alertCtrl: AlertController,
+    private cdr: ChangeDetectorRef) {
     super(injector);
     this.storage = storage;
     this.initLocalStorage();
@@ -88,12 +90,12 @@ export class PlacesPage extends BasePage {
       }
     });
 
-    this.params.category = this.navParams.data;
+    this.params.route = this.navParams.data;
     this.params.unit = this.preference.unit;
     this.places = [];
     this.allMarkers = [];
   }
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.findAndPlayNextAudio();
     console.log("ionViewDidEnter - start");
   }
@@ -113,6 +115,7 @@ export class PlacesPage extends BasePage {
     if (this.platform.is('cordova')) {
       this.initGoogleMap();
     } else {
+      // this.loadStoriesRelation();
       this.loadRoutePlaces();
       console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
     }
@@ -129,15 +132,15 @@ export class PlacesPage extends BasePage {
       this.storage.unit,
       this.storage.lang
     ]).then(([
-               mapStyle,
-               radius,
-                playMode,
-               listenedPOI,
-               selectedYear,
-               listenedStoryIndex,
-               unit,
-               lang
-             ]) => {
+      mapStyle,
+      radius,
+      playMode,
+      listenedPOI,
+      selectedYear,
+      listenedStoryIndex,
+      unit,
+      lang
+    ]) => {
       this.mapStyle = mapStyle;
       this.radius = radius;
       this.playMode = playMode;
@@ -150,14 +153,18 @@ export class PlacesPage extends BasePage {
     });
   }
 
-//-------Date Sliders---------
+  //-------Date Sliders---------
   loadStories() {
-    Story.load().then(data => {
-      this.allDatabaseStories = data;
-      this.filterStoriesByYear( this.yearSelectionSlider.selectedYear);
+    Route.getStoriesRelation(this.params.route).then(data => {
+      this.routeDatabaseStories = data;
+      this.filterStoriesByYear(this.yearSelectionSlider.selectedYear);
       this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
       this.yearSelectionSlider.selectedYear = this.currentAudio.selectedPeriodYear;
-    });
+    }, error => {
+      this.showErrorView();
+      console.log("No story...");
+    }
+    );
   }
 
   //-----Auto Play player-------
@@ -182,52 +189,46 @@ export class PlacesPage extends BasePage {
       case "storyPoi": {
         const options: GeolocationOptions = {
           enableHighAccuracy: true,
-          timeout: 7000
+          timeout: 10000
         };
-        this.geolocation.getCurrentPosition(options).then(pos => {
-          let paramsClone = {...this.params};
-          paramsClone.distance = this.radius;
-          // paramsClone.location = pos.coords;
-          paramsClone.location = {
-            latitude: 47.024815,
-            longitude: 28.832664
-          };
-          paramsClone.unit = "km";
-          paramsClone.limit = 5;
-          paramsClone.except = this.listenedPOI;
-          paramsClone.selectedYear = this.yearSelectionSlider.selectedYear;
-          Place.loadNearPlaces(paramsClone).then(placesInRadius => {
-            if (!placesInRadius) {
-              this.playNextStory();
-            } else {
-              for (let i = 0; i < placesInRadius.length; i++) {
-                let myDistance = placesInRadius[i].distance(paramsClone.location, 'none');
-                let radius = placesInRadius[i].radius;
-                let audioPOIName = placesInRadius[i]['audio_' + this.lang].name();
-                let audioPOIURL = this.getFileURL(audioPOIName);
-                let title = placesInRadius[i]['title_' + this.lang];
-                this.listeningPOI = placesInRadius[i];
-
-                if (myDistance <= radius && this.listenedPOI.indexOf(placesInRadius[i].id) == -1) {
-                  this.currentAudio.src = audioPOIURL;
-                  this.currentAudio.title = title;
-                  this.currentAudio.type = 'POI';
-                  this.listenedPOI.push(placesInRadius[i].id);
-                  this.storage.listenedPOI = this.listenedPOI;
-                  this.goToPlace(placesInRadius[i]);
-                  return;
-                }
-              }
-              this.playNextStory();
-            }
-          });
-        }, error => {
+        
+        // this.geolocation.getCurrentPosition(options).then(pos => {
+        
+          let paramsClone = { ...this.params };
+        paramsClone.distance = this.radius;
+        // paramsClone.location = pos.coords;
+        paramsClone.location = {
+          latitude: 47.0628917,
+          longitude: 28.8678522
+        };
+        paramsClone.unit = "km";
+        paramsClone.limit = 5;
+        paramsClone.except = this.listenedPOI;
+        paramsClone.selectedYear = this.yearSelectionSlider.selectedYear;
+        let nearestPlace = this.NearestPlace(this.routeDatabasePlaces, this.listenedPOI, paramsClone.location.latitude, paramsClone.location.longitude, paramsClone.distance)
+        if (!nearestPlace) {
           this.playNextStory();
-        });
-        break;
+        } else {
+          let myDistance = nearestPlace.distance(paramsClone.location, 'none');
+          let radius = nearestPlace.radius;
+          let audioPOIName = nearestPlace['audio_' + this.lang].name();
+          let audioPOIURL = this.getFileURL(audioPOIName);
+          let title = nearestPlace['title_' + this.lang];
+          this.listeningPOI = nearestPlace;
+
+          this.currentAudio.src = audioPOIURL;
+          this.currentAudio.title = title;
+          this.currentAudio.type = 'POI';
+          this.listenedPOI.push(nearestPlace.id);
+          this.storage.listenedPOI = this.listenedPOI;
+          this.goToPlace(nearestPlace);
+
+        }
+      // }); 
+      break;
       }
       case "poiOnly": {
-//TODO onMove
+        //TODO onMove
         break;
       }
       case "storyOnly": {
@@ -235,10 +236,40 @@ export class PlacesPage extends BasePage {
         break;
       }
       default: {
-        //this.playNextStory();
-        // break;
+        // this.playNextStory();
       }
     }
+  }
+
+  // Convert Degress to Radians
+  Deg2Rad(deg) {
+    return deg * Math.PI / 180;
+  }
+
+  PythagorasEquirectangular(lat1, lon1, lat2, lon2, radius) {
+    lat1 = this.Deg2Rad(lat1);
+    lat2 = this.Deg2Rad(lat2);
+    lon1 = this.Deg2Rad(lon1);
+    lon2 = this.Deg2Rad(lon2);
+    // var R = 6371; // km
+    var x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
+    var y = (lat2 - lat1);
+    var d = Math.sqrt(x * x + y * y) * radius;
+    return d;
+  }
+
+  NearestPlace(places, listened, latitude, longitude, distance) {
+    var mindif = distance;
+    var closestIndex;
+
+    for (let index = 0; index < places.length; ++index) {
+      var dif = this.PythagorasEquirectangular(latitude, longitude, places[index].location.latitude, places[index].location.longitude, places[index].radius);
+      if (dif < mindif && listened.indexOf(places[index].id) == -1) {
+        closestIndex = index;
+        mindif = dif;
+      }
+    }
+    return places[closestIndex];
   }
 
   changePlayBackRate() {
@@ -247,7 +278,7 @@ export class PlacesPage extends BasePage {
   }
 
   private getAudioFromStoriesByIndex(index) {
-    let audio = {'src': null, 'title': null, 'type': null, 'period': null, 'selectedPeriodYear': null};
+    let audio = { 'src': null, 'title': null, 'type': null, 'period': null, 'selectedPeriodYear': null };
     audio.src = this.getFileURL(this.formatedStories[this.lang][index].audio.name());
     audio.title = this.formatedStories[this.lang][index].name;
     audio.type = "Story";
@@ -256,7 +287,7 @@ export class PlacesPage extends BasePage {
     return audio;
   }
 
-//------Add Player--------
+  //------Add Player--------
   playNextStory() {
     this.listeningPOI = null;
     if (this.listenedStoryIndex == this.formatedStories[this.lang].length - 1) {
@@ -289,7 +320,8 @@ export class PlacesPage extends BasePage {
 
   private initGoogleMap() {
     this.map = new GoogleMap('map', {
-      styles: MapStyle.default()
+      styles: MapStyle.default(),
+      building: false
     });
     this.map.setMapTypeId(this.mapStyle);
 
@@ -298,22 +330,35 @@ export class PlacesPage extends BasePage {
       console.log("Init Gmap");
       this.getCurrentPosition();
     });
-// TODO zakomentiroval Valentin
-//     this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
-//       if (this.isViewLoaded) {
-//         let position: CameraPosition<ILatLng> = this.map.getCameraPosition();
-//         let target: ILatLng = position.target;
-//
-//         this.params.location = {
-//           latitude: target.lat,
-//           longitude: target.lng
-//         };
-//         this.showLoadingView();
-//         this.onReload();
-//       }
-//     });
-//
-//     this.map.setMyLocationEnabled(true);
+    // TODO zakomentiroval Valentin
+    //     this.map.on(GoogleMapsEvent.MY_LOCATION_BUTTON_CLICK).subscribe((map: GoogleMap) => {
+    //       if (this.isViewLoaded) {
+    //         let position: CameraPosition<ILatLng> = this.map.getCameraPosition();
+    //         let target: ILatLng = position.target;
+    //
+    //         this.params.location = {
+    //           latitude: target.lat,
+    //           longitude: target.lng
+    //         };
+    //         this.showLoadingView();
+    //         this.onReload();
+    //       }
+    //     });
+    //
+    //     this.map.setMyLocationEnabled(true);
+  }
+
+  animateMap() {
+    this.map.animateCamera({
+      target: { lat: 37.422359, lng: -122.084344 },
+      zoom: 17,
+      tilt: 60,
+      bearing: 140,
+      duration: 5000,
+      padding: 0  // default = 20px
+    }).then(() => {
+      alert("Camera target has been changed");
+    });
   }
 
   private getCurrentPosition() {
@@ -333,38 +378,38 @@ export class PlacesPage extends BasePage {
     // this.onMove();
   }
 
-//   onMove() {
-// // Options: throw an error if no update is received every 30 seconds.
-//     this.geolocation.watchPosition({
-//       maximumAge: 3000,
-//       timeout: 3000,
-//       enableHighAccuracy: true
-//     }).filter((p) => p.coords !== undefined).subscribe(position => {
-//       let paramsClone = {...this.params};
-//       paramsClone.distance = this.radius;
-//       paramsClone.location = position.coords;
-//
-//       Place.loadNearPlaces(paramsClone).then(place => {
-//         if (place && place[0]) {
-//           let myDistance = place[0].distance(paramsClone.location, 'none');
-//           let radius = place[0].attributes.radius;
-//           let audioURL = place[0]['audio_' + this.lang].url();
-//           if (this.nearAudio[0] != audioURL && myDistance <= radius) {
-//             this.nearAudio = [audioURL];
-//             this.videogularApi.getDefaultMedia().loadMedia();
-//           }
-//         }
-//       });
-//     });
-//   }
+  //   onMove() {
+  // // Options: throw an error if no update is received every 30 seconds.
+  //     this.geolocation.watchPosition({
+  //       maximumAge: 3000,
+  //       timeout: 3000,
+  //       enableHighAccuracy: true
+  //     }).filter((p) => p.coords !== undefined).subscribe(position => {
+  //       let paramsClone = {...this.params};
+  //       paramsClone.distance = this.radius;
+  //       paramsClone.location = position.coords;
+  //
+  //       Place.loadNearPlaces(paramsClone).then(place => {
+  //         if (place && place[0]) {
+  //           let myDistance = place[0].distance(paramsClone.location, 'none');
+  //           let radius = place[0].attributes.radius;
+  //           let audioURL = place[0]['audio_' + this.lang].url();
+  //           if (this.nearAudio[0] != audioURL && myDistance <= radius) {
+  //             this.nearAudio = [audioURL];
+  //             this.videogularApi.getDefaultMedia().loadMedia();
+  //           }
+  //         }
+  //       });
+  //     });
+  //   }
 
   goToPlace(place) {
-    this.navigateTo('PlaceDetailPage', {place: place, places: this.places, category: this.params.category});
+    this.navigateTo('PlaceDetailPage', { place: place, places: this.places, route: this.params.route });
     console.log("PlaceGoToPlace(place): ", this.places);
   }
 
 
-//-------Date Sliders---------
+  //-------Date Sliders---------
   selectYear(selectedYearStory) {
     this.yearSelectionSlider.selectedYear = selectedYearStory;
 
@@ -382,20 +427,20 @@ export class PlacesPage extends BasePage {
   }
 
   private filterStoriesByYear(selectedYearStory: any) {
-    var filteredStories = selectedYearStory ? this.allDatabaseStories.filter((story) => {
-      return story.startPeriod.getFullYear() >= selectedYearStory;
+    var filteredStories = selectedYearStory ? this.routeDatabaseStories.filter((story) => {
+      return story.attributes.startPeriod.getFullYear() >= selectedYearStory;
       // return story.startPeriod.getFullYear() >= selectedYearStory && story.endPeriod.getFullYear() <= selectedYearStory;
-    }) : this.allDatabaseStories;
+    }) : this.routeDatabaseStories;
 
     for (let lang of Object.keys(this.formatedStories)) {
       this.formatedStories[lang] = [];
       // var filteredStoriesSort = filteredStories.sort(function(a, b){return a.name.slice(0,2) - b.name.slice(0,2)})
       for (let story of filteredStories) {
         var tempObject: any = {};
-        tempObject.name = story.name;
-        tempObject.audio = story['audio_' + lang];
-        tempObject.startPeriod = story.startPeriod;
-        tempObject.endPeriod = story.endPeriod;
+        tempObject.name = story.attributes.name;
+        tempObject.audio = story.attributes['audio_' + lang];
+        tempObject.startPeriod = story.attributes.startPeriod;
+        tempObject.endPeriod = story.attributes.endPeriod;
         this.formatedStories[lang].push(tempObject);
       }
       this.formatedStories[lang] = this.formatedStories[lang].sort(function (a, b) {
@@ -426,8 +471,8 @@ export class PlacesPage extends BasePage {
   }
 
   loadRoutePlaces() {
-    Category.getPlacesRelation(this.params.category).then(data => {
-      this.categoryDatabasePlaces = data;
+    Route.getPlacesRelation(this.params.route).then(data => {
+      this.routeDatabasePlaces = data;
       if (this.platform.is('cordova')) {
         this.addPlacesMarkers(data);
       }
@@ -444,29 +489,42 @@ export class PlacesPage extends BasePage {
     });
   }
 
+  // loadStoriesRelation() {
+  //   Route.getStoriesRelation(this.params.route).then(data => {
+  //     this.routeDatabaseStories = data;
+  //     if (this.platform.is('cordova')) {
+  //       this.addPlacesMarkers(data);
+  //     }
+  //     this.storiesRelation = data;
+
+  //     if (this.storiesRelation.length) {
+  //       this.showContentView();
+  //     } else {
+  //       this.showEmptyView();
+  //     }
+
+  //   }, error => {
+  //     this.showErrorView();
+  //   });
+  // }
+
   reLoadPlacesSortDate() {
-    var filteredPlace = this.yearSelectionSlider.selectedYear ? this.categoryDatabasePlaces.filter((place) => {
+    var filteredPlace = this.yearSelectionSlider.selectedYear ? this.routeDatabasePlaces.filter((place) => {
       return place.startPeriod.getFullYear() >= this.yearSelectionSlider.selectedYear;
-    }) : this.categoryDatabasePlaces;
+    }) : this.routeDatabasePlaces;
 
     if (this.platform.is('cordova')) {
       this.addPlacesMarkers(filteredPlace);
     }
 
     this.places = filteredPlace;
-console.log("reLoadPlacesSortDate: ",this.places);
+    console.log("reLoadPlacesSortDate: ", this.places);
     if (this.places.length) {
       this.showContentView();
     } else {
       this.showEmptyView();
-      alert("There are no POI falling in this period !");
     }
   }
-
-  // private updateAudioURL(data) {
-  //   let audioURL = data[0]['audio_' + this.lang].url();
-  //   this.nearAudio = [audioURL];
-  // }
 
   addPlacesMarkers(places) {
 
@@ -478,8 +536,8 @@ console.log("reLoadPlacesSortDate: ",this.places);
         place.location.longitude
       );
 
-      let icon = (place.category && place.category.get('icon')) ? {
-        url: place.category.get('icon').url(),
+      let icon = (place.route && place.route.get('icon')) ? {
+        url: place.route.get('icon').url(),
         size: {
           width: 32,
           height: 32
@@ -498,7 +556,7 @@ console.log("reLoadPlacesSortDate: ",this.places);
       };
 
       this.map.addMarker(markerOptions).then((marker: Marker) => {
-        this.allMarkers.push({marker: marker});
+        this.allMarkers.push({ marker: marker });
         console.log("this.allMarkers", this.allMarkers.length);
         marker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
 
@@ -548,16 +606,16 @@ console.log("reLoadPlacesSortDate: ",this.places);
     this.places = [];
     this.params.page = 0;
     //TODO komentat
-//     const options: GeolocationOptions = {
-//       enableHighAccuracy: true,
-//       timeout: 10000
-//     };
-//     this.geolocation.getCurrentPosition(options).then(pos => {
-//       this.params.location = pos.coords;
-//     }, error => {
-//       this.showErrorView();
-//       this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(res => this.showToast(res));
-//     });
+    //     const options: GeolocationOptions = {
+    //       enableHighAccuracy: true,
+    //       timeout: 10000
+    //     };
+    //     this.geolocation.getCurrentPosition(options).then(pos => {
+    //       this.params.location = pos.coords;
+    //     }, error => {
+    //       this.showErrorView();
+    //       this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(res => this.showToast(res));
+    //     });
   }
 
   showCheckbox() {
@@ -590,7 +648,7 @@ console.log("reLoadPlacesSortDate: ",this.places);
         console.log('Checkbox data:', data);
         this.storage.playMode = data;
         this.playMode = data;
-        this.preference.playMode = this.playMode;
+        this.preference.playMode = data;
         // this.findAndPlayNextAudio();
       }
     });
@@ -610,8 +668,8 @@ console.log("reLoadPlacesSortDate: ",this.places);
           place.location.longitude
         );
 
-        let icon = (place.category && place.category.get('icon')) ? {
-          url: place.category.get('icon').url(),
+        let icon = (place.route && place.route.get('icon')) ? {
+          url: place.route.get('icon').url(),
           size: {
             width: 32,
             height: 32
@@ -625,7 +683,7 @@ console.log("reLoadPlacesSortDate: ",this.places);
           icon: icon,
           place: place,
           styles: {
-            maxWidth: '80%'
+            maxWidth: '60%'
           },
         };
 

@@ -26,7 +26,7 @@ export class WalkthroughPage {
   goToHome() {
     this.skipIntroPage = true;
     this.storage.skipIntroPage = this.skipIntroPage;
-    this.navCtrl.setRoot('CategoriesPage');
+    this.navCtrl.setRoot('RoutesPage');
   }
 
 }

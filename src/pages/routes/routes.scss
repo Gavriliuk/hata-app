@@ -1,4 +1,4 @@
-page-categories {
+page-routes {
 
   ion-item {
     &:first-child {
@@ -15,29 +15,29 @@ page-categories {
       border-radius: 4rem !important;
     }
   }
-  .iconCategory{
+  .iconRoute{
       display: inline-block;
       font-size: 2.2em;
       padding: 8px;
   }
 
-  .avatarCategory{
+  .avatarRoute{
      float:left;
    }
-  page-categories .iconCategory {
+  page-routes .iconRoute {
     display: inline-block;
     font-size: 1.8em;
     padding:2px !important;
   }
-  .divCategory{
+  .divRoute{
     padding: 3px;
   }
-  .itemCategory{
+  .itemRoute{
     margin-bottom:2px;
     height:64px !important;
     border-radius: 2px;
   }
-  .textCategory{
+  .textRoute{
     padding-top:17px;
   }
 }

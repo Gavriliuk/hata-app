@@ -1,4 +1,28 @@
 page-places {
+  #map {
+    width: 100%;
+    height: 91%; 
+    position: fixed;
+    background-color: #fbff14;
+  }
+// .no-scroll {
+//     scroll-content {
+//         overflow-y: hidden;
+//         overflow-x: hidden;
+//     }
+// }
+.scroll {
+    scroll-content {
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+}
+
+  .placesContent{
+    position:relative;
+    padding-top:0px !important;
+    margin-top:0px !important;
+  }
 
   ion-item {
     margin-bottom: 16px !important;
@@ -35,57 +59,6 @@ page-places {
   .item-ios-dark, .item-divider-ios-dark{
     height:3.7em;
   }
-  .ionContent{
-    position: relative;
-    max-width: 100%;
-    padding-top: 0px !important;
-    margin-top: 0px !important;
-    max-height: 95%;
-  }
-
-  .vgPlayer {
-    //height: 50px;
-    //background-color: #383838;
-  }
-  .scrum-bar {
-    padding-top: 18px;
-
-  }
-  vg-scrub-bar-current-time, vg-scrub-bar-buffering-time {
-    height: 20px;
-  }
-  vg-scrub-bar-current-time .background, vg-scrub-bar-buffering-time .background {
-    border-radius: 10px !important;
-    min-width: 20px;
-
-  }
-  .swiper-pagination-bullet-active{
-    background-color: #444444;
-  }
-  .placeHeader{
-    line-height:44px;
-    position: relative;
-    bottom:0px;
-  }
-  .placesContent{
-    background-color:#fff;
-    top:0px;
-  }
-  .map {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-  }
-
-  .fixed-content{
-    margin-top: 0px !important;
-    margin-bottom: 0px;
-  }
-  .scroll-content{
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-  }
-
   .ionSlides{
     height: 6.5em;
     display: block;
@@ -97,15 +70,15 @@ page-places {
     display: block;
     width: 100%;
   }
-
   .filters {
+
     ion-col {
       text-align: center;
       font-size: 1.6rem;
       line-height: 1.6rem;
 
       ion-icon {
-        color: #0b0b0b;
+        color: #bdbdbd;
       }
 
       &.col-with-arrow {
@@ -119,34 +92,45 @@ page-places {
       color: #000;
       margin: 0px;
       padding:0px;
-      //font-size: 1.6rem;
-      //line-height: 1.9rem;
     }
+
     .selected {
-      font-weight: 900;
-      background-color: rgba(74, 74, 74, 0.37);
-      line-height: 3.2em;
+        font-weight: 900;
+        background: #bdbdbdc7 !important;
+      line-height: 4em;
     }
   }
 
   .play-pause-btn {
     display: inline-block;
-    width: 69px;
-    height: 69px;
+    width: 2em;
+    height: 2.2em !important;
     box-shadow: 0 0 10px #999;
-    font-size: 2.3em;
-    border-radius: 50%;
+    font-size: 2.1em;
+    border-radius: 70%;
+    margin-bottom: 0.4em !important;
   }
+  .playPlaces{
+    margin-left:5px;
+  }
+.colVGplayer{
+  line-height:6em;
+}
+.sliderPOI{
+  position: fixed;
+  bottom: 7em;
+}
   .sliderDate{
     width: 65px !important;
     border-right: solid 1px rgba(0,0,0,0.06);
   }
+  
   .tolbarDateSlider{
-    width:100%;
+    width: 100%;
     height: 4em;
-    position: absolute;
+    position: fixed;
     z-index: 10;
-    border-bottom: solid 1px rgba(0,0,0,0.08);
+    border-bottom: solid 1px rgba(0, 0, 0, 0.09);
   }
   .swiper-slide:last-child {
     border-right: none;
@@ -169,6 +153,7 @@ page-places {
     background-color: rgba(0, 0, 0, 0);
   }
 
+
   .year-row{
     height: 4em;
     width:100%;
@@ -176,16 +161,48 @@ page-places {
     z-index: 10;
   }
   vg-player{
-    height: 5.5em;
-    background-color: transparent !important;
-  }
-  ion-footer{
-    position: absolute;
-    background-color: transparent !important;
+    height: 5.9em;
+    background-color: rgba(0, 0, 0, 0)!important;
+    border-color: rgba(0, 0, 0, 0)!important;
   }
   .header-md::after, .tabs-md[tabsPlacement="top"] > .tabbar::after, .footer-md::before,
   .tabs-md[tabsPlacement="bottom"] > .tabbar::before{
     width:auto;
+  }
+
+  .scrum-bar {
+    padding-top: 18px;
+
+  }
+  vg-scrub-bar-current-time, vg-scrub-bar-buffering-time {
+    height: 20px;
+  }
+  vg-scrub-bar-current-time .background, vg-scrub-bar-buffering-time .background {
+    border-radius: 10px !important;
+    min-width: 20px;
+
+  }
+  .swiper-pagination-bullet-active{
+    background-color: #bbbbbb;
+  }
+ 
+  .swiper-slide:last-child {
+    border-right: none;
+  }
+
+  .skip-btn {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 0 10px #999;
+  }
+  .mapFooter{
+    bottom:0px;
+    position:fixed;
+    width:100%;
+
   }
 
 }

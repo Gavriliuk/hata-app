@@ -1,6 +1,6 @@
 <ion-header class="placeHeader">
   <ion-navbar color="primary">
-    <ion-title>{{ params.category["title_"+lang] }}</ion-title>
+    <ion-title>{{ params.route["title_"+lang] }}</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="showCheckbox()">
         <ion-icon name="ios-checkmark-circle"></ion-icon>
@@ -9,28 +9,28 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content class="ionContent" scroll="false">
-  <!--<ion-content #container class="placesContent" scroll="false" >-->
-  <div class="tolbarDateSlider">
-    <ion-row class="filters year-row">
-      <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
-        <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
-      </ion-col>
-
-      <ion-col no-padding col-10>
-        <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
-          <ion-slide class="sliderDate" (click)="selectYear(period)"
-                     *ngFor="let period of yearSelectionSlider.periods">
-            <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
-          </ion-slide>
-        </ion-slides>
-      </ion-col>
-      <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
-        <ion-icon *ngIf="yearSelectionSlider.showRightButton" name="arrow-forward"></ion-icon>
-      </ion-col>
-    </ion-row>
-  </div>
-  <div id="map" class="map" #map showWhen="android,ios"></div>
+<ion-content class="placesContent">
+    <div class="tolbarDateSlider">
+        <ion-row class="filters year-row">
+          <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
+            <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
+          </ion-col>
+    
+          <ion-col no-padding col-10>
+            <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
+              <ion-slide class="sliderDate" (click)="selectYear(period)"
+                         *ngFor="let period of yearSelectionSlider.periods">
+                <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
+              </ion-slide>
+            </ion-slides>
+          </ion-col>
+          <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
+            <ion-icon *ngIf="yearSelectionSlider.showRightButton" name="arrow-forward"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </div>
+      
+  <div id="map" showWhen="android,ios"></div>
   <!--<img src="assets/img/slide-5.png" height="700px"/>-->
   <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core"></empty-view>
 
@@ -41,42 +41,33 @@
   <empty-view *ngIf="isEmptyViewVisible" icon="map"
               [text]="'EMPTY_PLACES' | translate">
   </empty-view>
-</ion-content>
 
-<ion-footer>
+<div class="sliderPOI">
+    <ion-slides *ngIf="!listeningPOI" pager class="ionSlides">
+        <ion-slide *ngFor="let place of places">
+          <ion-item (tap)="goToPlace(place)" color="dark" no-lines>
+            <ion-thumbnail item-left>
+              <img src="{{place.imageThumb.url()}}" offset="100"
+                                 [lazyLoad]="place.imageThumb.url()">
+            </ion-thumbnail>
+            <h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>
+            <p>{{ place["description_"+lang] }}</p>
+            <ion-note ion-text color="light" item-right>
+              {{ place.distance(params.location, params.unit) }}
+            </ion-note>
+          </ion-item>
+        </ion-slide>
+      </ion-slides>
+</div>
 
-  <!--<ion-slides *ngIf="!listeningPOI" pager class="ionSlides">-->
-    <!--<ion-slide *ngFor="let place of places">-->
-      <!--<ion-item (tap)="goToPlace(place)" color="dark" no-lines>-->
-        <!--<ion-thumbnail item-left>-->
-          <!--<img src="{{place.imageThumb.url()}}" offset="100"-->
-                             <!--[lazyLoad]="place.imageThumb.url()">-->
-        <!--</ion-thumbnail>-->
-        <!--<h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>-->
-        <!--<p>{{ place["description_"+lang] }}</p>-->
-        <!--<ion-note ion-text color="light" item-right>-->
-          <!--{{ place.distance(params.location, params.unit) }}-->
-        <!--</ion-note>-->
-      <!--</ion-item>-->
-    <!--</ion-slide>-->
-  <!--</ion-slides>-->
-
-  <!--<div *ngIf="listeningPOI">-->
-    <!--<ion-slides pager>-->
-      <!--<ion-slide *ngFor="let image of listeningPOI.images">-->
-        <!--<img [src]="getFileURL(image.name())" offset="100"-->
-             <!--[lazyLoad]="getFileURL(image.name())" />-->
-      <!--</ion-slide>-->
-    <!--</ion-slides>-->
-    <!--<div text-center>{{listeningPOI["title_"+lang]}}</div>-->
-  <!--</div>-->
+<div class="mapFooter">
   <div>{{currentAudio.type}}: {{currentAudio.title}}</div>
   <div style="font-size:12px;">Period :{{currentAudio.period}}</div>
 
-  <vg-player class="vgPlayerMap" (onPlayerReady)="onPlayerReady($event)">
+  <vg-player (onPlayerReady)="onPlayerReady($event)">
     <ion-grid>
-      <ion-row align-items-center style="height: 100%">
-        <ion-col text-center>
+      <ion-row align-items-center style="line-height: 23em">
+        <ion-col text-center class="colVGplayer">
           <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay"
                   (click)="changePlayBackRate()">
             <p style="text-transform: lowercase;">{{playBackValues[playBackRateIndex]}}x</p>
@@ -89,7 +80,7 @@
           <!-- Play/Pause -->
           <button ion-button class="play-pause-btn" color="primary" (click)="videogularApi.play()"
                   [disabled]="!videogularApi.canPlay" *ngIf="videogularApi && videogularApi.state!='playing'">
-            <ion-icon name="play"></ion-icon>
+            <ion-icon class="playPlaces" name="play"></ion-icon>
           </button>
           <button ion-button class="play-pause-btn" color="secondary" (click)="videogularApi.pause()"
                   [disabled]="!videogularApi.canPlay" *ngIf="videogularApi && videogularApi.state=='playing'">
@@ -110,4 +101,7 @@
     </audio>
 
   </vg-player>
-</ion-footer>
+</div>
+</ion-content>
+
+

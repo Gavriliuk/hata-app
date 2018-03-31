@@ -15,7 +15,7 @@ export class SettingsPage extends BasePage {
   storage: LocalStorage;
   events: Events;
   preference: Preference;
-  filterCategory: string;
+  filterRoute: string;
   constructor(private injector: Injector,
               localStorage: LocalStorage,
               events: Events,
@@ -32,7 +32,7 @@ export class SettingsPage extends BasePage {
     this.storage.radius.then(radius => this.settings.radius = radius).catch((e) => console.log(e));
     this.storage.mapStyle.then(mapStyle => this.settings.mapStyle = mapStyle).catch((e) => console.log(e));
     this.storage.distance.then(distance => this.settings.distance = distance).catch((e) => console.log(e));
-    // this.storage.filterCategory.then(filterCategory => this.settings.filterCategory = filterCategory).catch((e) => console.log(e));
+    // this.storage.filterRoute.then(filterRoute => this.settings.filterRoute = filterRoute).catch((e) => console.log(e));
   }
 
   enableMenuSwipe() {
@@ -55,9 +55,9 @@ export class SettingsPage extends BasePage {
     this.preference.radius = this.settings.radius;
   }
 
-  // onChangeFilterCategory() {
-  //   this.storage.filterCategory = this.settings.filterCategory;
-  //   this.preference.filterCategory = this.settings.filterCategory;
+  // onChangeFilterRoute() {
+  //   this.storage.filterRoute = this.settings.filterRoute;
+  //   this.preference.filterRoute = this.settings.filterRoute;
   // }
 
   onChangeUnit() {

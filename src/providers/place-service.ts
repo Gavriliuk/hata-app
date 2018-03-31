@@ -55,11 +55,11 @@ export class Place extends Parse.Object {
       subQueryTwo.doesNotExist('expiresAt');
 
       query = Parse.Query.or(subQuery, subQueryTwo);
-      query.include('category');
+      query.include('route');
       query.equalTo('isApproved', true);
 
-      if (params.category) {
-        query.equalTo('category', params.category);
+      if (params.route) {
+        query.equalTo('route', params.route);
       }
 
       if (params.search && params.search !== '') {
@@ -105,7 +105,7 @@ export class Place extends Parse.Object {
       subQueryTwo.doesNotExist('expiresAt');
 
       query = Parse.Query.or(subQuery, subQueryTwo);
-      // query.include('category');
+      // query.include('route');
       query.equalTo('isApproved', true);
 
       if (params.except) {
@@ -219,23 +219,6 @@ export class Place extends Parse.Object {
   set description_en(val) {
     this.set('description_en', val);
   }
-
-  // get phone(): string {
-  //   return this.get('phone');
-  // }
-  //
-  // set phone(val) {
-  //   this.set('phone', val);
-  // }
-
-  // get website(): string {
-  //   return this.get('website');
-  // }
-  //
-  // set website(val) {
-  //   this.set('website', val);
-  // }
-
   get address_ru(): string {
     return this.get('address_ru');
   }
@@ -264,11 +247,11 @@ export class Place extends Parse.Object {
     this.set('radius', val);
   }
 
-  get category() {
-    return this.get('category');
+  get route() {
+    return this.get('route');
   }
-  set category(val) {
-    this.set('category', val);
+  set route(val) {
+    this.set('route', val);
   }
 
   get images() {

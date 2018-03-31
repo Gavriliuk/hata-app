@@ -9,7 +9,7 @@ import { VgControlsModule } from 'videogular2/controls';
 import { VgOverlayPlayModule } from 'videogular2/overlay-play';
 import { VgBufferingModule } from 'videogular2/buffering';
 
-import { Category } from '../providers/categories';
+import { Route } from '../providers/routes';
 import { Place } from '../providers/place-service';
 import { Review } from '../providers/review-service';
 import { ParseFile } from '../providers/parse-file-service';
@@ -75,7 +75,7 @@ export function HttpLoaderFactory(http: Http) {
   entryComponents: [
     MyApp
   ],
-  providers: [Category, Place, ParseFile, Review, LocalStorage, User,
+  providers: [Route, Place, ParseFile, Review, LocalStorage, User,
     StatusBar,
     SplashScreen,
     Diagnostic,

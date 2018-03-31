@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { CategoriesPage } from './categories';
+import { RoutesPage } from './routes';
 import { SharedModule } from '../../shared.module';
 
 @NgModule({
   declarations: [
-    CategoriesPage,
+    RoutesPage,
   ],
   imports: [
-    IonicPageModule.forChild(CategoriesPage),
+    IonicPageModule.forChild(RoutesPage),
     SharedModule
   ],
   exports: [
-    CategoriesPage
+    RoutesPage
   ]
 })
-export class CategoriesPageModule {}
+export class RoutesPageModule {}

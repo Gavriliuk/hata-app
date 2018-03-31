@@ -7,7 +7,7 @@
       </button>
     </ion-buttons>
     <ion-title center>
-      {{route.title}}
+      {{routeModal.title}}
     </ion-title>
  </ion-toolbar>
 </ion-header>
@@ -16,12 +16,12 @@
   <ion-list text-center>
     <ion-item style="padding-left:0px;" color="primary">
       <p class="textAddReviw" ion-text>
-        {{route.information}}
+        {{routeModal.information}}
       </p>
     </ion-item>
 
       <img src="assets/img/avatar.png" offset="100"
-           src="http://maps.googleapis.com/maps/api/staticmap?center={{route.center_map}}&sensor=false&{{markers}}&zoom={{mapZoom}}&format=png&maptype=roadmap&size=800x590&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
+           src="http://maps.googleapis.com/maps/api/staticmap?center={{routeModal.center_map}}&sensor=false&{{markers}}&zoom={{mapZoom}}&format=png&maptype=roadmap&size=800x590&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
            ng-reflect-lazy-image="http://maps.googleapis.com/map"
            ng-reflect-scroll-target="[object HTMLDivElement]" ng-reflect-offset="100" class="ng-lazyloaded">
 <!--Key Map Dromos Valentin "&size=600x350&key=AIzaSyCJT6L8B515TjUQFPKKckPzORDWzV2FLZ8""-->

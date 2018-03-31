@@ -3,7 +3,7 @@ import { Component, Injector } from '@angular/core';
 import { Events, ModalController} from 'ionic-angular';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { Diagnostic } from '@ionic-native/diagnostic';
-import { Category } from '../../providers/categories';
+import { Route } from '../../providers/routes';
 import { BasePage } from '../base-page/base-page';
 import { User } from '../../providers/user-service';
 import {LocalStorage} from '../../providers/local-storage';
@@ -11,11 +11,11 @@ import {Place} from '../../providers/place-service';
 
 @IonicPage()
 @Component({
-  selector: 'page-categories',
-  templateUrl: 'categories.html'
+  selector: 'page-routes',
+  templateUrl: 'routes.html'
 })
-export class CategoriesPage extends BasePage {
-  private categories: Array<Category>;
+export class RoutesPage extends BasePage {
+  private routes: Array<Route>;
   place: Place;
   places: Place[];
   lang: any;
@@ -23,7 +23,7 @@ export class CategoriesPage extends BasePage {
   audio_ru: any;
   audio_ro: any;
   audio_en: any;
-
+  routePlaces:any=[];
   constructor(injector: Injector,
               private storage: LocalStorage,
               private events: Events,
@@ -32,9 +32,12 @@ export class CategoriesPage extends BasePage {
               public modalCtrl: ModalController) {
     super(injector);
 
-    Place.load(this.navParams).then(places => {
-      this.places = places;
-    });
+
+
+
+    // Place.load(this.navParams).then(places => {
+    //   this.places = places;
+    // });
 
     this.locationAccuracy.canRequest().then((canRequest: boolean) => {
 
@@ -70,16 +73,16 @@ export class CategoriesPage extends BasePage {
     this.loadData();
   }
 
-  goToPlaces(category) {
-    this.navigateTo('PlacesPage', category);
-console.log("GoToPlaces(category): ",category);
+  goToPlaces(route) {
+    this.navigateTo('PlacesPage', route);
+console.log("GoToPlaces(route): ",route);
   }
 
   loadData() {
-    Category.load().then(data => {
-      this.categories = data;
+    Route.load().then(data => {
+      this.routes = data;
 
-      if (this.categories.length) {
+      if (this.routes.length) {
         this.showContentView();
       } else {
         this.showEmptyView();
@@ -105,8 +108,25 @@ console.log("GoToPlaces(category): ",category);
     this.loadData();
   }
 
-  openModalAddReviewRoute(title, information, center_map, waypoints, start_route, end_route) {
-    let modal = this.modalCtrl.create('AddReviewPage', {title, information, center_map,start_route, end_route, waypoints, places: this.places});
-    modal.present();
+  
+
+  openModalAddReviewRoute(route) {
+  
+    Route.getPlacesRelation(route).then(data => {
+      this.routePlaces = data;
+      let modal = this.modalCtrl.create('AddReviewPage', {route:route, places: this.routePlaces});
+      modal.present();
+
+  }, error => {
+    this.showErrorView();
+  });
+    
   }
+
+  // openModalAddReviewRoute(title, information, center_map, waypoints, start_route, end_route) {
+  //   let modal = this.modalCtrl.create('AddReviewPage', {title, information, center_map,start_route, end_route, waypoints, places: this.places});
+  //   modal.present();
+  // }
+
+
 }

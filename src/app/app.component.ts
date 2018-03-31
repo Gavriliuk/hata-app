@@ -61,8 +61,8 @@ export class MyApp {
       this.trans = values;
 
       this.pages = [
-        { title: values.ROUTES, icon: 'pricetag', component: 'CategoriesPage' },
-        // { title: values.CATEGORIES, icon: 'pricetag', component: 'CategoriesPage' },
+        { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
+        // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
         // { title: values.MAP, icon: 'map', component: 'MapPage' },
         // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },
         // { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },
@@ -107,7 +107,7 @@ export class MyApp {
 
       this.storage.skipIntroPage.then((skipIntroPage) => {
         //--------Open First Page Map---------------
-        this.rootPage = skipIntroPage ? 'CategoriesPage' : 'WalkthroughPage';
+        this.rootPage = skipIntroPage ? 'RoutesPage' : 'WalkthroughPage';
       }).catch((e) => console.log(e));
 
       this.buildMenu();

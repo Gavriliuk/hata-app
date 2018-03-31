@@ -30,8 +30,8 @@ export class Story extends Parse.Object {
     return this.get('name');
   }
 
-  get category() {
-    return this.get('category');
+  get route() {
+    return this.get('route');
   }
 
   get audio_ru(): string {

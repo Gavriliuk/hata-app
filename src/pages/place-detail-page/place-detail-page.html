@@ -50,7 +50,7 @@
         <ion-col text-center class="colDetailVGplayer">
           <button ion-button class="skip-btn" color="primary" [disabled]="!api.canPlay"
                   (click)="changePlayBackRate()">
-            <p style="text-transform: lowercase;">{{playBackValue[playBackIndex]}}x</p>
+            <p style="text-transform: lowercase;">{{playBackValues[playBackRateIndex]}}x</p>
           </button>
           <!-- Play/Pause -->
           <button ion-button class="play-pause-btn" color="primary" (click)="api.play()"

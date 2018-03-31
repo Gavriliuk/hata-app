@@ -15,7 +15,7 @@
           <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
             <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
           </ion-col>
-    
+
           <ion-col no-padding col-10>
             <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
               <ion-slide class="sliderDate" (click)="selectYear(period)"
@@ -29,7 +29,7 @@
           </ion-col>
         </ion-row>
       </div>
-      
+
   <div id="map" showWhen="android,ios"></div>
   <!--<img src="assets/img/slide-5.png" height="700px"/>-->
   <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core"></empty-view>

@@ -10,7 +10,7 @@ export class AppConfig {
     // return 'https://erepo.serveo.net/parse/';
 
      // ----------Setting server-----------------------------
-     return 'https://016b08fd.ngrok.io/parse/';
+     return 'http://46.101.144.21:1338/parse/';
 
     //----------Last Setting Ngrok server Valentin----------
     //  return 'https://erepo.serveo.net/parse/';
@@ -46,8 +46,9 @@ export class AppConfig {
 
   /* Radius: */
   public static get DEFAULT_RADIUS(): string {
-    return '5';
-    // return '0.5';
+    // return '5';
+    return '0.05';
+
   }
 
   /* Map style: satellite or roadmap */

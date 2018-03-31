@@ -35,8 +35,8 @@ export class PlaceDetailPage extends BasePage {
   zoom:any;
   imageURL: any=[];
   api: any;
-  playBackValue: any[] = [1, 1.5, 2, 3, 4];
-  playBackIndex: any = 0;
+  playBackValues: any[];
+  playBackRateIndex: any;
 
   constructor(injector: Injector,
               private modalCtrl: ModalController,
@@ -54,10 +54,12 @@ export class PlaceDetailPage extends BasePage {
     this.initLocalStorage();
 
     this.place = this.navParams.data.place;
+    this.playBackValues = this.navParams.data.playBackValues;
+    this.playBackRateIndex = this.navParams.data.playBackRateIndex;
     this.unit = preference.unit;
 
 //TODO add image fileURL (podstaviti formulu urlServera i name img kak s videom)
-    let imagesArray = this.place.images;
+    let imagesArray = this.place.original_images;
     imagesArray.forEach(data => {
       let fileName = data.name();
       console.log("fileName :",fileName);
@@ -107,14 +109,11 @@ loadPlace(){
        this.audio = [this.getFileURL(audioPOIURL)];
 }
 
-  getFileURL(fileName){
-    return Parse.serverURL+'files/'+Parse.applicationId+'/'+fileName;
-  }
 //-----Auto Play player-------
 onPlayerReadyDetail(api) {
     this.api = api;
     this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(() => {
-        this.api.playbackRate = this.playBackValue[this.playBackIndex];
+        this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
       }
     );
     this.api.getDefaultMedia().subscriptions.ended.subscribe(
@@ -124,8 +123,8 @@ onPlayerReadyDetail(api) {
     );
   }
   changePlayBackRate() {
-    this.playBackIndex = this.playBackIndex == this.playBackValue.length - 1 ? 0 : ++this.playBackIndex;
-    this.api.playbackRate = this.playBackValue[this.playBackIndex];
+    this.playBackRateIndex = this.playBackRateIndex == this.playBackValues.length - 1 ? 0 : ++this.playBackRateIndex;
+    this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
   }
 
   enableMenuSwipe() {

@@ -261,6 +261,13 @@ export class Place extends Parse.Object {
   set images(val) {
     this.set('images', val);
   }
+  get original_images() {
+    return this.get('original_images');
+  }
+
+  set original_images(val) {
+    this.set('original_images', val);
+  }
 
   get location() {
     return this.get('location');

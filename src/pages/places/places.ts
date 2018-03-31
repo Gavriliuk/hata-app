@@ -95,10 +95,12 @@ export class PlacesPage extends BasePage {
     this.places = [];
     this.allMarkers = [];
   }
-  ionViewWillEnter() {
+
+  ionViewDidEnter() {
     this.findAndPlayNextAudio();
     console.log("ionViewDidEnter - start");
   }
+
   ionViewWillLeave() {
     this.videogularApi.pause();
   }
@@ -158,7 +160,7 @@ export class PlacesPage extends BasePage {
     Route.getStoriesRelation(this.params.route).then(data => {
       this.routeDatabaseStories = data;
       this.filterStoriesByYear(this.yearSelectionSlider.selectedYear);
-      this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
+      // this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
       this.yearSelectionSlider.selectedYear = this.currentAudio.selectedPeriodYear;
     }, error => {
       this.showErrorView();
@@ -191,85 +193,62 @@ export class PlacesPage extends BasePage {
           enableHighAccuracy: true,
           timeout: 10000
         };
-        
-        // this.geolocation.getCurrentPosition(options).then(pos => {
-        
-          let paramsClone = { ...this.params };
+        let paramsClone = { ...this.params };
         paramsClone.distance = this.radius;
-        // paramsClone.location = pos.coords;
-        paramsClone.location = {
-          latitude: 47.0628917,
-          longitude: 28.8678522
-        };
-        paramsClone.unit = "km";
-        paramsClone.limit = 5;
-        paramsClone.except = this.listenedPOI;
-        paramsClone.selectedYear = this.yearSelectionSlider.selectedYear;
-        let nearestPlace = this.NearestPlace(this.routeDatabasePlaces, this.listenedPOI, paramsClone.location.latitude, paramsClone.location.longitude, paramsClone.distance)
-        if (!nearestPlace) {
-          this.playNextStory();
-        } else {
-          let myDistance = nearestPlace.distance(paramsClone.location, 'none');
-          let radius = nearestPlace.radius;
-          let audioPOIName = nearestPlace['audio_' + this.lang].name();
-          let audioPOIURL = this.getFileURL(audioPOIName);
-          let title = nearestPlace['title_' + this.lang];
-          this.listeningPOI = nearestPlace;
-
-          this.currentAudio.src = audioPOIURL;
-          this.currentAudio.title = title;
-          this.currentAudio.type = 'POI';
-          this.listenedPOI.push(nearestPlace.id);
-          this.storage.listenedPOI = this.listenedPOI;
-          this.goToPlace(nearestPlace);
-
-        }
-      // }); 
-      break;
+        // paramsClone.location = {
+        //   latitude: 47.0628917,
+        //   longitude: 28.8678522
+        // };
+        this.geolocation.getCurrentPosition(options).then(pos => {
+          paramsClone.location = pos.coords;
+          this.playNextPoi(this.playMode, paramsClone);
+        });
+        break;
       }
       case "poiOnly": {
-        //TODO onMove
+        const options: GeolocationOptions = {
+          enableHighAccuracy: true,
+          timeout: 10000
+        };
+        let paramsClone = { ...this.params };
+        paramsClone.distance = this.radius;
+        // paramsClone.location = {
+        //   latitude: 47.0628917,
+        //   longitude: 28.8678522
+        // };
+        this.geolocation.getCurrentPosition(options).then(pos => {
+          paramsClone.location = pos.coords;
+          this.playNextPoi(this.playMode, paramsClone);
+        });
         break;
       }
       case "storyOnly": {
         this.playNextStory();
         break;
       }
-      default: {
-        // this.playNextStory();
-      }
     }
   }
 
-  // Convert Degress to Radians
-  Deg2Rad(deg) {
-    return deg * Math.PI / 180;
-  }
+  playNextPoi(playMode, paramsClone) {
+    paramsClone.selectedYear = this.yearSelectionSlider.selectedYear;
+    let nearestPlace = this.NearestPlace(this.routeDatabasePlaces, this.listenedPOI, paramsClone.location.latitude, paramsClone.location.longitude, paramsClone.distance)
+    if (nearestPlace) {
+      // TODO To be deleted
+      // let audioPOIName = nearestPlace['audio_' + this.lang].name();
+      // let audioPOIURL = this.getFileURL(audioPOIName);
+      // let title = nearestPlace['title_' + this.lang];
+      // this.listeningPOI = nearestPlace;
 
-  PythagorasEquirectangular(lat1, lon1, lat2, lon2, radius) {
-    lat1 = this.Deg2Rad(lat1);
-    lat2 = this.Deg2Rad(lat2);
-    lon1 = this.Deg2Rad(lon1);
-    lon2 = this.Deg2Rad(lon2);
-    // var R = 6371; // km
-    var x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
-    var y = (lat2 - lat1);
-    var d = Math.sqrt(x * x + y * y) * radius;
-    return d;
-  }
-
-  NearestPlace(places, listened, latitude, longitude, distance) {
-    var mindif = distance;
-    var closestIndex;
-
-    for (let index = 0; index < places.length; ++index) {
-      var dif = this.PythagorasEquirectangular(latitude, longitude, places[index].location.latitude, places[index].location.longitude, places[index].radius);
-      if (dif < mindif && listened.indexOf(places[index].id) == -1) {
-        closestIndex = index;
-        mindif = dif;
-      }
+      // this.currentAudio.src = audioPOIURL;
+      // this.currentAudio.title = title;
+      // this.currentAudio.type = 'POI';
+      // TODO ---
+      this.listenedPOI.push(nearestPlace.id);
+      this.storage.listenedPOI = this.listenedPOI;
+      this.goToPlace(nearestPlace);
+    } else if (playMode == "storyPoi") {
+      this.playNextStory();
     }
-    return places[closestIndex];
   }
 
   changePlayBackRate() {
@@ -279,11 +258,13 @@ export class PlacesPage extends BasePage {
 
   private getAudioFromStoriesByIndex(index) {
     let audio = { 'src': null, 'title': null, 'type': null, 'period': null, 'selectedPeriodYear': null };
-    audio.src = this.getFileURL(this.formatedStories[this.lang][index].audio.name());
-    audio.title = this.formatedStories[this.lang][index].name;
-    audio.type = "Story";
-    audio.period = new Date(this.formatedStories[this.lang][index].startPeriod).getFullYear() + " - " + new Date(this.formatedStories[this.lang][index].endPeriod).getFullYear();
-    audio.selectedPeriodYear = Number(new Date(this.formatedStories[this.lang][index].startPeriod).getFullYear());
+    if (this.formatedStories[this.lang] && this.formatedStories[this.lang][index]) {
+      audio.src = this.getFileURL(this.formatedStories[this.lang][index].audio.name());
+      audio.title = this.formatedStories[this.lang][index].name;
+      audio.type = "Story";
+      audio.period = new Date(this.formatedStories[this.lang][index].startPeriod).getFullYear() + " - " + new Date(this.formatedStories[this.lang][index].endPeriod).getFullYear();
+      audio.selectedPeriodYear = Number(new Date(this.formatedStories[this.lang][index].startPeriod).getFullYear());
+    }
     return audio;
   }
 
@@ -375,36 +356,26 @@ export class PlacesPage extends BasePage {
       this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(str => this.showToast(str));
       this.showErrorView();
     });
-    // this.onMove();
+    this.onMove();
   }
 
-  //   onMove() {
-  // // Options: throw an error if no update is received every 30 seconds.
-  //     this.geolocation.watchPosition({
-  //       maximumAge: 3000,
-  //       timeout: 3000,
-  //       enableHighAccuracy: true
-  //     }).filter((p) => p.coords !== undefined).subscribe(position => {
-  //       let paramsClone = {...this.params};
-  //       paramsClone.distance = this.radius;
-  //       paramsClone.location = position.coords;
-  //
-  //       Place.loadNearPlaces(paramsClone).then(place => {
-  //         if (place && place[0]) {
-  //           let myDistance = place[0].distance(paramsClone.location, 'none');
-  //           let radius = place[0].attributes.radius;
-  //           let audioURL = place[0]['audio_' + this.lang].url();
-  //           if (this.nearAudio[0] != audioURL && myDistance <= radius) {
-  //             this.nearAudio = [audioURL];
-  //             this.videogularApi.getDefaultMedia().loadMedia();
-  //           }
-  //         }
-  //       });
-  //     });
-  //   }
+  onMove() {
+    // Options: throw an error if no update is received every 30 seconds.
+    this.geolocation.watchPosition({
+      timeout: 10000,
+      enableHighAccuracy: true
+    }).filter((p) => p.coords !== undefined).subscribe(position => {
+      if (this.playMode === "poiOnly" && this.videogularApi.state != 'playing') {
+        let paramsClone = { ...this.params };
+        paramsClone.distance = this.radius;
+        paramsClone.location = position.coords;
+        this.playNextPoi(this.playMode, paramsClone);
+      }
+    });
+  }
 
   goToPlace(place) {
-    this.navigateTo('PlaceDetailPage', { place: place, places: this.places, route: this.params.route });
+    this.navigateTo('PlaceDetailPage', { place: place, places: this.places, route: this.params.route, playBackValues: this.playBackValues, playBackRateIndex: this.playBackRateIndex });
     console.log("PlaceGoToPlace(place): ", this.places);
   }
 
@@ -466,10 +437,6 @@ export class PlacesPage extends BasePage {
     this.slides.slidePrev();
   }
 
-  getFileURL(fileName) {
-    return Parse.serverURL + 'files/' + Parse.applicationId + '/' + fileName;
-  }
-
   loadRoutePlaces() {
     Route.getPlacesRelation(this.params.route).then(data => {
       this.routeDatabasePlaces = data;
@@ -488,25 +455,6 @@ export class PlacesPage extends BasePage {
       this.showErrorView();
     });
   }
-
-  // loadStoriesRelation() {
-  //   Route.getStoriesRelation(this.params.route).then(data => {
-  //     this.routeDatabaseStories = data;
-  //     if (this.platform.is('cordova')) {
-  //       this.addPlacesMarkers(data);
-  //     }
-  //     this.storiesRelation = data;
-
-  //     if (this.storiesRelation.length) {
-  //       this.showContentView();
-  //     } else {
-  //       this.showEmptyView();
-  //     }
-
-  //   }, error => {
-  //     this.showErrorView();
-  //   });
-  // }
 
   reLoadPlacesSortDate() {
     var filteredPlace = this.yearSelectionSlider.selectedYear ? this.routeDatabasePlaces.filter((place) => {
@@ -624,21 +572,21 @@ export class PlacesPage extends BasePage {
 
     alert.addInput({
       type: 'radio',
-      label: 'Story-only',
+      label: 'Story Only',
       value: 'storyOnly',
       checked: this.playMode.indexOf('storyOnly') !== -1
     });
     alert.addInput({
       type: 'radio',
-      label: 'Story-POI',
+      label: 'Story & POI',
       value: 'storyPoi',
       checked: this.playMode.indexOf('storyPoi') !== -1
     });
     alert.addInput({
       type: 'radio',
-      label: 'POI-only',
+      label: 'POI Only',
       value: 'poiOnly',
-      disabled: true,
+      disabled: false,
       checked: this.playMode.indexOf('poiOnly') !== -1
     });
     alert.addButton('Cancel');

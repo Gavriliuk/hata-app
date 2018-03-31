@@ -1,7 +1,11 @@
 import { Injector } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { NavController, LoadingController, ToastController, NavParams,
-  AlertController, MenuController } from 'ionic-angular';
+import {
+  NavController, LoadingController, ToastController, NavParams,
+  AlertController, MenuController
+} from 'ionic-angular';
+import Parse from 'parse';
+
 
 export abstract class BasePage {
 
@@ -136,6 +140,42 @@ export abstract class BasePage {
 
   navigateTo(page: any, params: any = {}) {
     this.navCtrl.push(page, params);
+  }
+
+  // Convert Degress to Radians
+  Deg2Rad(deg) {
+    return deg * Math.PI / 180;
+  }
+
+  PythagorasEquirectangular(lat1, lon1, lat2, lon2, radius) {
+    lat1 = this.Deg2Rad(lat1);
+    lat2 = this.Deg2Rad(lat2);
+    lon1 = this.Deg2Rad(lon1);
+    lon2 = this.Deg2Rad(lon2);
+    var R = 6371; // km
+    var x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
+    var y = (lat2 - lat1);
+    var d = Math.sqrt(x * x + y * y) * R;
+    return d;
+  }
+
+  NearestPlace(places, listened, latitude, longitude, distance) {
+    var mindif = 99999;
+    var closestIndex;
+
+    for (let index = 0; index < places.length; ++index) {
+      var dif = this.PythagorasEquirectangular(latitude, longitude, places[index].location.latitude, places[index].location.longitude, distance);
+      //TODO think if it is working
+      if (dif < Number.parseFloat(places[index].radius) && dif < mindif && listened.indexOf(places[index].id) == -1) {
+        closestIndex = index;
+        mindif = dif;
+      }
+    }
+    return places[closestIndex];
+  }
+
+  getFileURL(fileName) {
+    return Parse.serverURL + 'files/' + Parse.applicationId + '/' + fileName;
   }
 
 }

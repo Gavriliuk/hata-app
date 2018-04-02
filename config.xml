@@ -98,8 +98,6 @@
     <allow-navigation href="http://192.168.1.101:8101" />
     <allow-navigation href="http://10.10.16.68:8100" />
     <allow-navigation href="http://172.31.148.45:8100" />
-    <engine name="ios" spec="4.5.4" />
-    <engine name="android" spec="6.3.0" />
     <plugin name="cordova-plugin-device" spec="1.1.6" />
     <plugin name="cordova-plugin-splashscreen" spec="4.0.3" />
     <plugin name="ionic-plugin-keyboard" spec="2.2.1" />
@@ -139,4 +137,6 @@
         <variable name="ANDROID_SUPPORT_VERSION" value="23.+" />
     </plugin>
     <allow-navigation href="http://172.31.189.145:8100" />
+    <engine name="ios" spec="4.5.4" />
+    <engine name="android" spec="6.3.0" />
 </widget>

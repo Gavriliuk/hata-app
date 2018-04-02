@@ -3,7 +3,8 @@ page-places {
     width: 100%;
     height: 91%; 
     position: fixed;
-    background-color: #fbff14;
+    background-color: #fff;
+    // background-color: #fbff14;
   }
 // .no-scroll {
 //     scroll-content {
@@ -103,10 +104,10 @@ page-places {
 
   .play-pause-btn {
     display: inline-block;
-    width: 2em;
-    height: 2.2em !important;
+    width: 2.1em;
+    height: 2.1em;
     box-shadow: 0 0 10px #999;
-    font-size: 2.1em;
+    font-size: 31px;
     border-radius: 70%;
     margin-bottom: 0.4em !important;
   }

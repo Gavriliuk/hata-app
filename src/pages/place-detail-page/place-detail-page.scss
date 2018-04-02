@@ -70,10 +70,10 @@ page-place-detail-page {
   }
   .play-pause-btn {
     display: inline-block;
-    width: 2em;
-    height: 2.2em !important;
+    width: 2.1em;
+    height: 2.1em;
     box-shadow: 0 0 10px #999;
-    font-size: 2.1em;
+    font-size: 31px;
     border-radius: 70%;
     margin-bottom: 0.4em !important;
   }
@@ -104,7 +104,7 @@ page-place-detail-page {
     box-shadow: 0 0 10px #999;
   }
   .swiper-pagination-bullet-active {
-    padding-bottom: 6px;
+    // padding-bottom: 6px;
     background-color: rgba(245, 61, 61, 0.51);
   }
 ion-content{

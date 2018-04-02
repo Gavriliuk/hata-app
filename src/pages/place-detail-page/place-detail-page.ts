@@ -37,6 +37,7 @@ export class PlaceDetailPage extends BasePage {
   api: any;
   playBackValues: any[];
   playBackRateIndex: any;
+  icon:any;
 
   constructor(injector: Injector,
               private modalCtrl: ModalController,
@@ -72,13 +73,13 @@ export class PlaceDetailPage extends BasePage {
     let mapZoom: any;
     let coordinates = [];
     this.waypoints = "";
-    this.zoom = 17;
+    this.zoom = 18;
     if (this.route.waypoints && this.route.waypoints !== "") {
       if(this.route.waypoints.indexOf('/') != -1){
         coordinates = this.route.waypoints.split('/');
         mapZoom = coordinates.length;
-        if(mapZoom >= 15){
-          this.zoom = 14;
+        if(mapZoom >= 25){
+          this.zoom = 16;
         }
         coordinates.forEach(data => {
           this.waypoints += "%7C" + data;
@@ -88,8 +89,9 @@ export class PlaceDetailPage extends BasePage {
       }
     }
     this.markers = "";
+    this.icon = this.route.icon.url();
     this.places.forEach(place => {
-      this.markers += "&markers=size:mid%7Ccolor:0xff8f2e%7C" + place.location.latitude + "," + place.location.longitude;
+      this.markers += "&markers=icon:"+this.icon+"%7C" + place.location.latitude + "," + place.location.longitude;
     });
   }
 

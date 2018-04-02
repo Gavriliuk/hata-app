@@ -10,13 +10,10 @@ export class AppConfig {
     // return 'https://erepo.serveo.net/parse/';
 
      // ----------Setting server-----------------------------
-     return 'http://46.101.144.21:1338/parse/';
-
-    //----------Last Setting Ngrok server Valentin----------
-    //  return 'https://erepo.serveo.net/parse/';
+    //  return 'http://46.101.144.21:1338/parse/';
 
    //----------This Setting Ngrok server Dromos-------------
-  //  return 'https://dromos.innovapp.eu/parse/';
+   return 'https://dromos.innovapp.eu/parse/';
   }
 
   /* Parse App ID  */

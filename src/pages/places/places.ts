@@ -406,6 +406,7 @@ export class PlacesPage extends BasePage {
     for (let lang of Object.keys(this.formatedStories)) {
       this.formatedStories[lang] = [];
       // var filteredStoriesSort = filteredStories.sort(function(a, b){return a.name.slice(0,2) - b.name.slice(0,2)})
+      
       for (let story of filteredStories) {
         var tempObject: any = {};
         tempObject.name = story.attributes.name;

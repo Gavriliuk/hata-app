@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {Storage} from '@ionic/storage';
+import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import { AsyncPipe } from '@angular/common';
 
 
@@ -8,7 +8,9 @@ export class LocalStorage {
 
   constructor(private storage: Storage) {
   }
-
+  getStorage() {
+    return this.storage;
+  }
   get skipIntroPage(): Promise<any> {
     return this.storage.get('skipIntroPage');
   }
@@ -33,7 +35,7 @@ export class LocalStorage {
     this.storage.set('radius', val);
   }
 
-   get mapStyle(): Promise<any> {
+  get mapStyle(): Promise<any> {
     return this.storage.get('mapStyle');
   }
 
@@ -78,7 +80,7 @@ export class LocalStorage {
     this.storage.set('selectedYear', val);
   }
 
-  get selectedYear():Promise<any>  {
+  get selectedYear(): Promise<any> {
     return this.storage.get('selectedYear');
   }
 
@@ -88,6 +90,28 @@ export class LocalStorage {
 
   set playMode(val) {
     this.storage.set('playMode', val);
+  }
+
+  setRouteValue(routeId, key, val) {
+    let allRouteValues = this.storage.get(routeId)
+    allRouteValues[key] = val;
+    this.storage.set(routeId, allRouteValues);
+  }
+  updateRouteValues(routeId, allRouteValues) {
+    this.storage.set(routeId, allRouteValues);
+  }
+
+  getRouteValue(routeId, key) {
+    return this.storage.get(routeId)[key];
+  }
+
+  async getRouteAllValues(routeId) {
+    //TODO get selectedYear from route
+    return await this.storage.get(routeId) || {
+      listenedPOI: [],
+      listenedStoryIndex: -1,
+      selectedYear: 1436
+    };
   }
 
   clearLocalStorage() {

@@ -20,7 +20,7 @@
             <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
               <ion-slide class="sliderDate" (click)="selectYear(period)"
                          *ngFor="let period of yearSelectionSlider.periods">
-                <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
+                <p [class.selected]="routeValues.selectedYear === period">{{period}}</p>
               </ion-slide>
             </ion-slides>
           </ion-col>

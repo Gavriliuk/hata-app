@@ -9,6 +9,7 @@ import Parse from 'parse';
 
 export abstract class BasePage {
 
+
   public isErrorViewVisible: boolean;
   public isEmptyViewVisible: boolean;
   public isContentViewVisible: boolean;
@@ -159,14 +160,13 @@ export abstract class BasePage {
     return d;
   }
 
-  NearestPlace(places, listened, latitude, longitude, distance) {
+  NearestPlace(places, listened, params) {
     var mindif = 99999;
     var closestIndex;
 
     for (let index = 0; index < places.length; ++index) {
-      var dif = this.PythagorasEquirectangular(latitude, longitude, places[index].location.latitude, places[index].location.longitude, distance);
-      //TODO think if it is working
-      if (dif < Number.parseFloat(places[index].radius) && dif < mindif && listened.indexOf(places[index].id) == -1) {
+      var dif = this.PythagorasEquirectangular(params.location.latitude, params.location.longitude, places[index].location.latitude, places[index].location.longitude, params.distance);
+      if (dif < Number.parseFloat(places[index].radius) && dif < mindif && listened.indexOf(places[index].id) == -1 && this.inSelectedPeriod(places[index], params.selectedYear)) {
         closestIndex = index;
         mindif = dif;
       }
@@ -176,6 +176,10 @@ export abstract class BasePage {
 
   getFileURL(fileName) {
     return Parse.serverURL + 'files/' + Parse.applicationId + '/' + fileName;
+  }
+
+  inSelectedPeriod(place, period) {
+    return Number(new Date(place.startPeriod).getFullYear()) <= period && Number(new Date(place.endPeriod).getFullYear()) >= period;
   }
 
 }

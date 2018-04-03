@@ -1,24 +1,51 @@
 .PHONY: run
 
 # certs and output
-OUTPUT_FILE=NearmeApp-Ionic2.apk
-ALIAS=REPLACE_WITH_YOUR_KEYSTORE_ALIAS
-KEYPASS=REPLACE_WITH_YOUR_KEYSTORE_PASSWORD
+OUTPUT_FILE=DROMOS-V4.5.0.apk
+ALIAS=dromos
+KEYPASS=dromos
 
 # Example: /Users/your_user/Dev/release_keystore.keystore
-KEYSTORE=REPLACE_WITH_YOUR_KEYSTORE_ALIAS
+KEYSTORE=Dromos.keystore
+ANDROID_PATH=/usr/local/Cellar/android-sdk/24.2
 
-UNSIGNED=platforms/android/build/outputs/apk/android-release-unsigned.apk
+UNSIGNED=platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
 
 # Replace with your package name defined in config.xml
-PACKAGE='com.quanlabs.nearmeapp'
+PACKAGE='eu.innovapp.app.dromos'
 
-# create a signed apk
-sign:
+# update android platform
+rm-add-android:
+	ionic cordova platform rm android
+	rm -rf platforms/android
+	ionic cordova platform add android@7.0.0
+
+# update ios platform
+rm-add-ios:
+	ionic cordova platform rm ios
+	rm -rf platforms/ios
+	ionic cordova platform add ios
+
+rm-add-node:
+	rm -rf node_modules
+	npm i
+
+full-update: rm-add-node rm-add-android rm-add-ios
+
+# create android signed apk
+build-android:
 	rm -f ${OUTPUT_FILE}
-	ionic cordova build android --prod --release
+	ionic cordova build android --release
 	jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore ${KEYSTORE} -storepass ${KEYPASS} ${UNSIGNED} ${ALIAS}
-	/Users/fer/Library/Android/sdk/build-tools/23.0.2/zipalign -v 4 ${UNSIGNED} ${OUTPUT_FILE}
+	${ANDROID_PATH}/build-tools/23.0.2/zipalign -v 4 ${UNSIGNED} ${OUTPUT_FILE}
+
+# run ios
+run-ios:
+	ionic cordova run ios --target "iPhone-6, 11.2" --livereload
+
+# create ios build
+build-ios:
+	ionic cordova build ios --release
 
 execute:
 	adb shell am start -n ${PACKAGE}/${PACKAGE}.MainActivity

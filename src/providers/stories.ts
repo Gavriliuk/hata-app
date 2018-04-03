@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import Parse from 'parse';
 
 
@@ -20,6 +20,28 @@ export class Story extends Parse.Object {
         reject(error);
       });
     });
+  }
+
+  static filterStoriesByYear(routeDatabaseStories, selectedYearStory) {
+    var filteredStories = selectedYearStory ? routeDatabaseStories.filter((story) => {
+      return story.attributes.startPeriod.getFullYear() >= selectedYearStory;
+    }) : routeDatabaseStories;
+    let formatedStories = { 'ro': [], 'ru': [], 'en': [] };
+    for (let lang of Object.keys(formatedStories)) {
+      formatedStories[lang] = [];
+      for (let story of filteredStories) {
+        var tempObject: any = {};
+        tempObject.name = story.attributes.name;
+        tempObject.audio = story.attributes['audio_' + lang];
+        tempObject.startPeriod = story.attributes.startPeriod;
+        tempObject.endPeriod = story.attributes.endPeriod;
+        formatedStories[lang].push(tempObject);
+      }
+      formatedStories[lang] = formatedStories[lang].sort(function (a, b) {
+        return a.name.slice(0, 2) - b.name.slice(0, 2)
+      });
+    }
+    return formatedStories;
   }
 
   get year(): string {

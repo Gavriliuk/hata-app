@@ -32,6 +32,7 @@ export class PlacesPage extends BasePage {
   places: any = [];
   allMarkers: any[];
   route: Route;
+  routeValues: any = {};
 
   lang: any;
   map: GoogleMap;
@@ -48,17 +49,15 @@ export class PlacesPage extends BasePage {
   nearAudio: any[];
   playMode: any;
 
-  formatedStories: any = { 'ro': [], 'ru': [], 'en': [] };
-  allDatabaseStories: any = [];
-  listenedStoryIndex: any = 0;
+  formatedStories: any = {};
+  // listenedStoryIndex: any = 0;
   routeDatabasePlaces: any = [];
   routeDatabaseStories: any = [];
   storiesRelation: any = [];
-  listenedPOI: any = [];
+  // listenedPOI: any = [];
 
   yearSelectionSlider = {
     periods: [1436, 1667, 1812, 1823, 1877, 1900, 1918],
-    selectedYear: null,
     maximumPeriodsOnScreen: 4,
     showLeftButton: true,
     showRightButton: true,
@@ -75,8 +74,8 @@ export class PlacesPage extends BasePage {
     public alertCtrl: AlertController,
     private cdr: ChangeDetectorRef) {
     super(injector);
+
     this.storage = storage;
-    this.initLocalStorage();
 
     this.events.subscribe('onMenuOpened', (e) => {
       if (this.map) {
@@ -95,76 +94,69 @@ export class PlacesPage extends BasePage {
     this.places = [];
     this.allMarkers = [];
   }
+  /**
+   * Fired only when a view is stored in memory.
+   * This event is NOT fired on entering a view that is already cached.
+   * It’s a nice place for init related tasks.
+   */
+  async ionViewDidLoad() {
+    await this.initLocalStorage()
+    await this.loadStories();
 
-  ionViewDidEnter() {
-    this.findAndPlayNextAudio();
-    console.log("ionViewDidEnter - start");
-  }
+    this.map && this.map.clear();
+    this.places = [];
+    this.params.page = 0;
 
-  ionViewWillLeave() {
-    this.videogularApi.pause();
-  }
-
-  ionViewDidLeave() {
-    this.isViewLoaded = false;
-  }
-
-  ionViewDidLoad() {
-    this.onReload();
     this.isViewLoaded = true;
     this.showLoadingView();
 
     if (this.platform.is('cordova')) {
       this.initGoogleMap();
     } else {
-      // this.loadStoriesRelation();
       this.loadRoutePlaces();
       console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
     }
   }
+  /**
+   * Fired when entering a page, after it becomes the active page.
+   */
+  ionViewDidEnter() {
+    this.findAndPlayNextAudio();
+  }
+  /**
+   * Fired when you leave a page, before it stops being the active one.
+   * Use it for things you need to run every time you are leaving a page (deactivate event listeners, etc.).
+   */
+  ionViewWillLeave() {
+    this.videogularApi.pause();
+  }
 
-  initLocalStorage() {
-    Promise.all([
-      this.storage.mapStyle,
-      this.storage.radius,
-      this.storage.playMode,
-      this.storage.listenedPOI,
-      this.storage.selectedYear,
-      this.storage.listenedStoryIndex,
-      this.storage.unit,
-      this.storage.lang
-    ]).then(([
-      mapStyle,
-      radius,
-      playMode,
-      listenedPOI,
-      selectedYear,
-      listenedStoryIndex,
-      unit,
-      lang
-    ]) => {
-      this.mapStyle = mapStyle;
-      this.radius = radius;
-      this.playMode = playMode;
-      this.listenedPOI = listenedPOI || [];
-      this.yearSelectionSlider.selectedYear = selectedYear || this.yearSelectionSlider.periods[0];
-      this.listenedStoryIndex = listenedStoryIndex || -1;
-      this.unit = unit;
-      this.lang = lang;
-      this.loadStories();
-    });
+  /**
+   * Fired when you leave a page, after it stops being the active one.
+   */
+  ionViewDidLeave() {
+    this.isViewLoaded = false;
+  }
+
+  ngAfterViewChecked(): void {
+    this.cdr.detectChanges();
+  }
+
+  async initLocalStorage() {
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+    debugger;
+    this.mapStyle = await this.storage.mapStyle;
+    this.radius = await this.storage.radius;
+    this.playMode = await this.storage.playMode;
+    this.unit = await this.storage.unit;
+    this.lang = await this.storage.lang;
   }
 
   //-------Date Sliders---------
-  loadStories() {
-    Route.getStoriesRelation(this.params.route).then(data => {
-      this.routeDatabaseStories = data;
-      this.filterStoriesByYear(this.yearSelectionSlider.selectedYear);
-    }, error => {
-      this.showErrorView();
-      console.log("No story...");
-    }
-    );
+  async loadStories() {
+    this.routeDatabaseStories = await Route.getStoriesRelation(this.params.route);
+    this.formatedStories = Story.filterStoriesByYear(this.routeDatabaseStories, this.routeValues.selectedYear);
+    debugger;
   }
 
   //-----Auto Play player-------
@@ -175,7 +167,6 @@ export class PlacesPage extends BasePage {
         this.videogularApi.playbackRate = this.playBackValues[this.playBackRateIndex];
       }
     );
-
     this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
         this.findAndPlayNextAudio();
@@ -200,6 +191,8 @@ export class PlacesPage extends BasePage {
         this.geolocation.getCurrentPosition(options).then(pos => {
           paramsClone.location = pos.coords;
           this.playNextPoi(this.playMode, paramsClone);
+        }, error => {
+          this.playNextStory();
         });
         break;
       }
@@ -228,21 +221,11 @@ export class PlacesPage extends BasePage {
   }
 
   playNextPoi(playMode, paramsClone) {
-    paramsClone.selectedYear = this.yearSelectionSlider.selectedYear;
-    let nearestPlace = this.NearestPlace(this.routeDatabasePlaces, this.listenedPOI, paramsClone.location.latitude, paramsClone.location.longitude, paramsClone.distance)
+    paramsClone.selectedYear = this.routeValues.selectedYear;
+    let nearestPlace = this.NearestPlace(this.routeDatabasePlaces, this.routeValues.listenedPOI, paramsClone)
     if (nearestPlace) {
-      // TODO To be deleted
-      // let audioPOIName = nearestPlace['audio_' + this.lang].name();
-      // let audioPOIURL = this.getFileURL(audioPOIName);
-      // let title = nearestPlace['title_' + this.lang];
-      // this.listeningPOI = nearestPlace;
-
-      // this.currentAudio.src = audioPOIURL;
-      // this.currentAudio.title = title;
-      // this.currentAudio.type = 'POI';
-      // TODO ---
-      this.listenedPOI.push(nearestPlace.id);
-      this.storage.listenedPOI = this.listenedPOI;
+      this.routeValues.listenedPOI.push(nearestPlace.id);
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues);
       this.goToPlace(nearestPlace);
     } else if (playMode == "storyPoi") {
       this.playNextStory();
@@ -269,28 +252,33 @@ export class PlacesPage extends BasePage {
   //------Add Player--------
   playNextStory() {
     this.listeningPOI = null;
-    if (this.listenedStoryIndex == this.formatedStories[this.lang].length - 1) {
+    if (this.routeValues.listenedStoryIndex == this.formatedStories[this.lang].length - 1) {
       alert("No more formatedStories...");
       return;
     }
-    this.currentAudio = this.getAudioFromStoriesByIndex(++this.listenedStoryIndex);
-    this.storage.listenedStoryIndex = this.listenedStoryIndex;
-    this.yearSelectionSlider.selectedYear = this.currentAudio.selectedPeriodYear;
+    this.currentAudio = this.getAudioFromStoriesByIndex(++this.routeValues.listenedStoryIndex);
 
-    this.reLoadPlacesSortDate();
+
+
+    this.routeValues.listenedStoryIndex = this.routeValues.selectedYear != this.currentAudio.selectedPeriodYear ? 0 : this.routeValues.listenedStoryIndex;
+    this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
+    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+
+    this.reloadPlacesSortDate();
   }
 
   playPrevStory() {
     this.listeningPOI = null;
-    if (this.listenedStoryIndex == 0) {
-      alert("First story...");
+    if (this.routeValues.listenedStoryIndex == 0) {
+      alert("First story in this period...");
       return;
     }
-    this.currentAudio = this.getAudioFromStoriesByIndex(--this.listenedStoryIndex);
-    this.storage.listenedStoryIndex = this.listenedStoryIndex;
-    this.yearSelectionSlider.selectedYear = this.currentAudio.selectedPeriodYear;
+    this.currentAudio = this.getAudioFromStoriesByIndex(--this.routeValues.listenedStoryIndex);
+    // this.routeValues.listenedStoryIndex = this.routeValues.selectedYear != this.currentAudio.selectedPeriodYear ? 0 : this.routeValues.listenedStoryIndex;
+    this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
+    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
 
-    this.reLoadPlacesSortDate();
+    this.reloadPlacesSortDate();
   }
 
   enableMenuSwipe() {
@@ -327,16 +315,14 @@ export class PlacesPage extends BasePage {
     //     this.map.setMyLocationEnabled(true);
   }
 
-  animateMap() {
+  animateMap(lat, lng) {
     this.map.animateCamera({
-      target: { lat: 37.422359, lng: -122.084344 },
+      target: { lat: lat, lng: lng },
       zoom: 17,
       tilt: 60,
       bearing: 140,
       duration: 5000,
       padding: 0  // default = 20px
-    }).then(() => {
-      alert("Camera target has been changed");
     });
   }
 
@@ -348,6 +334,7 @@ export class PlacesPage extends BasePage {
     };
 
     this.geolocation.getCurrentPosition(options).then(pos => {
+      // this.animateMap(pos.coords.latitude,pos.coords.longitude);
       this.params.location = pos.coords;
       this.loadRoutePlaces();
     }, error => {
@@ -380,43 +367,15 @@ export class PlacesPage extends BasePage {
 
   //-------Date Sliders---------
   selectYear(selectedYearStory) {
-    this.yearSelectionSlider.selectedYear = selectedYearStory;
+    this.formatedStories = Story.filterStoriesByYear(this.routeDatabaseStories, selectedYearStory);
 
-    // this.filterPOIsByYear(selectedYearStory);
-
-    this.filterStoriesByYear(selectedYearStory);
     this.listeningPOI = null;
-    this.listenedStoryIndex = 0;
-    this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
+    this.routeValues.selectedYear = selectedYearStory;
+    this.routeValues.listenedStoryIndex = 0;
+    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
 
-    this.storage.selectedYear = selectedYearStory;
-    this.storage.listenedStoryIndex = this.listenedStoryIndex;
-
-    this.reLoadPlacesSortDate();
-  }
-
-  private filterStoriesByYear(selectedYearStory: any) {
-    var filteredStories = selectedYearStory ? this.routeDatabaseStories.filter((story) => {
-      return story.attributes.startPeriod.getFullYear() >= selectedYearStory;
-      // return story.startPeriod.getFullYear() >= selectedYearStory && story.endPeriod.getFullYear() <= selectedYearStory;
-    }) : this.routeDatabaseStories;
-
-    for (let lang of Object.keys(this.formatedStories)) {
-      this.formatedStories[lang] = [];
-      // var filteredStoriesSort = filteredStories.sort(function(a, b){return a.name.slice(0,2) - b.name.slice(0,2)})
-      
-      for (let story of filteredStories) {
-        var tempObject: any = {};
-        tempObject.name = story.attributes.name;
-        tempObject.audio = story.attributes['audio_' + lang];
-        tempObject.startPeriod = story.attributes.startPeriod;
-        tempObject.endPeriod = story.attributes.endPeriod;
-        this.formatedStories[lang].push(tempObject);
-      }
-      this.formatedStories[lang] = this.formatedStories[lang].sort(function (a, b) {
-        return a.name.slice(0, 2) - b.name.slice(0, 2)
-      });
-    }
+    this.currentAudio = this.getAudioFromStoriesByIndex(this.routeValues.listenedStoryIndex);
+    this.reloadPlacesSortDate();
   }
 
   // Method executed when the slides are changed
@@ -455,12 +414,16 @@ export class PlacesPage extends BasePage {
     });
   }
 
-  reLoadPlacesSortDate() {
-    var filteredPlace = this.yearSelectionSlider.selectedYear ? this.routeDatabasePlaces.filter((place) => {
-      return place.startPeriod.getFullYear() >= this.yearSelectionSlider.selectedYear;
+
+  reloadPlacesSortDate() {
+    var filteredPlace = this.routeValues.selectedYear ? this.routeDatabasePlaces.filter((place) => {
+      return place.startPeriod.getFullYear() >= this.routeValues.selectedYear;
     }) : this.routeDatabasePlaces;
 
     if (this.platform.is('cordova')) {
+      for (let marker of this.allMarkers) {
+        marker.marker.remove();
+      }
       this.addPlacesMarkers(filteredPlace);
     }
 
@@ -482,9 +445,9 @@ export class PlacesPage extends BasePage {
         place.location.latitude,
         place.location.longitude
       );
-
-      let icon = (place.route && place.route.get('icon')) ? {
-        url: place.route.get('icon').url(),
+      //TODO check icon
+      let icon = (this.params.route && this.params.route.get('icon')) ? {
+        url: this.params.route.get('icon').url(),
         size: {
           width: 32,
           height: 32
@@ -511,63 +474,25 @@ export class PlacesPage extends BasePage {
           let place = marker.get("place");
           this.goToPlace(place);
         });
-        // marker.showInfoWindow();
       });
-
-      // this.map.addMarker(markerOptions).then((marker) => {
-      //   marker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
-      //     let marker = e[1];
-      //     let place = marker.get("place");
-      //     let places = marker.get("places");
-      //     this.goToPlace({"place": place, "places": places});
-      //   });
-
-      // this.map.addCircle({
-      //   center: marker.getPosition(),
-      //   radius: place.radius * 1000,
-      //   fillColor: "rgba(0, 0, 255, 0.2)",
-      //   strokeColor: "rgba(0, 0, 255, 0.75)",
-      //   strokeWidth: 1
-      // });
-
-      // });
-
       points.push(target);
     }
 
     if (points.length) {
-      this.map.moveCamera({
+      this.map.animateCamera({
         target: new LatLngBounds(points),
-        zoom: 10
+        zoom: 17,
+        tilt: 60,
+        bearing: 140,
+        duration: 5000,
+        padding: 0  // default = 20px
       });
     }
   }
 
-  ngAfterViewChecked(): void {
-    this.cdr.detectChanges();
-  }
-
-  onReload() {
-    this.map && this.map.clear();
-
-    this.places = [];
-    this.params.page = 0;
-    //TODO komentat
-    //     const options: GeolocationOptions = {
-    //       enableHighAccuracy: true,
-    //       timeout: 10000
-    //     };
-    //     this.geolocation.getCurrentPosition(options).then(pos => {
-    //       this.params.location = pos.coords;
-    //     }, error => {
-    //       this.showErrorView();
-    //       this.translate.get('ERROR_LOCATION_UNAVAILABLE').subscribe(res => this.showToast(res));
-    //     });
-  }
-
   showCheckbox() {
     let alert = this.alertCtrl.create();
-    alert.setTitle('Select type playback :');
+    alert.setTitle('Select Playback Mode');
 
     alert.addInput({
       type: 'radio',
@@ -596,56 +521,8 @@ export class PlacesPage extends BasePage {
         this.storage.playMode = data;
         this.playMode = data;
         this.preference.playMode = data;
-        // this.findAndPlayNextAudio();
       }
     });
     alert.present();
-  }
-
-  filterPOIsByYear(year) {
-    console.log("this.allMarkers", this.allMarkers.length);
-    console.log("this.allMarkers", this.allMarkers);
-    for (let marker of this.allMarkers) {
-      let place = marker.marker.get("place");
-      console.log("place", place);
-      marker.marker.remove();
-      if (place.startPeriod.getFullYear() >= year) {
-        let target: LatLng = new LatLng(
-          place.location.latitude,
-          place.location.longitude
-        );
-
-        let icon = (place.route && place.route.get('icon')) ? {
-          url: place.route.get('icon').url(),
-          size: {
-            width: 32,
-            height: 32
-          }
-        } : 'yellow';
-
-        let markerOptions = {
-          position: target,
-          title: place['title_' + this.lang],
-          snippet: place['description_' + this.lang],
-          icon: icon,
-          place: place,
-          styles: {
-            maxWidth: '60%'
-          },
-        };
-
-        this.map.addMarker(markerOptions).then((addedMarker: Marker) => {
-          marker.marker = addedMarker;
-          // this.allMarkers.push(marker);
-          addedMarker.addEventListener(GoogleMapsEvent.INFO_CLICK).subscribe(e => {
-            console.log("GoogleMapsEvent.INFO_CLICK", e);
-            let tmpMarker = e[1];
-            let place = tmpMarker.get("place");
-            console.log('tmpMarker.get("place")', place);
-            this.goToPlace(place);
-          });
-        });
-      }
-    }
   }
 }

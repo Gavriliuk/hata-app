@@ -33,7 +33,7 @@ export class Route extends Parse.Object {
     });
   }
 
-  static getStoriesRelation(route) {
+  static async getStoriesRelation(route) {
     return new Promise((resolve, reject) => {
       var relation = route.relation('storiesRelation');
       var query = relation.query();

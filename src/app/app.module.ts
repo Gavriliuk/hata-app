@@ -29,7 +29,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { GoogleMaps } from '@ionic-native/google-maps';
 import { AppVersion } from '@ionic-native/app-version';
 import { HeaderColor } from '@ionic-native/header-color';
-import { GoogleAnalytics } from '@ionic-native/google-analytics';
+// import { GoogleAnalytics } from '@ionic-native/google-analytics';
 import { BrowserTab } from '@ionic-native/browser-tab';
 
 import { IonicStorageModule } from '@ionic/storage';
@@ -85,7 +85,7 @@ export function HttpLoaderFactory(http: Http) {
     // CallNumber,
     InAppBrowser,
     GoogleMaps,
-    GoogleAnalytics,
+    // GoogleAnalytics,
     AppVersion,
     HeaderColor,
     BrowserTab,

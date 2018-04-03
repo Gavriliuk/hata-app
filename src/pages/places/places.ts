@@ -148,7 +148,7 @@ export class PlacesPage extends BasePage {
       this.playMode = playMode;
       this.listenedPOI = listenedPOI || [];
       this.yearSelectionSlider.selectedYear = selectedYear || this.yearSelectionSlider.periods[0];
-      this.listenedStoryIndex = listenedStoryIndex || 0;
+      this.listenedStoryIndex = listenedStoryIndex || -1;
       this.unit = unit;
       this.lang = lang;
       this.loadStories();
@@ -160,8 +160,6 @@ export class PlacesPage extends BasePage {
     Route.getStoriesRelation(this.params.route).then(data => {
       this.routeDatabaseStories = data;
       this.filterStoriesByYear(this.yearSelectionSlider.selectedYear);
-      // this.currentAudio = this.getAudioFromStoriesByIndex(this.listenedStoryIndex);
-      this.yearSelectionSlider.selectedYear = this.currentAudio.selectedPeriodYear;
     }, error => {
       this.showErrorView();
       console.log("No story...");

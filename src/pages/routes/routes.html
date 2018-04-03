@@ -24,9 +24,9 @@
   </ion-refresher>
 
   <div *ngIf="isContentViewVisible" class="divRoute">
-    <ion-item *ngFor="let route of routes" color="dark" no-lines class="itemRoute">
-      <div (tap)="goToPlaces(route)">
-      <ion-avatar item-start class="avatarRoute">
+    <ion-item class="itemRoute" *ngFor="let route of routes" color="dark" no-lines>
+      <div class="selectedItem" (tap)="goToPlaces(route)">
+      <ion-avatar class="avatarRoute" item-start>
         <img src="assets/img/tag.png" offset="100"
              [lazyLoad]="route.imageThumb.url()"
              [scrollTarget]="container.getScrollElement()">

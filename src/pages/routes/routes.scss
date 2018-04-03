@@ -15,29 +15,34 @@ page-routes {
       border-radius: 4rem !important;
     }
   }
-  .iconRoute{
-      display: inline-block;
-      font-size: 2.2em;
-      padding: 8px;
-  }
-
   .avatarRoute{
      float:left;
+     margin: 8px 5px 8px 0 !important;
    }
-  page-routes .iconRoute {
+  .iconRoute {
     display: inline-block;
-    font-size: 1.8em;
-    padding:2px !important;
+    padding-bottom: 2px;
+    font-size: 2.3em;
   }
   .divRoute{
     padding: 3px;
   }
-  .itemRoute{
-    margin-bottom:2px;
-    height:64px !important;
-    border-radius: 2px;
-  }
   .textRoute{
-    padding-top:17px;
+    padding-top: 0.9em;
   }
+  .itemRoute{
+    margin-bottom: 2px;
+    height: 64px !important;
+    border-radius: 3px;
+    padding-left: 0.3em;
+  }
+  .item-ios [item-right], .item-ios [item-end] {
+    margin: 0px;
+  } 
+  .selectedItem {
+    height: 52px;
+    width: 98%;
+    display: inline-block;
+  }
+  
 }

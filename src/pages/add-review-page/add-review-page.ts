@@ -20,6 +20,8 @@ export class AddReviewPage extends BasePage {
     route: any;
     placeMarkers:any;
     routePlaces: any =[];
+    title: any;
+    information: any;
   constructor(injector: Injector,
               private viewCtrl: ViewController,
               private storage: LocalStorage) {
@@ -27,6 +29,8 @@ export class AddReviewPage extends BasePage {
     this.storage.lang.then((val) => {
         this.lang = val;
         this.routeModal = this.navParams.data.route;
+        this.title = this.routeModal["title_"+this.lang];
+        this.information = this.routeModal["information_"+this.lang];
         this.routePlaces = this.navParams.data.places;
       this.route = this.navParams.data.route;
     console.log("Route",this.routeModal);

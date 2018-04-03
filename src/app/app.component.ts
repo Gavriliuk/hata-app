@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform, ModalController, ToastController, Events } from 'ionic-angular';
 
-import { GoogleAnalytics } from '@ionic-native/google-analytics';
+// import { GoogleAnalytics } from '@ionic-native/google-analytics';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HeaderColor } from '@ionic-native/header-color';
@@ -34,7 +34,7 @@ export class MyApp {
     private preference: Preference,
     private statusBar: StatusBar,
     private splashScreen: SplashScreen,
-    private googleAnalytics: GoogleAnalytics,
+    // private googleAnalytics: GoogleAnalytics,
     private headerColor: HeaderColor,
     private modalCtrl: ModalController) {
 
@@ -154,12 +154,12 @@ export class MyApp {
 
     this.platform.ready().then(() => {
 
-      if (AppConfig.TRACKING_ID) {
-        this.googleAnalytics.startTrackerWithId(AppConfig.TRACKING_ID);
-        this.googleAnalytics.trackEvent('', 'App opened');
-        this.googleAnalytics.debugMode();
-        this.googleAnalytics.enableUncaughtExceptionReporting(true);
-      }
+      // if (AppConfig.TRACKING_ID) {
+      //   this.googleAnalytics.startTrackerWithId(AppConfig.TRACKING_ID);
+      //   this.googleAnalytics.trackEvent('', 'App opened');
+      //   this.googleAnalytics.debugMode();
+      //   this.googleAnalytics.enableUncaughtExceptionReporting(true);
+      // }
 
       if (AppConfig.HEADER_COLOR && this.platform.is('android')) {
         this.headerColor.tint(AppConfig.HEADER_COLOR);

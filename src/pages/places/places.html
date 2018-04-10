@@ -31,18 +31,8 @@
       </div>
 
   <div id="map" showWhen="android,ios"></div>
-  <!--<img src="assets/img/slide-5.png" height="700px"/>-->
-  <empty-view [text]="'ERROR_CORDOVA_MAPS' | translate" icon="map" showWhen="core"></empty-view>
 
-  <empty-view *ngIf="isErrorViewVisible" icon="alert"
-              [text]="'ERROR_PLACES' | translate">
-  </empty-view>
-
-  <empty-view *ngIf="isEmptyViewVisible" icon="map"
-              [text]="'EMPTY_PLACES' | translate">
-  </empty-view>
-
-<div class="sliderPOI">
+<!-- <div class="sliderPOI">
     <ion-slides *ngIf="!listeningPOI" pager class="ionSlides">
         <ion-slide *ngFor="let place of places">
           <ion-item (tap)="goToPlace(place)" color="dark" no-lines>
@@ -58,7 +48,7 @@
           </ion-item>
         </ion-slide>
       </ion-slides>
-</div>
+</div> -->
 
 <div class="mapFooter">
   <div>{{currentAudio.type}}: {{currentAudio.title}}</div>

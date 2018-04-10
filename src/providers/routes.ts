@@ -21,7 +21,7 @@ export class Route extends Parse.Object {
     });
   }
 
-  static getPlacesRelation(route) {
+  static async getPlacesRelation(route) {
     return new Promise((resolve, reject) => {
       var relation = route.relation('placesRelation');
       var query = relation.query();

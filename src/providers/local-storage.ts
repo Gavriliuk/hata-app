@@ -109,8 +109,10 @@ export class LocalStorage {
     //TODO get selectedYear from route
     return await this.storage.get(routeId) || {
       listenedPOI: [],
+      listenedStories: [],
       listenedStoryIndex: -1,
-      selectedYear: 1436
+      selectedYear: 1436,
+      purchased:false
     };
   }
 

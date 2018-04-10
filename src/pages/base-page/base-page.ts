@@ -164,9 +164,13 @@ export abstract class BasePage {
     var mindif = 99999;
     var closestIndex;
 
+    //ddd
     for (let index = 0; index < places.length; ++index) {
       var dif = this.PythagorasEquirectangular(params.location.latitude, params.location.longitude, places[index].location.latitude, places[index].location.longitude, params.distance);
-      if (dif < Number.parseFloat(places[index].radius) && dif < mindif && listened.indexOf(places[index].id) == -1 && this.inSelectedPeriod(places[index], params.selectedYear)) {
+      dif = Number.parseFloat(dif.toFixed(2));
+      // alert(dif+":"+Number.parseFloat(places[index].radius));
+      // alert("listened.indexOf(places[index].id) == -1:"+listened.indexOf(places[index].id))
+      if (dif < Number.parseFloat(places[index].radius) && dif < mindif && listened.indexOf(places[index].id) == -1) {
         closestIndex = index;
         mindif = dif;
       }
@@ -179,6 +183,9 @@ export abstract class BasePage {
   }
 
   inSelectedPeriod(place, period) {
+    // alert("period: "+period);
+    // alert("Number(new Date(place.startPeriod).getFullYear()): "+Number(new Date(place.startPeriod).getFullYear()));
+    // alert("Number(new Date(place.endPeriod).getFullYear()): "+Number(new Date(place.endPeriod).getFullYear()));
     return Number(new Date(place.startPeriod).getFullYear()) <= period && Number(new Date(place.endPeriod).getFullYear()) >= period;
   }
 

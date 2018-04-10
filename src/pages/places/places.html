@@ -32,12 +32,12 @@
 
   <div id="map" showWhen="android,ios"></div>
 
-<!-- <div class="sliderPOI">
+<div class="sliderPOI">
     <ion-slides *ngIf="!listeningPOI" pager class="ionSlides">
         <ion-slide *ngFor="let place of places">
           <ion-item (tap)="goToPlace(place)" color="dark" no-lines>
             <ion-thumbnail item-left>
-              <img src="{{place.imageThumb.url()}}" offset="100"
+              <img src="assets/img/avatar.png" offset="100"
                                  [lazyLoad]="place.imageThumb.url()">
             </ion-thumbnail>
             <h2 class="bold" ion-text color="secondaru">{{ place["title_"+lang] }}</h2>
@@ -48,7 +48,7 @@
           </ion-item>
         </ion-slide>
       </ion-slides>
-</div> -->
+</div>
 
 <div class="mapFooter">
   <div>{{currentAudio.type}}: {{currentAudio.title}}</div>

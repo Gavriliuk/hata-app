@@ -23,7 +23,7 @@ export class Place extends Parse.Object {
       return this.location.kilometersTo(geoPoint).toFixed(2) + ' ' + unit;
     } else if (unit === 'none') {
       return this.location.kilometersTo(geoPoint).toFixed(2);
-    }else {
+    } else {
       return this.location.milesTo(geoPoint).toFixed(2) + ' ' + unit;
     }
   }
@@ -111,11 +111,6 @@ export class Place extends Parse.Object {
       if (params.except) {
         query.notContainedIn("objectId", params.except);
       }
-      //
-      // if (params.search && params.search !== '') {
-      //   query.contains('canonical', params.search);
-      // }
-
       if (params.location) {
 
         var point = new Parse.GeoPoint({
@@ -131,13 +126,9 @@ export class Place extends Parse.Object {
       }
 
       if (params && params.selectedYear && params.selectedYear != null) {
-        query.lessThanOrEqualTo('startPeriod', new Date('01/01/'+params.selectedYear));
-        query.greaterThanOrEqualTo('endPeriod', new Date('01/01/'+params.selectedYear));
+        query.lessThanOrEqualTo('startPeriod', new Date('01/01/' + params.selectedYear));
+        query.greaterThanOrEqualTo('endPeriod', new Date('01/01/' + params.selectedYear));
       }
-
-      // else {
-      //   query.descending('createdAt');
-      // }
 
       query.skip(page * limit);
       query.limit(limit);
@@ -285,7 +276,7 @@ export class Place extends Parse.Object {
     return this.get('audio_ru');
   }
   set audio_ru(val) {
-     this.set('audio_ru', val);
+    this.set('audio_ru', val);
   }
 
   get audio_ro() {

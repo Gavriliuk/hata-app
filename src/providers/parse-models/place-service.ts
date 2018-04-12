@@ -169,6 +169,38 @@ export class Place extends Parse.Object {
     });
   }
 
+
+  // Convert Degress to Radians
+  static Deg2Rad(deg) {
+    return deg * Math.PI / 180;
+  }
+
+  static PythagorasEquirectangular(lat1, lon1, lat2, lon2, radius) {
+    lat1 = Place.Deg2Rad(lat1);
+    lat2 = Place.Deg2Rad(lat2);
+    lon1 = Place.Deg2Rad(lon1);
+    lon2 = Place.Deg2Rad(lon2);
+    var R = 6371; // km
+    var x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
+    var y = (lat2 - lat1);
+    var d = Math.sqrt(x * x + y * y) * R;
+    return d;
+  }
+
+  static NearestPlace(places, listened, params) {
+    var mindif = 99999;
+    var closestIndex;
+
+    for (let index = 0; index < places.length; ++index) {
+      var dif = Place.PythagorasEquirectangular(params.location.latitude, params.location.longitude, places[index].location.latitude, places[index].location.longitude, params.distance);
+      dif = Number.parseFloat(dif.toFixed(2));
+      if (dif < Number.parseFloat(places[index].radius) && dif < mindif && listened.indexOf(places[index].id) == -1) {
+        closestIndex = index;
+        mindif = dif;
+      }
+    }
+    return places[closestIndex];
+  }
   get title_ru(): string {
     return this.get('title_ru');
   }

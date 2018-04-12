@@ -1,15 +1,15 @@
 import {IonicPage} from 'ionic-angular';
 import {Component, Injector} from '@angular/core';
 import {Platform, Events,Slides} from 'ionic-angular';
-import {Place} from '../../providers/place-service';
-import {Story} from '../../providers/stories';
+import {Place} from '../../providers/parse-models/place-service';
+import {Story} from '../../providers/parse-models/stories';
 import {MapStyle} from '../../providers/map-style';
 import {BasePage} from '../base-page/base-page';
 import {LocalStorage} from '../../providers/local-storage';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
 import {ChangeDetectorRef} from '@angular/core';
 import 'rxjs/add/operator/filter'
-import {Route} from '../../providers/routes';
+import {Route} from '../../providers/parse-models/routes';
 import Parse from 'parse';
 import {ViewChild} from '@angular/core';
 

@@ -1,19 +1,18 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { IonicApp, IonicModule, IonicErrorHandler,Slides } from 'ionic-angular';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { VgCoreModule } from 'videogular2/core';
-// import { VgAPI } from 'videogular2/core';
 import { VgControlsModule } from 'videogular2/controls';
 import { VgOverlayPlayModule } from 'videogular2/overlay-play';
 import { VgBufferingModule } from 'videogular2/buffering';
 
-import { Route } from '../providers/routes';
-import { Place } from '../providers/place-service';
-import { Review } from '../providers/review-service';
-import { ParseFile } from '../providers/parse-file-service';
-import { User } from '../providers/user-service';
+import { Route } from '../providers/parse-models/routes';
+import { Place } from '../providers/parse-models/place-service';
+import { Review } from '../providers/parse-models/review-service';
+import { ParseFile } from '../providers/parse-models/parse-file-service';
+import { User } from '../providers/parse-models/user-service';
 import { LocalStorage } from '../providers/local-storage';
 import { Preference } from '../providers/preference';
 import { MapStyle } from '../providers/map-style';

@@ -21,13 +21,6 @@ export class Story extends Parse.Object {
       });
     });
   }
-  static getStoryIndexByYear(stories, selectedYear) {
-    for (let index = 0; index < stories.length; index++) {
-      if (stories[index].startPeriod.getFullYear() == selectedYear) {
-        return index;
-      }
-    }
-  }
 
   get year(): string {
     return this.get('year');
@@ -53,11 +46,11 @@ export class Story extends Parse.Object {
     return this.get('audio_en');
   }
 
-  get startPeriod(): string {
+  get startPeriod(): Date {
     return this.get('startPeriod');
   }
 
-  get endPeriod(): string {
+  get endPeriod(): Date {
     return this.get('endPeriod');
   }
 }

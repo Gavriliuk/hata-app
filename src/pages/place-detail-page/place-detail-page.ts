@@ -1,15 +1,15 @@
-import {IonicPage} from 'ionic-angular';
-import {Component, Injector} from '@angular/core';
-import {ModalController, Events} from 'ionic-angular';
-import {Place} from '../../providers/place-service';
-import {Preference} from '../../providers/preference';
-import {LocalStorage} from '../../providers/local-storage';
-import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation';
-import {InAppBrowser} from '@ionic-native/in-app-browser';
-import {BrowserTab} from '@ionic-native/browser-tab';
-import {LaunchNavigator} from '@ionic-native/launch-navigator';
-import {BasePage} from '../base-page/base-page';
-import {ChangeDetectorRef} from '@angular/core';
+import { IonicPage } from 'ionic-angular';
+import { Component, Injector } from '@angular/core';
+import { ModalController, Events } from 'ionic-angular';
+import { Place } from '../../providers/parse-models/place-service';
+import { Preference } from '../../providers/preference';
+import { LocalStorage } from '../../providers/local-storage';
+import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { BrowserTab } from '@ionic-native/browser-tab';
+import { LaunchNavigator } from '@ionic-native/launch-navigator';
+import { BasePage } from '../base-page/base-page';
+import { ChangeDetectorRef } from '@angular/core';
 import Parse from 'parse';
 import { NavController } from 'ionic-angular';
 @IonicPage()
@@ -18,7 +18,8 @@ import { NavController } from 'ionic-angular';
   templateUrl: 'place-detail-page.html'
 })
 export class PlaceDetailPage extends BasePage {
-  params: any={};
+
+  params: any = {};
   places: Place[];
   images: Array<any>;
   audio: any[];
@@ -31,26 +32,28 @@ export class PlaceDetailPage extends BasePage {
   audio_en: any;
   route: any;
   markers: any;
-  waypoints:any;
-  zoom:any;
-  imageURL: any=[];
+  waypoints: any;
+  zoom: any;
+  imageURL: any = [];
   api: any;
   playBackValues: any[];
   playBackRateIndex: any;
-  icon:any;
+  icon: any;
 
   constructor(injector: Injector,
-              private modalCtrl: ModalController,
-              private storage: LocalStorage,
-              private preference: Preference,
-              private geolocation: Geolocation,
-              private inAppBrowser: InAppBrowser,
-              private browserTab: BrowserTab,
-              private launchNavigator: LaunchNavigator,
-              private events: Events,
-              private navPageBack:NavController,
-              private cdr: ChangeDetectorRef) {
+    private modalCtrl: ModalController,
+    private storage: LocalStorage,
+    private preference: Preference,
+    private geolocation: Geolocation,
+    private inAppBrowser: InAppBrowser,
+    private browserTab: BrowserTab,
+    private launchNavigator: LaunchNavigator,
+    private events: Events,
+    private navPageBack: NavController,
+    private cdr: ChangeDetectorRef) {
     super(injector);
+    this.events = events;
+    this.events.publish("playing", true);
     this.storage = storage;
     this.initLocalStorage();
 
@@ -59,15 +62,13 @@ export class PlaceDetailPage extends BasePage {
     this.playBackRateIndex = this.navParams.data.playBackRateIndex;
     this.unit = preference.unit;
 
-//TODO add image fileURL (podstaviti formulu urlServera i name img kak s videom)
+    //TODO add image fileURL (podstaviti formulu urlServera i name img kak s videom)
     let imagesArray = this.place.original_images;
     imagesArray.forEach(data => {
       let fileName = data.name();
-      console.log("fileName :",fileName);
       this.imageURL.push([this.getFileURL(fileName)]);
 
     });
-    console.log("imageName :",this.imageURL);
     this.places = this.navParams.data.places;
     this.route = this.navParams.data.route;
     let mapZoom: any;
@@ -75,23 +76,23 @@ export class PlaceDetailPage extends BasePage {
     this.waypoints = "";
     this.zoom = 18;
     if (this.route.waypoints && this.route.waypoints !== "") {
-      if(this.route.waypoints.indexOf('/') != -1){
+      if (this.route.waypoints.indexOf('/') != -1) {
         coordinates = this.route.waypoints.split('/');
         mapZoom = coordinates.length;
-        if(mapZoom >= 25){
+        if (mapZoom >= 25) {
           this.zoom = 16;
         }
         coordinates.forEach(data => {
           this.waypoints += "%7C" + data;
         })
-      }else{
-        this.waypoints = "%7C"+this.route.waypoints;
+      } else {
+        this.waypoints = "%7C" + this.route.waypoints;
       }
     }
     this.markers = "";
     this.icon = this.route.icon.url();
     this.places.forEach(place => {
-      this.markers += "&markers=icon:"+this.icon+"%7C" + place.location.latitude + "," + place.location.longitude;
+      this.markers += "&markers=icon:" + this.icon + "%7C" + place.location.latitude + "," + place.location.longitude;
     });
   }
 
@@ -105,25 +106,33 @@ export class PlaceDetailPage extends BasePage {
       this.loadPlace();
     });
   }
-loadPlace(){
-  this.place = this.navParams.data.place;
-       let audioPOIURL = this.navParams.data.place["audio_"+this.lang].name();
-       this.audio = [this.getFileURL(audioPOIURL)];
-}
+  loadPlace() {
+    this.place = this.navParams.data.place;
+    let audioPOIURL = this.navParams.data.place["audio_" + this.lang].name();
+    this.audio = [this.getFileURL(audioPOIURL)];
+  }
 
-//-----Auto Play player-------
-onPlayerReadyDetail(api) {
+  //-----Auto Play player-------
+  onPlayerReadyDetail(api) {
     this.api = api;
     this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(() => {
-        this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
-      }
+      this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
+    }
     );
     this.api.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
-        this.navPageBack.pop();
+        console.log("this.api.getDefaultMedia().subscriptions.ended:", false);
+        this.goBack();
+
       }
     );
   }
+
+  goBack() {
+    //this.events.publish("playing", false);
+    this.navPageBack.pop();
+  }
+
   changePlayBackRate() {
     this.playBackRateIndex = this.playBackRateIndex == this.playBackValues.length - 1 ? 0 : ++this.playBackRateIndex;
     this.api.playbackRate = this.playBackValues[this.playBackRateIndex];

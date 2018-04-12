@@ -1,5 +1,7 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import Parse from 'parse';
+import { Story } from './stories';
+import { Place } from './place-service';
 
 @Injectable()
 export class Route extends Parse.Object {
@@ -21,10 +23,10 @@ export class Route extends Parse.Object {
     });
   }
 
-  static async getPlacesRelation(route) {
+  static getPlacesRelation(route): Promise<Place[]> {
     return new Promise((resolve, reject) => {
       var relation = route.relation('placesRelation');
-      var query = relation.query();
+      var query = relation.query(Place);
       query.find().then(data => {
         resolve(data);
       }, error => {
@@ -33,10 +35,10 @@ export class Route extends Parse.Object {
     });
   }
 
-  static async getStoriesRelation(route) {
+  static getStoriesRelation(route): Promise<Story[]> {
     return new Promise((resolve, reject) => {
       var relation = route.relation('storiesRelation');
-      var query = relation.query();
+      var query = relation.query(Story);
       query.find().then(data => {
         resolve(data);
       }, error => {
@@ -98,6 +100,9 @@ export class Route extends Parse.Object {
 
   get imageThumb() {
     return this.get('imageThumb');
+  }
+  get periods(): any[] {
+    return this.get('periods');
   }
 
 }

@@ -3,11 +3,11 @@ import { Component, Injector } from '@angular/core';
 import { Events, ModalController} from 'ionic-angular';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { Diagnostic } from '@ionic-native/diagnostic';
-import { Route } from '../../providers/routes';
+import { Route } from '../../providers/parse-models/routes';
 import { BasePage } from '../base-page/base-page';
-import { User } from '../../providers/user-service';
+import { User } from '../../providers/parse-models/user-service';
 import {LocalStorage} from '../../providers/local-storage';
-import {Place} from '../../providers/place-service';
+import {Place} from '../../providers/parse-models/place-service';
 
 @IonicPage()
 @Component({
@@ -108,10 +108,10 @@ console.log("GoToPlaces(route): ",route);
     this.loadData();
   }
 
-  
+
 
   openModalAddReviewRoute(route) {
-  
+
     Route.getPlacesRelation(route).then(data => {
       this.routePlaces = data;
       let modal = this.modalCtrl.create('AddReviewPage', {route:route, places: this.routePlaces});
@@ -120,7 +120,7 @@ console.log("GoToPlaces(route): ",route);
   }, error => {
     this.showErrorView();
   });
-    
+
   }
 
   // openModalAddReviewRoute(title, information, center_map, waypoints, start_route, end_route) {

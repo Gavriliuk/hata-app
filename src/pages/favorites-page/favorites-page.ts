@@ -1,6 +1,6 @@
 import { IonicPage } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
-import { Place } from '../../providers/place-service';
+import { Place } from '../../providers/parse-models/place-service';
 import { BasePage } from '../base-page/base-page';
 
 @IonicPage()

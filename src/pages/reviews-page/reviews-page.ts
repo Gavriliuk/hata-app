@@ -1,6 +1,6 @@
 import { IonicPage } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
-import { Review } from '../../providers/review-service';
+import { Review } from '../../providers/parse-models/review-service';
 import { BasePage } from '../base-page/base-page';
 
 @IonicPage()
@@ -29,7 +29,7 @@ export class ReviewsPage extends BasePage {
 
   loadData() {
     Review.load(this.params).then(reviews => {
-      
+
       for (let review of reviews) {
         this.reviews.push(review);
       }

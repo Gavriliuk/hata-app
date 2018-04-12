@@ -1,15 +1,16 @@
 import { IonicPage } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { BasePage } from '../base-page/base-page';
-import { Place } from '../../providers/place-service';
+import { Place } from '../../providers/parse-models/place-service';
 import { Preference } from '../../providers/preference';
-import { Route } from '../../providers/routes';
+import { Route } from '../../providers/parse-models/routes';
 import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
 import { LocalStorage } from '../../providers/local-storage';
 import { ChangeDetectorRef } from '@angular/core';
 import { Platform, Events, Slides } from 'ionic-angular';
+import { VgAPI } from 'videogular2/core';
 
-import { Story } from '../../providers/stories';
+import { Story } from '../../providers/parse-models/stories';
 
 import { MapStyle } from '../../providers/map-style';
 import {
@@ -18,6 +19,14 @@ import {
 } from '@ionic-native/google-maps';
 import { ViewChild } from '@angular/core';
 import { AlertController } from 'ionic-angular';
+import { VgStates } from 'videogular2/core';
+import { Observable } from 'rxjs/Observable';
+import { Utils } from '../../providers/utils';
+import { PlayMode } from '../../providers/play-mode/play-mode';
+import { AbstractPlayMode } from '../../providers/play-mode/abstract-play-mode';
+// import { StoryOnlyPlayMode } from '../../providers/play-mode/story-only-play-mode';
+// import { StoryPoiPlayMode } from '../../providers/play-mode/story-poi-play-mode';
+// import { PoiOnlyPlayMode } from '../../providers/play-mode/poi-only-play-mode';
 
 @IonicPage()
 @Component({
@@ -25,8 +34,14 @@ import { AlertController } from 'ionic-angular';
   templateUrl: 'places.html'
 })
 export class PlacesPage extends BasePage {
+  injector: Injector;
+  playingMode: AbstractPlayMode;
 
+
+  watchPositionSubscriber: any;
+  n: any = 0;
   loading: boolean;
+  playing: boolean = true;
   sortedStories: any;
   @ViewChild(Slides) slides: Slides;
 
@@ -41,9 +56,8 @@ export class PlacesPage extends BasePage {
   mapStyle: any;
   unit: any;
   radius: any;
-  isViewLoaded: boolean;
 
-  videogularApi: any;
+  videogularApi: VgAPI;
   playBackValues: any[] = [1, 1.5, 2, 3, 4];
   playBackRateIndex: any = 0;
   listeningPOI: Place;
@@ -59,6 +73,7 @@ export class PlacesPage extends BasePage {
 
   yearSelectionSlider = {
     periods: [],
+    selectedYear: "",
     maximumPeriodsOnScreen: 4,
     showLeftButton: true,
     showRightButton: true,
@@ -69,6 +84,45 @@ export class PlacesPage extends BasePage {
     enableHighAccuracy: false
   };
 
+  fakeLocations: any[] = [
+    {
+      coords: {
+        latitude: 47.055382671941324,
+        longitude: 28.865062589965873
+      }
+    },
+    {
+      coords: {
+        latitude: 47.055528860953046,
+        longitude: 28.864204283081108
+      }
+    },
+    {
+      coords: {
+        latitude: 47.05573352489612,
+        longitude: 28.863345976196342
+      }
+    },
+    {
+      coords: {
+        latitude: 47.05605513807681,
+        longitude: 28.86167227777105
+      }
+    },
+    {
+      coords: {
+        latitude: 47.056376749317764,
+        longitude: 28.860041494689995
+      }
+    },
+    {
+      coords: {
+        latitude: 47.05652293560425,
+        longitude: 28.8589256957398
+      }
+    }
+  ];
+
   constructor(injector: Injector,
     private storage: LocalStorage,
     private geolocation: Geolocation,
@@ -78,8 +132,9 @@ export class PlacesPage extends BasePage {
     public alertCtrl: AlertController,
     private cdr: ChangeDetectorRef) {
     super(injector);
-    this.isViewLoaded = true;
     this.storage = storage;
+    this.injector = injector;
+
 
     this.events.subscribe('onMenuOpened', (e) => {
       if (this.map) {
@@ -93,10 +148,41 @@ export class PlacesPage extends BasePage {
       }
     });
 
+    this.events.subscribe('playing', (e) => {
+      this.playing = e;
+      console.log("received playing: ", this.playing);
+    });
+
+    this.events.subscribe('periodChanged', (e) => {
+      if (e > this.yearSelectionSlider.selectedYear) {
+        if ((this.yearSelectionSlider.periods.indexOf(e) + 1) >= 3) {
+          this.slideNext();
+        }
+      } else {
+        this.slidePrev();
+      }
+      this.yearSelectionSlider.selectedYear = e;
+      console.log("received periodChanged: ", e);
+    });
+
+    this.events.subscribe('playModeChanged', (e) => {
+      console.log("received playModeChanged: ", e);
+      this.storage.playMode = e;
+      this.playMode = e;
+      // this.preference.playMode = e;
+
+      this.playingMode && this.playingMode.unsubscribePlayer();
+      this.playingMode = PlayMode.getInstance(this.injector, e);
+      this.playingMode.onPlayerReady(this.videogularApi);
+
+      this.playingMode.play();
+    });
+
     this.params.route = this.navParams.data;
     this.params.unit = this.preference.unit;
     this.places = [];
     this.allMarkers = [];
+    this.yearSelectionSlider.periods = this.params.route.periods;
   }
   /**
    * Fired only when a view is stored in memory.
@@ -104,15 +190,19 @@ export class PlacesPage extends BasePage {
    * It’s a nice place for init related tasks.
    */
   async ionViewDidLoad() {
-
     this.loading = true;
     await this.initLocalStorage()
-
-    await this.loadAndSortStories();
+    // this.playingMode = PlayMode.getInstance(this.injector, this.playMode);
+    // await new Promise(function (resolve, reject) {
+    //   setTimeout(function () { resolve() }, 20000);
+    // });
+    // await this.loadAndSortStories();
 
     await this.loadRoutePlaces();
     this.loading = false;
-    this.ionViewDidEnter();
+    // this.events.publish('playing', true);
+
+    // this.ionViewDidEnter();
 
     if (this.platform.is('cordova')) {
       this.initGoogleMap();
@@ -120,12 +210,23 @@ export class PlacesPage extends BasePage {
       console.warn('Native: tried calling Google Maps.isAvailable, but Cordova is not available. Make sure to include cordova.js or run in a device/simulator');
     }
   }
+
+  ionViewWillEnter() {
+    this.events.publish('playing', false);
+  }
+
   /**
    * Fired when entering a page, after it becomes the active page.
    */
   ionViewDidEnter() {
     if (!this.loading) {
-      this.findAndPlayNextAudio();
+      this.events.publish("playModeChanged", this.playMode);
+
+      // this.playingMode.play();
+      // this.events.publish("playModeChanged");
+      // this.onMove();
+      // this.onFakeMove();
+      // this.findAndPlayNextAudio();
     }
   }
   /**
@@ -133,14 +234,15 @@ export class PlacesPage extends BasePage {
    * Use it for things you need to run every time you are leaving a page (deactivate event listeners, etc.).
    */
   ionViewWillLeave() {
+    // this.events.publish('playing',false);
     this.videogularApi.pause();
+    this.watchPositionSubscriber.unsubscribe();
   }
 
   /**
    * Fired when you leave a page, after it stops being the active one.
    */
   ionViewDidLeave() {
-    this.isViewLoaded = false;
   }
 
   ngAfterViewChecked(): void {
@@ -157,36 +259,47 @@ export class PlacesPage extends BasePage {
   }
 
   //-------Date Sliders---------
-  async loadAndSortStories() {
-    this.routeDatabaseStories = await Route.getStoriesRelation(this.params.route);
+  // async loadAndSortStories() {
+  //   this.routeDatabaseStories = await Route.getStoriesRelation(this.params.route);
 
-    this.sortedStories = await this.routeDatabaseStories.sort((a, b) => {
-      if (a.startPeriod.getFullYear() == b.startPeriod.getFullYear()) {
-        return a.name.slice(0, 2) - b.name.slice(0, 2)
-      } else {
-        return a.startPeriod.getFullYear() - b.startPeriod.getFullYear();
-      }
-    });
-    //TODO get periods from Route
-    this.yearSelectionSlider.periods = Array.from(new Set(this.sortedStories.map((story) => story.startPeriod.getFullYear())));
-  }
+  //   this.sortedStories = await this.routeDatabaseStories.sort((a, b) => {
+  //     if (a.startPeriod.getFullYear() == b.startPeriod.getFullYear()) {
+  //       return a.name.slice(0, 2) - b.name.slice(0, 2)
+  //     } else {
+  //       return a.startPeriod.getFullYear() - b.startPeriod.getFullYear();
+  //     }
+  //   });
+  //   //TODO get periods from Route
+  //   this.yearSelectionSlider.periods = Array.from(new Set(this.sortedStories.map((story) => story.startPeriod.getFullYear())));
+  // }
 
   //-----Auto Play player-------
   onPlayerReady(api) {
     this.videogularApi = api;
-    this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
-      () => {
-        this.videogularApi.playbackRate = this.playBackValues[this.playBackRateIndex];
-      }
-    );
-    this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
-      () => {
-        this.findAndPlayNextAudio();
-      }
-    );
+    // this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
+    //   () => {
+    //     this.videogularApi.playbackRate = this.playBackValues[this.playBackRateIndex];
+    //   }
+    // );
+    // this.videogularApi.getDefaultMedia().subscriptions.playing.subscribe(
+    //   () => {
+    //     this.events.publish("playing", true);
+    //     console.log("this.videogularApi.getDefaultMedia().subscriptions.playing: ", this.playing);
+
+    //   }
+    // );
+    // this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
+    //   () => {
+    //     this.events.publish("playing", false);
+    //     console.log("this.videogularApi.getDefaultMedia().subscriptions.ended: ", this.playing);
+
+    //     this.findAndPlayNextAudio();
+    //   }
+    // );
   }
 
   findAndPlayNextAudio() {
+
     this.currentAudio.title = "Finding next Audio to play ...";
     switch (this.playMode) {
       case "storyPoi": {
@@ -227,8 +340,8 @@ export class PlacesPage extends BasePage {
   }
 
   playNextPoi(playMode, paramsClone) {
-    paramsClone.selectedYear = this.routeValues.selectedYear;
-    let nearestPlace = this.NearestPlace(this.routeDatabasePlaces, this.routeValues.listenedPOI, paramsClone)
+    // paramsClone.selectedYear = this.routeValues.selectedYear;
+    let nearestPlace = Place.NearestPlace(this.routeDatabasePlaces, this.routeValues.listenedPOI, paramsClone)
     if (nearestPlace) {
       this.routeValues.listenedPOI.push(nearestPlace.id);
       this.storage.updateRouteValues(this.params.route.id, this.routeValues);
@@ -243,49 +356,51 @@ export class PlacesPage extends BasePage {
     this.videogularApi.playbackRate = this.playBackValues[this.playBackRateIndex];
   }
 
-  private getAudioFromStoriesByIndex(index) {
-    let audio = { 'id': null, 'src': null, 'title': null, 'type': null, 'period': null, 'selectedPeriodYear': null };
+  // private getAudioFromStoriesByIndex(index) {
+  //   let audio = { 'id': null, 'src': null, 'title': null, 'type': null, 'period': null, 'selectedPeriodYear': null };
 
-    audio.id = this.sortedStories[index].id;
-    audio.src = this.getFileURL(this.sortedStories[index]['audio_' + this.lang].name());
-    audio.title = this.sortedStories[index].name;
-    audio.type = "Story";
-    audio.period = this.sortedStories[index].startPeriod.getFullYear() + " - " + this.sortedStories[index].endPeriod.getFullYear();
-    audio.selectedPeriodYear = this.sortedStories[index].startPeriod.getFullYear();
-    // }
-    return audio;
-  }
+  //   audio.id = this.sortedStories[index].id;
+  //   audio.src = Utils.getFileURL(this.sortedStories[index]['audio_' + this.lang].name());
+  //   audio.title = this.sortedStories[index].name;
+  //   audio.type = "Story";
+  //   audio.period = this.sortedStories[index].startPeriod.getFullYear() + " - " + this.sortedStories[index].endPeriod.getFullYear();
+  //   audio.selectedPeriodYear = this.sortedStories[index].startPeriod.getFullYear();
+  //   // }
+  //   return audio;
+  // }
 
   //------Add Player--------
   playNextStory() {
-    this.listeningPOI = null;
-    if (this.routeValues.listenedStoryIndex == this.sortedStories.length - 1) {
-      alert("No more Stories...");
-      return;
-    }
+    this.playingMode.playNext();
+    // this.listeningPOI = null;
+    // if (this.routeValues.listenedStoryIndex == this.sortedStories.length - 1) {
+    //   // alert("No more Stories...");
+    //   return;
+    // }
 
-    this.currentAudio = this.getAudioFromStoriesByIndex(++this.routeValues.listenedStoryIndex);
-    if (this.routeValues.selectedYear != this.currentAudio.selectedPeriodYear && (this.yearSelectionSlider.periods.indexOf(this.routeValues.selectedYear) + 1) >= 3) {
-      this.slideNext();
-    }
+    // this.currentAudio = this.getAudioFromStoriesByIndex(++this.routeValues.listenedStoryIndex);
 
-    this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
-    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+    // if (this.routeValues.selectedYear != this.currentAudio.selectedPeriodYear && (this.yearSelectionSlider.periods.indexOf(this.routeValues.selectedYear) + 1) >= 3) {
+    //   this.slideNext();
+    // }
 
+    // this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
+    // this.storage.updateRouteValues(this.params.route.id, this.routeValues);
   }
 
   playPrevStory() {
-    this.listeningPOI = null;
-    if (this.routeValues.listenedStoryIndex == 0) {
-      alert("First story...");
-      return;
-    }
-    this.slidePrev();
-    this.currentAudio = this.getAudioFromStoriesByIndex(--this.routeValues.listenedStoryIndex);
-    this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
-    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-    this.slideTo(this.routeValues.selectedYear);
-    this.slidePrev();
+    this.playingMode.playPrev();
+    // this.listeningPOI = null;
+    // if (this.routeValues.listenedStoryIndex == 0) {
+    //   alert("First story...");
+    //   return;
+    // }
+    // // this.slidePrev();
+    // // this.currentAudio = this.getAudioFromStoriesByIndex(--this.routeValues.listenedStoryIndex);
+    // this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
+    // this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+    // this.slideTo(this.routeValues.selectedYear);
+    // this.slidePrev();
   }
 
   enableMenuSwipe() {
@@ -303,24 +418,81 @@ export class PlacesPage extends BasePage {
       this.map.setMyLocationEnabled(true);
       // alert("Init Gmap");
       this.refreshMarkers();
-      this.onMove();
     });
   }
 
   onMove() {
     // Options: throw an error if no update is received every 5 seconds.
-    this.geolocation.watchPosition({
+    //TODO check if POI play mode
+    this.watchPositionSubscriber = this.geolocation.watchPosition({
       timeout: 5000,
       enableHighAccuracy: false
     }).filter((p) => p.coords !== undefined).subscribe(position => {
-      // alert("On Move Detected:"+ position.coords);
-      if (this.playMode === "poiOnly" && this.videogularApi.state != 'playing') {
-        let paramsClone = { ...this.params };
-        paramsClone.distance = this.radius;
-        paramsClone.location = position.coords;
-        this.playNextPoi(this.playMode, paramsClone);
-      }
+      this.findAndPlayNearestPoi(position);
     });
+  }
+
+  onFakeMove() {
+    // Options: throw an error if no update is received every 5 seconds.
+    // for (let i = 0; i < 50; i++) {
+    //   (function (ind) {
+    //     setTimeout(function () { console.log(ind); }, 500 * ind);
+    //   })(i);
+    // }
+    let data = new Observable(observer => {
+      for (let i = 0; i < this.fakeLocations.length; i++) {
+        (function (locations, ind) {
+          setTimeout(function () {
+            observer.next(locations[ind]);
+          }, ind * 2000);
+        })(this.fakeLocations, i);
+      }
+
+      // setTimeout(() => {
+      //     observer.next(42);
+      // }, 5000);
+
+      // setTimeout(() => {
+      //     observer.next(43);
+      // }, 5000);
+      // setTimeout(() => {
+      //     observer.next(44);
+      // }, 5000);
+      // setTimeout(() => {
+      //     observer.next(45);
+      // }, 5000);
+      // setTimeout(() => {
+      //     observer.next(46);
+      // }, 5000);
+
+      // setTimeout(() => {
+      //   observer.complete();
+      // }, 3000);
+    });
+
+    this.watchPositionSubscriber = data.subscribe(
+      position => {
+        console.log("position:", position);
+        console.log("playing: ", this.playing);
+
+        //this.watchPositionSubscriber.unsubscribe();
+        if (!this.playing) {
+          this.findAndPlayNearestPoi(position)
+
+        }
+      },
+      error => console.log("error", error),
+      () => console.log("finished")
+    );
+  }
+
+  findAndPlayNearestPoi(position) {
+    if (!this.playing) {
+      let paramsClone = { ...this.params };
+      paramsClone.distance = this.radius;
+      paramsClone.location = position.coords;
+      this.playNextPoi(this.playMode, paramsClone);
+    }
   }
 
   goToPlace(place) {
@@ -330,13 +502,8 @@ export class PlacesPage extends BasePage {
 
   //-------Date Sliders---------
   selectYear(selectedYearStory) {
-
-    this.listeningPOI = null;
-    this.routeValues.selectedYear = selectedYearStory;
-    this.routeValues.listenedStoryIndex = Story.getStoryIndexByYear(this.sortedStories, selectedYearStory);
-    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-
-    this.currentAudio = this.getAudioFromStoriesByIndex(this.routeValues.listenedStoryIndex);
+    this.events.publish("onYearChanged", selectedYearStory);
+    this.yearSelectionSlider.selectedYear = selectedYearStory;
   }
 
   // Method executed when the slides are changed
@@ -473,9 +640,8 @@ export class PlacesPage extends BasePage {
       text: 'Ok',
       handler: data => {
         // console.log('Checkbox data:', data);
-        this.storage.playMode = data;
-        this.playMode = data;
-        this.preference.playMode = data;
+        this.events.publish("playModeChanged", data);
+
       }
     });
     alert.present();

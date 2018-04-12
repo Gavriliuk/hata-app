@@ -110,9 +110,9 @@ export class LocalStorage {
     return await this.storage.get(routeId) || {
       listenedPOI: [],
       listenedStories: [],
-      listenedStoryIndex: -1,
-      selectedYear: 1436,
-      purchased:false
+      listenedStoryIndex: 0,
+      selectedYear: "",
+      purchased: false
     };
   }
 

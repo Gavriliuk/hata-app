@@ -10,7 +10,7 @@ import Parse from 'parse';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from './app.config';
 
-import { User } from '../providers/user-service';
+import { User } from '../providers/parse-models/user-service';
 import { LocalStorage } from '../providers/local-storage';
 import { Preference } from '../providers/preference';
 
@@ -61,7 +61,7 @@ export class MyApp {
       this.trans = values;
 
       this.pages = [
-        { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
+        // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
         // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
         // { title: values.MAP, icon: 'map', component: 'MapPage' },
         // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },

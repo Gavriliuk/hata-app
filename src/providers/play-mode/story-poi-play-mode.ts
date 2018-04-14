@@ -64,19 +64,22 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     }
 
   });
-  onFakeMove() {
-    this.watchPositionSubscriber = this.data.subscribe(
-      position => {
-        console.log("StoryPoi wathc position:",position);
 
-        let prm: any = {};
-        prm.location = position['coords'];
-        prm.distance = this.params.radius;
-        let nearestPlace = Place.NearestPlace(this.params.places, this.routeValues.listenedPOI, prm);
-        if (nearestPlace && this.playerState != 'playing') {
-          this.playNearestPoi(nearestPlace);
-        }
-      },
+  onMove() {
+    this.watchPositionSubscriber = this.data.subscribe(
+      this.onMovePositionFound,
+      error => console.log("error", error),
+      () => console.log("finished")
+    );
+  }
+
+  onMove1() {
+    // Options: throw an error if no update is received every 5 seconds.
+    this.watchPositionSubscriber = this.geolocation.watchPosition({
+      timeout: 3000,
+      enableHighAccuracy: false
+    }).filter((p) => p.coords !== undefined).subscribe(
+      this.onMovePositionFound,
       error => console.log("error", error),
       () => console.log("finished")
     );
@@ -90,26 +93,16 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
 
   async play() {
     await super.init();
-    this.getCurrentPosition().then(pos => {
-      //debugger
-      let prm: any = {};
-      prm.location = pos['coords'];
-      prm.distance = this.params.radius;
-      // debugger
-      let nearestPlace = Place.NearestPlace(this.params.places, this.routeValues.listenedPOI, prm);
-      if (nearestPlace) {
-        this.playNearestPoi(nearestPlace);
-      } else {
+    this.getCurrentPosition().then(
+      this.afterStoryPositionFound
+      , error => {
         this.playNext();
-      }
-    }, error => {
-      this.playNext();
-    });
+      });
   }
 
   playNext() {
     if (this.isLastStory()) {
-      this.onFakeMove();
+      this.onMove();
     } else {
       ++this.routeValues.listenedStoryIndex;
       this.storage.updateRouteValues(this.navParams.data.id, this.routeValues);
@@ -127,7 +120,7 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
         }
       };
       resolve(position);
-      reject(position);
+      // reject(position);
     })
   }
 
@@ -137,9 +130,9 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     this.events.publish("playPoi", nearestPlace);
   }
 
-  unsubscribeEvents(){
+  unsubscribeEvents() {
     super.unsubscribeEvents();
-    this.watchPositionSubscriber.unsubscribe();
+    this.watchPositionSubscriber && this.watchPositionSubscriber.unsubscribe();
   }
 
   buildEventsSubscription(): any {
@@ -162,12 +155,33 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
       {
         event: "onPlayerStateChanged",
         handler: (state, place) => {
-          console.error("StoryPoiPlayMode onPlayerStateChanged:", state);
-          console.error("StoryPoiPlayMode onPlayerStateChanged:", place);
+          // console.error("StoryPoiPlayMode onPlayerStateChanged:", state);
+          // console.error("StoryPoiPlayMode onPlayerStateChanged:", place);
           // console.error("StoryPoiPlayMode onPlayerStateChanged:", e);
           this.playerState = state;
         }
       }
     ];
   }
+  onMovePositionFound = (position) => {
+    this.findAndPlayNearestPoi(position);
+  }
+  afterStoryPositionFound = (position) => {
+    this.findAndPlayNearestPoi(position, ()=>this.playNext());
+  }
+  private findAndPlayNearestPoi(position: any, cannotPlayCallback = () => { }) {
+    console.log("StoryPoi watch position:", position);
+    let prm: any = {};
+    prm.location = position['coords'];
+    prm.distance = this.params.radius;
+    let nearestPlace = Place.NearestPlace(this.params.places, this.routeValues.listenedPOI, prm);
+    if (nearestPlace && this.playerState != 'playing') {
+      this.playNearestPoi(nearestPlace);
+    }
+    else {
+      cannotPlayCallback();
+    }
+  }
 }
+
+

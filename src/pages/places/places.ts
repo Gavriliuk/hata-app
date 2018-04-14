@@ -1,10 +1,9 @@
 import { IonicPage } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { BasePage } from '../base-page/base-page';
-import { Place } from '../../providers/parse-models/place-service';
 import { Preference } from '../../providers/preference';
 import { Route } from '../../providers/parse-models/routes';
-import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
+import { Geolocation } from '@ionic-native/geolocation';
 import { LocalStorage } from '../../providers/local-storage';
 import { ChangeDetectorRef } from '@angular/core';
 import { Platform, Events, Slides } from 'ionic-angular';
@@ -28,19 +27,12 @@ import { AbstractPlayMode } from '../../providers/play-mode/abstract-play-mode';
 export class PlacesPage extends BasePage {
   injector: Injector;
   playingMode: AbstractPlayMode;
-
-
-  watchPositionSubscriber: any;
-  n: any = 0;
   loading: boolean;
-  playing: boolean = true;
-  sortedStories: any;
   @ViewChild(Slides) slides: Slides;
 
   params: any = {};
   places: any = [];
   allMarkers: any[];
-  route: Route;
   routeValues: any = {};
 
   lang: any;
@@ -52,16 +44,7 @@ export class PlacesPage extends BasePage {
   videogularApi: VgAPI;
   playBackValues: any[] = [1, 1.5, 2, 3, 4];
   playBackRateIndex: any = 0;
-  listeningPOI: Place;
-  currentAudio: any = { 'src': null, 'title': null, 'type': null };
-  nearAudio: any[];
   playMode: any;
-
-  // listenedStoryIndex: any = 0;
-  // routeDatabasePlaces: any = [];
-  routeDatabaseStories: any = [];
-  storiesRelation: any = [];
-  // listenedPOI: any = [];
 
   yearSelectionSlider = {
     periods: [],
@@ -69,11 +52,6 @@ export class PlacesPage extends BasePage {
     maximumPeriodsOnScreen: 4,
     showLeftButton: true,
     showRightButton: true,
-  };
-
-  geolocationOptions: GeolocationOptions = {
-    maximumAge: 30000,
-    enableHighAccuracy: false
   };
 
   constructor(injector: Injector,
@@ -143,7 +121,7 @@ export class PlacesPage extends BasePage {
     ];
   }
 
-  changePlayMode(playMode) {
+  async changePlayMode(playMode) {
     console.log(" playModeChanged: ", playMode);
     this.storage.playMode = playMode;
     this.playMode = playMode;
@@ -151,8 +129,8 @@ export class PlacesPage extends BasePage {
     this.playingMode && this.playingMode.unsubscribeEvents();
     this.playingMode = PlayMode.getInstance(this.injector, playMode);
     this.playingMode.loadParams(this.params);
+    await this.playingMode.play();
     this.playingMode.onPlayerReady(this.videogularApi);
-    this.playingMode.play();
   }
   /**
    * Fired only when a view is stored in memory.
@@ -174,7 +152,6 @@ export class PlacesPage extends BasePage {
   }
 
   ionViewWillEnter() {
-    // this.events.publish('playing', false);
   }
 
   /**
@@ -197,8 +174,6 @@ export class PlacesPage extends BasePage {
    * Fired when you leave a page, after it stops being the active one.
    */
   ionViewDidLeave() {
-    // debugger;
-    // this.playingMode=null;
   }
 
   ngAfterViewChecked(): void {
@@ -218,59 +193,6 @@ export class PlacesPage extends BasePage {
   //-----Auto Play player-------
   onPlayerReady(api) {
     this.videogularApi = api;
-  }
-
-  findAndPlayNextAudio() {
-
-    this.currentAudio.title = "Finding next Audio to play ...";
-    switch (this.playMode) {
-      case "storyPoi": {
-        let paramsClone = { ...this.params };
-        paramsClone.distance = this.radius;
-
-        // paramsClone.location = {
-        //   latitude: 47.0628917,
-        //   longitude: 28.8678522
-        // };
-        this.geolocation.getCurrentPosition(this.geolocationOptions).then(pos => {
-          paramsClone.location = pos.coords;
-          this.playNextPoi(this.playMode, paramsClone);
-        }, error => {
-          //this.playNextStory();
-        });
-        break;
-      }
-      case "poiOnly": {
-
-        let paramsClone = { ...this.params };
-        paramsClone.distance = this.radius;
-        // paramsClone.location = {
-        //   latitude: 47.0628917,
-        //   longitude: 28.8678522
-        // };
-        this.geolocation.getCurrentPosition(this.geolocationOptions).then(pos => {
-          paramsClone.location = pos.coords;
-          this.playNextPoi(this.playMode, paramsClone);
-        });
-        break;
-      }
-      case "storyOnly": {
-        //this.playNextStory();
-        break;
-      }
-    }
-  }
-
-  playNextPoi(playMode, paramsClone) {
-    // paramsClone.selectedYear = this.routeValues.selectedYear;
-    let nearestPlace = Place.NearestPlace(this.places, this.routeValues.listenedPOI, paramsClone)
-    if (nearestPlace) {
-      this.routeValues.listenedPOI.push(nearestPlace.id);
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-      this.goToPlace(nearestPlace);
-    } else if (playMode == "storyPoi") {
-      //this.playNextStory();
-    }
   }
 
   changePlayBackRate() {
@@ -293,17 +215,6 @@ export class PlacesPage extends BasePage {
       this.map.setMyLocationEnabled(true);
       // alert("Init Gmap");
       this.refreshMarkers();
-    });
-  }
-
-  onMove() {
-    // Options: throw an error if no update is received every 5 seconds.
-    //TODO check if POI play mode
-    this.watchPositionSubscriber = this.geolocation.watchPosition({
-      timeout: 5000,
-      enableHighAccuracy: false
-    }).filter((p) => p.coords !== undefined).subscribe(position => {
-      //this.findAndPlayNearestPoi(position);
     });
   }
 
@@ -353,7 +264,6 @@ export class PlacesPage extends BasePage {
 
   refreshMarkers() {
     this.map && this.map.clear().then(() => {
-      // alert("this.places"+this.places);
       let points: Array<LatLng> = [];
 
       for (let place of this.places) {

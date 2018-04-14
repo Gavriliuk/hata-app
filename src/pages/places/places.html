@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content class="placesContent">
-    <div class="tolbarDateSlider">
+    <div *ngIf="playMode!='poiOnly'" class="tolbarDateSlider">
         <ion-row class="filters year-row">
           <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
           <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
@@ -51,11 +51,11 @@
 </div>
 
 <div class="mapFooter">
-  <div>State: {{videogularApi.state}}</div>
-  <div>{{currentAudio.type}}: {{currentAudio.title}}</div>
-  <div style="font-size:12px;">Period :{{currentAudio.period}}</div>
+  <!-- <div>State: {{videogularApi.state}}</div> -->
+  <!-- <div>{{currentAudio.type}}: {{currentAudio.title}}</div> -->
+  <!-- <div style="font-size:12px;">Period :{{currentAudio.period}}</div> -->
 
-  <vg-player (onPlayerReady)="onPlayerReady($event)">
+  <vg-player *ngIf="playMode!='poiOnly'" (onPlayerReady)="onPlayerReady($event)">
     <ion-grid>
       <ion-row align-items-center style="line-height: 23em">
         <ion-col text-center class="colVGplayer">

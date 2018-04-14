@@ -21,8 +21,9 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
 
   onPlayerReady(api: VgAPI) {
     this.videogularApi = api;
-
-    this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
+// debugger
+    if(this.videogularApi.getDefaultMedia()){
+          this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
       () => {
         console.log("StoryOnlyPlayMode: this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough: ");
         // this.videogularApi.playbackRate = 0.5;
@@ -35,9 +36,13 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
     ));
     this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
+        console.log("StoryOnlyPlayMode: subscriptions.ended");
+
         this.playNext();
       }
     ));
+    }
+
   }
 
   async play() {

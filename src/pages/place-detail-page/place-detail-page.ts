@@ -53,7 +53,8 @@ export class PlaceDetailPage extends BasePage {
     private cdr: ChangeDetectorRef) {
     super(injector);
     this.events = events;
-    this.events.publish("playing", true);
+    this.events.publish("onPlayerStateChanged", "playing", this.navParams.data.place);
+
     this.storage = storage;
     this.initLocalStorage();
 
@@ -107,6 +108,7 @@ export class PlaceDetailPage extends BasePage {
     });
   }
   loadPlace() {
+    //debugger
     this.place = this.navParams.data.place;
     let audioPOIURL = this.navParams.data.place["audio_" + this.lang].name();
     this.audio = [this.getFileURL(audioPOIURL)];
@@ -121,16 +123,15 @@ export class PlaceDetailPage extends BasePage {
     );
     this.api.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
-        console.log("this.api.getDefaultMedia().subscriptions.ended:", false);
         this.goBack();
-
       }
     );
   }
 
   goBack() {
-    //this.events.publish("playing", false);
-    this.navPageBack.pop();
+    this.navPageBack.pop().then(() => {
+      this.events.publish("onPlayerStateChanged", "ended", this.place);
+    });
   }
 
   changePlayBackRate() {

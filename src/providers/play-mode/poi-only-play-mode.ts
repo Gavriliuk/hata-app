@@ -7,6 +7,10 @@ import { AbstractPlayMode } from './abstract-play-mode';
 
 export class PoiOnlyPlayMode extends AbstractPlayMode {
 
+
+  getSubscribedEvents(): string[] {
+    throw new Error("Method not implemented.");
+  }
   playNext() {
     throw new Error("Method not implemented.");
   }

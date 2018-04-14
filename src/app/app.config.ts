@@ -57,7 +57,7 @@ export class AppConfig {
     return 'ru';
   }
   public static get DEFAULT_PLAY_MODE(): string{
-    return 'storyOnly';
+    return 'storyPoi';
   }
   // public static get DEFAULT_FILTERPLAYING(): any{
   //   return 'storyOnly';

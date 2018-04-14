@@ -5,10 +5,10 @@ import { Route } from '../parse-models/routes';
 import { VgAPI } from 'videogular2/core';
 
 export abstract class AbstractPlayMode {
-
   lang: any;
   routeValues: any;
   navParams: NavParams;
+  params: any = {};
   events: Events;
   storage: LocalStorage;
   videogularApi: VgAPI;
@@ -44,15 +44,22 @@ export abstract class AbstractPlayMode {
     //this.yearSelectionSlider.periods = Array.from(new Set(this.sortedStories.map((story) => story.startPeriod.getFullYear())));
   }
 
-  unsubscribePlayer() {
+  unsubscribeEvents() {
     this.playerSubscriptions.forEach((subscription) => {
       subscription.unsubscribe();
     })
+    this.getSubscribedEvents().forEach(event => {
+      this.events.unsubscribe(event.event);
+    });
+  }
+
+  loadParams(params: any) {
+    this.params = params;
   }
 
   abstract play();
   abstract playNext();
   abstract playPrev();
   abstract onPlayerReady(api: VgAPI);
-
+  abstract getSubscribedEvents(): any[];
 }

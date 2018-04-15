@@ -127,12 +127,12 @@ export class MyApp {
       this.preference.radius = radius;
     }).catch((e) => console.log(e));
 
-    this.storage.playMode.then(val => {
-      let playMode = val || AppConfig.DEFAULT_PLAY_MODE;
+    // this.storage.playMode.then(val => {
+    //   let playMode = val || AppConfig.DEFAULT_PLAY_MODE;
 
-      this.storage.playMode = playMode;
-      this.preference.playMode = playMode;
-    }).catch((e) => console.log(e));
+    //   this.storage.playMode = playMode;
+    //   this.preference.playMode = playMode;
+    // }).catch((e) => console.log(e));
 
     this.storage.playBackRateIndex.then(val => {
       let playBackRateIndex = val || AppConfig.DEFAULT_PLAYBACK_RATE_INDEX;

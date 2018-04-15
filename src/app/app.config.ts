@@ -56,9 +56,9 @@ export class AppConfig {
   public static get DEFAULT_LANG(): string {
     return 'ru';
   }
-  public static get DEFAULT_PLAY_MODE(): string {
-    return 'poiOnly';
-  }
+  // public static get DEFAULT_PLAY_MODE(): string {
+  //   return 'poiOnly';
+  // }
   public static get DEFAULT_PLAYBACK_RATE_INDEX(): number {
     return 0;
   }

@@ -12,13 +12,13 @@ export class PoiOnlyPlayMode extends StoryPoiPlayMode {
   }
 
   async play() {
-    await super.init();
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
     super.onMove();
   }
 
   onPlayerReady(api: VgAPI) {
-    this.videogularApi = api;
-    this.videogularApi.playbackRate = this.playBackRateValues[this.playBackRateIndex];
+    // this.videogularApi = api;
+    // this.videogularApi.playbackRate = this.playBackRateValues[this.playBackRateIndex];
   }
 
 }

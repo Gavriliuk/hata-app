@@ -37,7 +37,8 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
   }
 
   async play() {
-    await super.init();
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+
     this.getCurrentPosition().then(
       this.afterStoryPositionFound
       , error => {

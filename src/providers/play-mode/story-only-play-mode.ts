@@ -9,7 +9,7 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
 
 
   sortedStories: Story[];
-  subscribedEvents: any[]=[];
+  subscribedEvents: any[] = [];
 
   constructor(injector: Injector) {
     super(injector);
@@ -40,7 +40,7 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
   }
 
   async play() {
-    await this.init();
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
     this.currentAudio = this.getAudioFromStoriesByIndex(this.routeValues.listenedStoryIndex);
     // debugger
     if (this.routeValues.selectedYear != this.currentAudio.selectedPeriodYear) {
@@ -51,8 +51,8 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
     this.storage.updateRouteValues(this.params.route.id, this.routeValues);
   }
 
-  async init() {
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+  async init(params) {
+    super.init(params);
     this.lang = await this.storage.lang;
     this.sortedStories = !this.sortedStories ? await this.loadSortedStories() : this.sortedStories;
     this.playBackRateIndex = await this.storage.playBackRateIndex;

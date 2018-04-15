@@ -56,11 +56,12 @@ export abstract class AbstractPlayMode {
     });
   }
 
-  loadParams(params: any) {
-    this.params = params;
-  }
   changePlaybackRate(index) {
     this.playBackRateIndex = index;
+  }
+
+  async init(params: any) {
+    this.params = params;
   }
 
   abstract play();

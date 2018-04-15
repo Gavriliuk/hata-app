@@ -68,6 +68,7 @@ export class PlacesPage extends BasePage {
     this.params.route = this.navParams.data;
     this.params.unit = this.preference.unit;
     this.places = [];
+    this.playMode = this.params.route.defaultPlayMode;
     this.allMarkers = [];
     this.yearSelectionSlider.periods = this.params.route.periods;
 
@@ -135,7 +136,7 @@ export class PlacesPage extends BasePage {
 
     this.playingMode && this.playingMode.unsubscribeEvents();
     this.playingMode = PlayMode.getInstance(this.injector, playMode);
-    this.playingMode.loadParams(this.params);
+    await this.playingMode.init(this.params);
     await this.playingMode.play();
     this.playingMode.onPlayerReady(this.videogularApi);
   }
@@ -175,7 +176,7 @@ export class PlacesPage extends BasePage {
    * Use it for things you need to run every time you are leaving a page (deactivate event listeners, etc.).
    */
   ionViewWillLeave() {
-    this.videogularApi.pause();
+    this.videogularApi && this.videogularApi.pause();
   }
 
   /**
@@ -192,7 +193,8 @@ export class PlacesPage extends BasePage {
     this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
     this.mapStyle = await this.storage.mapStyle;
     this.radius = await this.storage.radius;
-    this.playMode = await this.storage.playMode;
+    let savedPlayMode = await this.storage.playMode;
+    this.playMode = savedPlayMode ? savedPlayMode : this.params.route.defaultPlayMode;
     this.unit = await this.storage.unit;
     this.lang = await this.storage.lang;
     this.playBackRateIndex = await this.storage.playBackRateIndex;
@@ -356,26 +358,28 @@ export class PlacesPage extends BasePage {
   showCheckbox() {
     let alert = this.alertCtrl.create();
     alert.setTitle('Select Playback Mode');
+    this.params.route.playModes.forEach((mode) => {
+      alert.addInput({
+        type: 'radio',
+        label: mode,
+        value: mode,
+        checked: this.playMode == mode
+      });
+    })
 
-    alert.addInput({
-      type: 'radio',
-      label: 'Story Only',
-      value: 'storyOnly',
-      checked: this.playMode.indexOf('storyOnly') !== -1
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Story & POI',
-      value: 'storyPoi',
-      checked: this.playMode.indexOf('storyPoi') !== -1
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'POI Only',
-      value: 'poiOnly',
-      disabled: false,
-      checked: this.playMode.indexOf('poiOnly') !== -1
-    });
+    // alert.addInput({
+    //   type: 'radio',
+    //   label: 'Story & POI',
+    //   value: 'storyPoi',
+    //   checked: this.playMode.indexOf('storyPoi') !== -1
+    // });
+    // alert.addInput({
+    //   type: 'radio',
+    //   label: 'POI Only',
+    //   value: 'poiOnly',
+    //   disabled: false,
+    //   checked: this.playMode.indexOf('poiOnly') !== -1
+    // });
     alert.addButton('Cancel');
     alert.addButton({
       text: 'Ok',

@@ -104,6 +104,12 @@ export class Route extends Parse.Object {
   get periods(): any[] {
     return this.get('periods');
   }
+  get playModes(): any[] {
+    return this.get('playModes');
+  }
+  get defaultPlayMode() {
+    return this.get('defaultPlayMode');
+  }
 
 }
 

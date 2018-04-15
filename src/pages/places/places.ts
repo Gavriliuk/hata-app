@@ -42,8 +42,8 @@ export class PlacesPage extends BasePage {
   radius: any;
 
   videogularApi: VgAPI;
-  playBackValues: any[] = [1, 1.5, 2, 3, 4];
-  playBackRateIndex: any = 0;
+  playBackRateValues: any[];
+  playBackRateIndex: any;
   playMode: any;
 
   yearSelectionSlider = {
@@ -117,6 +117,13 @@ export class PlacesPage extends BasePage {
           }
           this.yearSelectionSlider.selectedYear = e;
         }
+      },
+      {
+        event: "onChangePlayBackRate",
+        handler: (e) => {
+          this.playBackRateIndex = e;
+          this.videogularApi.playbackRate = this.playBackRateValues[this.playBackRateIndex];
+        }
       }
     ];
   }
@@ -157,8 +164,9 @@ export class PlacesPage extends BasePage {
   /**
    * Fired when entering a page, after it becomes the active page.
    */
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     if (!this.loading) {
+      await this.initLocalStorage();
       this.changePlayMode(this.playMode);
     }
   }
@@ -187,6 +195,8 @@ export class PlacesPage extends BasePage {
     this.playMode = await this.storage.playMode;
     this.unit = await this.storage.unit;
     this.lang = await this.storage.lang;
+    this.playBackRateIndex = await this.storage.playBackRateIndex;
+    this.playBackRateValues = await this.storage.playBackRateValues;
   }
 
 
@@ -196,8 +206,10 @@ export class PlacesPage extends BasePage {
   }
 
   changePlayBackRate() {
-    this.playBackRateIndex = this.playBackRateIndex == this.playBackValues.length - 1 ? 0 : ++this.playBackRateIndex;
-    this.videogularApi.playbackRate = this.playBackValues[this.playBackRateIndex];
+    this.playBackRateIndex = this.playBackRateIndex == this.playBackRateValues.length - 1 ? 0 : ++this.playBackRateIndex;
+    this.videogularApi.playbackRate = this.playBackRateValues[this.playBackRateIndex];
+    this.storage.playBackRateIndex = this.playBackRateIndex;
+    this.playingMode.changePlaybackRate(this.playBackRateIndex);
   }
 
   enableMenuSwipe() {
@@ -219,7 +231,7 @@ export class PlacesPage extends BasePage {
   }
 
   goToPlace(place) {
-    this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackValues, playBackRateIndex: this.playBackRateIndex });
+    this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex });
   }
 
   playNextStory() {
@@ -231,8 +243,9 @@ export class PlacesPage extends BasePage {
   }
 
   selectYear(selectedYearStory) {
-    this.events.publish("onYearChanged", selectedYearStory);
+    // this.events.publish("onYearChanged", selectedYearStory);
     this.yearSelectionSlider.selectedYear = selectedYearStory;
+    this.playingMode.changePeriod(selectedYearStory);
   }
 
   // Method executed when the slides are changed

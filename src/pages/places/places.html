@@ -61,7 +61,7 @@
         <ion-col text-center class="colVGplayer">
           <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay"
                   (click)="changePlayBackRate()">
-            <p style="text-transform: lowercase;">{{playBackValues[playBackRateIndex]}}x</p>
+            <p style="text-transform: lowercase;">{{playBackRateValues && playBackRateValues[playBackRateIndex]}}x</p>
           </button>
           <!-- Backwards -->
           <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay"

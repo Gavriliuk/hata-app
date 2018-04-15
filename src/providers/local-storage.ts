@@ -91,6 +91,21 @@ export class LocalStorage {
   set playMode(val) {
     this.storage.set('playMode', val);
   }
+  get playBackRateIndex(): Promise<any> {
+    return this.storage.get('playBackRateIndex');
+  }
+
+  set playBackRateIndex(val) {
+    this.storage.set('playBackRateIndex', val);
+  }
+
+  get playBackRateValues(): Promise<any> {
+    return this.storage.get('playBackRateValues');
+  }
+
+  set playBackRateValues(val) {
+    this.storage.set('playBackRateValues', val);
+  }
 
   setRouteValue(routeId, key, val) {
     let allRouteValues = this.storage.get(routeId)

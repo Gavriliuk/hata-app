@@ -1,9 +1,9 @@
 import { VgAPI } from 'videogular2/core';
-import { StoryPoiPlayMode } from './story-poi-play-mode';
+import { StoryPoiPlayModeMock } from './mock-story-poi-play-mode';
 
 
 
-export class PoiOnlyPlayMode extends StoryPoiPlayMode {
+export class PoiOnlyPlayModeMock extends StoryPoiPlayModeMock {
 
   playNext() {
   }

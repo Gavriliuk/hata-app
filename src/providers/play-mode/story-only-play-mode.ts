@@ -7,42 +7,36 @@ import { AbstractPlayMode } from './abstract-play-mode';
 
 export class StoryOnlyPlayMode extends AbstractPlayMode {
 
+
   sortedStories: Story[];
-  subscribedEvents: any[];
+  subscribedEvents: any[]=[];
 
   constructor(injector: Injector) {
     super(injector);
-    this.subscribedEvents = this.buildEventsSubscription();
-    this.subscribedEvents.forEach((event) => {
-      this.events.unsubscribe(event.event)
-      this.events.subscribe(event.event, event.handler)
-    });
   }
 
   onPlayerReady(api: VgAPI) {
     this.videogularApi = api;
-// debugger
-    if(this.videogularApi.getDefaultMedia()){
-          this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
-      () => {
-        console.log("StoryOnlyPlayMode: this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough: ");
-        // this.videogularApi.playbackRate = 0.5;
-      }
-    ));
-    this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.playing.subscribe(
-      () => {
-        console.log("StoryOnlyPlayMode: this.videogularApi.getDefaultMedia().subscriptions.playing: ");
-      }
-    ));
-    this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
-      () => {
-        console.log("StoryOnlyPlayMode: subscriptions.ended");
+    // debugger
+    if (this.videogularApi.getDefaultMedia()) {
+      this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
+        () => {
+          this.videogularApi.playbackRate = this.playBackRateValues[this.playBackRateIndex];
+        }
+      ));
+      this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.playing.subscribe(
+        () => {
+          console.log("StoryOnlyPlayMode: this.videogularApi.getDefaultMedia().subscriptions.playing: ");
+        }
+      ));
+      this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
+        () => {
+          console.log("StoryOnlyPlayMode: subscriptions.ended");
 
-        this.playNext();
-      }
-    ));
+          this.playNext();
+        }
+      ));
     }
-
   }
 
   async play() {
@@ -61,6 +55,8 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
     this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
     this.lang = await this.storage.lang;
     this.sortedStories = !this.sortedStories ? await this.loadSortedStories() : this.sortedStories;
+    this.playBackRateIndex = await this.storage.playBackRateIndex;
+    this.playBackRateValues = await this.storage.playBackRateValues;
   }
 
   playNext(): any {
@@ -79,6 +75,16 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
     }
   }
 
+  changePeriod(year: any) {
+    this.routeValues.selectedYear = year;
+    const storyIndex = this.getStoryIndexByYear(this.sortedStories, year);
+    if (storyIndex != -1) {
+      this.routeValues.listenedStoryIndex = storyIndex;
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+      this.play();
+    }
+  }
+
   isLastStory() {
     return this.routeValues.listenedStoryIndex == this.sortedStories.length - 1;
   }
@@ -88,25 +94,6 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
   }
   getSubscribedEvents(): any[] {
     return this.subscribedEvents;
-  }
-
-  buildEventsSubscription(): any {
-    return [
-      {
-        event: "onYearChanged",
-        handler: (e) => {
-          console.log("StoryOnlyPlayMode onYearChanged:", e);
-          // debugger
-          this.routeValues.selectedYear = e;
-          const storyIndex = this.getStoryIndexByYear(this.sortedStories, e);
-          if (storyIndex != -1) {
-            this.routeValues.listenedStoryIndex = storyIndex;
-            this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-            this.play();
-          }
-        }
-      }
-    ];
   }
 
   private getAudioFromStoriesByIndex(index) {

@@ -137,6 +137,7 @@ export class PlaceDetailPage extends BasePage {
   changePlayBackRate() {
     this.playBackRateIndex = this.playBackRateIndex == this.playBackValues.length - 1 ? 0 : ++this.playBackRateIndex;
     this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
+    this.storage.playBackRateIndex = this.playBackRateIndex;
   }
 
   enableMenuSwipe() {

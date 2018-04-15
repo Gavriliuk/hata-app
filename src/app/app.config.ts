@@ -3,17 +3,17 @@ export class AppConfig {
   /* Parse Server URL */
   public static get SERVER_URL(): string {
     //----------Setting Localhost---------------------------
-     return 'http://localhost:1337/parse/';
+    return 'http://localhost:1337/parse/';
 
     // ----------Setting server-----------------------------
     // return 'https://incubo.serveo.net/parse/';
     // return 'https://erepo.serveo.net/parse/';
 
-     // ----------Setting server-----------------------------
+    // ----------Setting server-----------------------------
     //  return 'http://46.101.144.21:1338/parse/';
 
-   //----------This Setting Ngrok server Dromos-------------
-  //  return 'https://dromos.innovapp.eu/parse/';
+    //----------This Setting Ngrok server Dromos-------------
+    //  return 'https://dromos.innovapp.eu/parse/';
   }
 
   /* Parse App ID  */
@@ -56,8 +56,14 @@ export class AppConfig {
   public static get DEFAULT_LANG(): string {
     return 'ru';
   }
-  public static get DEFAULT_PLAY_MODE(): string{
-    return 'storyPoi';
+  public static get DEFAULT_PLAY_MODE(): string {
+    return 'poiOnly';
+  }
+  public static get DEFAULT_PLAYBACK_RATE_INDEX(): number {
+    return 0;
+  }
+  public static get DEFAULT_PLAYBACK_RATE_VALUES(): number[] {
+    return [1, 1.5, 2, 3, 4];
   }
   // public static get DEFAULT_FILTERPLAYING(): any{
   //   return 'storyOnly';

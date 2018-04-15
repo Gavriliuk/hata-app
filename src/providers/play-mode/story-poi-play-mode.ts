@@ -1,8 +1,7 @@
 import { Injector } from '@angular/core';
-import { Geolocation, GeolocationOptions, Geoposition } from '@ionic-native/geolocation';
+import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
 import { StoryOnlyPlayMode } from './story-only-play-mode';
 import { Place } from '../parse-models/place-service';
-import { Observable } from 'rxjs/Observable';
 
 export class StoryPoiPlayMode extends StoryOnlyPlayMode {
 
@@ -15,65 +14,8 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     enableHighAccuracy: false,
     timeout: 3000
   };
-  //-------
-  fakeLocations: any[] = [
-    {
-      coords: {
-        latitude: 47.055382671941324,
-        longitude: 28.865062589965873
-      }
-    },
-    {
-      coords: {
-        latitude: 47.055528860953046,
-        longitude: 28.864204283081108
-      }
-    },
-    {
-      coords: {
-        latitude: 47.05573352489612,
-        longitude: 28.863345976196342
-      }
-    },
-    {
-      coords: {
-        latitude: 47.05605513807681,
-        longitude: 28.86167227777105
-      }
-    },
-    {
-      coords: {
-        latitude: 47.056376749317764,
-        longitude: 28.860041494689995
-      }
-    },
-    {
-      coords: {
-        latitude: 47.05652293560425,
-        longitude: 28.8589256957398
-      }
-    }
-  ];
-  data = new Observable(observer => {
-    for (let i = 0; i < this.fakeLocations.length; i++) {
-      (function (locations, ind) {
-        setTimeout(function () {
-          observer.next(locations[ind]);
-        }, ind * 1000);
-      })(this.fakeLocations, i);
-    }
-
-  });
 
   onMove() {
-    this.watchPositionSubscriber = this.data.subscribe(
-      this.onMovePositionFound,
-      error => console.log("error", error),
-      () => console.log("finished")
-    );
-  }
-
-  onMove1() {
     // Options: throw an error if no update is received every 5 seconds.
     this.watchPositionSubscriber = this.geolocation.watchPosition({
       timeout: 3000,
@@ -88,7 +30,10 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
   constructor(injector: Injector) {
     super(injector);
     this.geolocation = injector.get(Geolocation);
-    this.watchPositionSubscriber && this.watchPositionSubscriber.unsubscribe();
+
+    this.unsubscribeEvents();
+    this.subscribeEvents();
+
   }
 
   async play() {
@@ -111,17 +56,7 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
   }
 
   getCurrentPosition() {
-    // return this.geolocation.getCurrentPosition(this.geolocationOptions);
-    return new Promise((resolve, reject) => {
-      let position = {
-        coords: {
-          latitude: 47.055382671941324,
-          longitude: 28.865062589965873
-        }
-      };
-      resolve(position);
-      // reject(position);
-    })
+    return this.geolocation.getCurrentPosition(this.geolocationOptions);
   }
 
   playNearestPoi(nearestPlace) {
@@ -135,39 +70,40 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     this.watchPositionSubscriber && this.watchPositionSubscriber.unsubscribe();
   }
 
-  buildEventsSubscription(): any {
+  subscribeEvents() {
+    this.getSubscribedEvents().forEach((event) => {
+      this.events.subscribe(event.event, event.handler)
+    });
+  }
+
+  changePeriod(year) {
+    this.watchPositionSubscriber.unsubscribe();
+    // debugger
+    this.routeValues.selectedYear = year;
+    let storyIndex = this.getStoryIndexByYear(this.sortedStories, year);
+    if (storyIndex != -1) {
+      this.routeValues.listenedStoryIndex = --storyIndex;
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+      this.playNext();
+    }
+  }
+
+  getSubscribedEvents(): any {
     return [
-      {
-        event: "onYearChanged",
-        handler: (e) => {
-          console.log("StoryPoiPlayMode onYearChanged:", e);
-          this.watchPositionSubscriber.unsubscribe();
-          // debugger
-          this.routeValues.selectedYear = e;
-          let storyIndex = this.getStoryIndexByYear(this.sortedStories, e);
-          if (storyIndex != -1) {
-            this.routeValues.listenedStoryIndex = --storyIndex;
-            this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-            this.playNext();
-          }
-        }
-      },
       {
         event: "onPlayerStateChanged",
         handler: (state, place) => {
-          // console.error("StoryPoiPlayMode onPlayerStateChanged:", state);
-          // console.error("StoryPoiPlayMode onPlayerStateChanged:", place);
-          // console.error("StoryPoiPlayMode onPlayerStateChanged:", e);
           this.playerState = state;
         }
       }
     ];
   }
+
   onMovePositionFound = (position) => {
     this.findAndPlayNearestPoi(position);
   }
   afterStoryPositionFound = (position) => {
-    this.findAndPlayNearestPoi(position, ()=>this.playNext());
+    this.findAndPlayNearestPoi(position, () => this.playNext());
   }
   private findAndPlayNearestPoi(position: any, cannotPlayCallback = () => { }) {
     console.log("StoryPoi watch position:", position);

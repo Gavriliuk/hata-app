@@ -134,6 +134,20 @@ export class MyApp {
       this.preference.playMode = playMode;
     }).catch((e) => console.log(e));
 
+    this.storage.playBackRateIndex.then(val => {
+      let playBackRateIndex = val || AppConfig.DEFAULT_PLAYBACK_RATE_INDEX;
+
+      this.storage.playBackRateIndex = playBackRateIndex;
+      this.preference.playBackRateIndex = playBackRateIndex;
+    }).catch((e) => console.log(e));
+
+    this.storage.playBackRateValues.then(val => {
+      let playBackRateValues = val || AppConfig.DEFAULT_PLAYBACK_RATE_VALUES;
+
+      this.storage.playBackRateValues = playBackRateValues;
+      this.preference.playBackRateValues = playBackRateValues;
+    }).catch((e) => console.log(e));
+
     this.storage.mapStyle.then(val => {
 
       let mapStyle = val || AppConfig.DEFAULT_MAP_STYLE;

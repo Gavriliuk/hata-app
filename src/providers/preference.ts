@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class Preference {
 
+  private _playBackRateValues: number[];
+  private _playBackRateIndex: number;
   private _unit;
   private _radius;
   private _mapStyle;
@@ -54,6 +56,21 @@ export class Preference {
 
   set playMode(val) {
     this._playMode = val;
+  }
+
+  get playBackRateIndex(): any {
+    return this._playBackRateIndex;
+  }
+
+  set playBackRateIndex(val) {
+    this._playBackRateIndex = val;
+  }
+  get playBackRateValues(): number[] {
+    return this._playBackRateValues;
+  }
+
+  set playBackRateValues(val) {
+    this._playBackRateValues = val;
   }
 
 }

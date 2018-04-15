@@ -5,6 +5,7 @@ import { Route } from '../parse-models/routes';
 import { VgAPI } from 'videogular2/core';
 
 export abstract class AbstractPlayMode {
+
   lang: any;
   routeValues: any;
   navParams: NavParams;
@@ -22,6 +23,8 @@ export abstract class AbstractPlayMode {
     'period': null,
     'selectedPeriodYear': null
   };
+  playBackRateValues: any;
+  playBackRateIndex: any;
 
   constructor(injector: Injector) {
     this.storage = injector.get(LocalStorage);
@@ -56,10 +59,14 @@ export abstract class AbstractPlayMode {
   loadParams(params: any) {
     this.params = params;
   }
+  changePlaybackRate(index) {
+    this.playBackRateIndex = index;
+  }
 
   abstract play();
   abstract playNext();
   abstract playPrev();
   abstract onPlayerReady(api: VgAPI);
   abstract getSubscribedEvents(): any[];
+  abstract changePeriod(year: any);
 }

@@ -107,20 +107,20 @@ export class LocalStorage {
     this.storage.set('playBackRateValues', val);
   }
 
-  setRouteValue(routeId, key, val) {
-    let allRouteValues = this.storage.get(routeId)
+  async setRouteValue(routeId, key, val):Promise<any> {
+    let allRouteValues = await this.storage.get(routeId)
     allRouteValues[key] = val;
-    this.storage.set(routeId, allRouteValues);
+    return this.storage.set(routeId, allRouteValues);
   }
-  updateRouteValues(routeId, allRouteValues) {
-    this.storage.set(routeId, allRouteValues);
+  updateRouteValues(routeId, allRouteValues):Promise<any> {
+    return this.storage.set(routeId, allRouteValues);
   }
 
   getRouteValue(routeId, key) {
     return this.storage.get(routeId)[key];
   }
 
-  async getRouteAllValues(routeId) {
+  async getRouteAllValues(routeId):Promise<any> {
     //TODO get selectedYear from route
     return await this.storage.get(routeId) || {
       listenedPOI: [],

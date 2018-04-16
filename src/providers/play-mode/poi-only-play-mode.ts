@@ -5,10 +5,10 @@ import { StoryPoiPlayMode } from './story-poi-play-mode';
 
 export class PoiOnlyPlayMode extends StoryPoiPlayMode {
 
-  playNext() {
+  async playNext() {
   }
 
-  playPrev() {
+  async playPrev() {
   }
 
   async play() {

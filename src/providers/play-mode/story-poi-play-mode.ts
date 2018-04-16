@@ -38,21 +38,21 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
 
   async play() {
     this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
-
-    this.getCurrentPosition().then(
-      this.afterStoryPositionFound
-      , error => {
-        this.playNext();
-      });
+    this.playNext();
   }
 
-  playNext() {
+  async playNext() {
     if (this.isLastStory()) {
       this.onMove();
     } else {
-      ++this.routeValues.listenedStoryIndex;
-      this.storage.updateRouteValues(this.navParams.data.id, this.routeValues);
-      super.play();
+      this.getCurrentPosition().then(
+        this.afterStoryPositionFound
+        , error => {
+          ++this.routeValues.listenedStoryIndex;
+          this.storage.updateRouteValues(this.navParams.data.id, this.routeValues).then(() => {
+            super.play();
+          });
+        });
     }
   }
 
@@ -60,7 +60,7 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     return this.geolocation.getCurrentPosition(this.geolocationOptions);
   }
 
-  playNearestPoi(nearestPlace) {
+  playPoi(nearestPlace) {
     this.routeValues.listenedPOI.push(nearestPlace.id);
     this.storage.updateRouteValues(this.params.route.id, this.routeValues);
     this.events.publish("playPoi", nearestPlace);
@@ -77,14 +77,14 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     });
   }
 
-  changePeriod(year) {
-    this.watchPositionSubscriber.unsubscribe();
+  async changePeriod(year) {
+    this.watchPositionSubscriber && this.watchPositionSubscriber.unsubscribe();
     // debugger
     this.routeValues.selectedYear = year;
     let storyIndex = this.getStoryIndexByYear(this.sortedStories, year);
     if (storyIndex != -1) {
       this.routeValues.listenedStoryIndex = --storyIndex;
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+      await this.storage.updateRouteValues(this.params.route.id, this.routeValues);
       this.playNext();
     }
   }
@@ -104,7 +104,7 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     this.findAndPlayNearestPoi(position);
   }
   afterStoryPositionFound = (position) => {
-    this.findAndPlayNearestPoi(position, () => this.playNext());
+    this.findAndPlayNearestPoi(position, () => super.play());
   }
   private findAndPlayNearestPoi(position: any, cannotPlayCallback = () => { }) {
     console.log("StoryPoi watch position:", position);
@@ -113,9 +113,8 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     prm.distance = this.params.radius;
     let nearestPlace = Place.NearestPlace(this.params.places, this.routeValues.listenedPOI, prm);
     if (nearestPlace && this.playerState != 'playing') {
-      this.playNearestPoi(nearestPlace);
-    }
-    else {
+      this.playPoi(nearestPlace);
+    } else {
       cannotPlayCallback();
     }
   }

@@ -5,10 +5,10 @@ import { StoryPoiPlayModeMock } from './mock-story-poi-play-mode';
 
 export class PoiOnlyPlayModeMock extends StoryPoiPlayModeMock {
 
-  playNext() {
+  async playNext() {
   }
 
-  playPrev() {
+  async playPrev() {
   }
 
   async play() {

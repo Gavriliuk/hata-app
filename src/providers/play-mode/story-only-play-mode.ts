@@ -59,18 +59,18 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
     this.playBackRateValues = await this.storage.playBackRateValues;
   }
 
-  playNext(): any {
+  async playNext() {
     if (!this.isLastStory()) {
       ++this.routeValues.listenedStoryIndex;
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+      await this.storage.updateRouteValues(this.params.route.id, this.routeValues);
       this.play();
     }
   }
 
-  playPrev(): any {
+  async playPrev() {
     if (!this.isFirstStory()) {
       --this.routeValues.listenedStoryIndex;
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+      await this.storage.updateRouteValues(this.params.route.id, this.routeValues);
       this.play();
     }
   }

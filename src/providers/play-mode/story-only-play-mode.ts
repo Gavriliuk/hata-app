@@ -100,15 +100,14 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
 
   private getAudioFromStoriesByIndex(index) {
     let audio = { 'id': null, 'src': null, 'title': null, 'type': null, 'period': null, 'selectedPeriodYear': null };
-    // const index =
-
-    audio.id = this.sortedStories[index].id;
-    audio.src = Utils.getFileURL(this.sortedStories[index]['audio_' + this.lang].name());
-    audio.title = this.sortedStories[index].name;
-    audio.type = "Story";
-    audio.period = this.sortedStories[index].startPeriod.getFullYear() + " - " + this.sortedStories[index].endPeriod.getFullYear();
-    audio.selectedPeriodYear = this.sortedStories[index].startPeriod.getFullYear() + "";
-    // }
+    if (this.sortedStories.length) {
+      audio.id = this.sortedStories[index].id;
+      audio.src = Utils.getFileURL(this.sortedStories[index]['audio_' + this.lang].name());
+      audio.title = this.sortedStories[index].name;
+      audio.type = "Story";
+      audio.period = this.sortedStories[index].startPeriod.getFullYear() + " - " + this.sortedStories[index].endPeriod.getFullYear();
+      audio.selectedPeriodYear = this.sortedStories[index].startPeriod.getFullYear() + "";
+    }
     return audio;
   }
 

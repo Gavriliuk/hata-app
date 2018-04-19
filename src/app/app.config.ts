@@ -3,7 +3,7 @@ export class AppConfig {
   /* Parse Server URL */
   public static get SERVER_URL(): string {
     //----------Setting Localhost---------------------------
-    return 'http://localhost:1337/parse/';
+    // return 'http://localhost:1337/parse/';
 
     // ----------Setting server-----------------------------
     // return 'https://incubo.serveo.net/parse/';
@@ -13,7 +13,7 @@ export class AppConfig {
     //  return 'http://46.101.144.21:1338/parse/';
 
     //----------This Setting Ngrok server Dromos-------------
-    //  return 'https://dromos.innovapp.eu/parse/';
+     return 'https://dromos.innovapp.eu/parse/';
   }
 
   /* Parse App ID  */

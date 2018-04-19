@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import Parse from 'parse';
+import { Category } from './category-service';
 
 @Injectable()
 export class Place extends Parse.Object {
@@ -349,6 +350,9 @@ export class Place extends Parse.Object {
 
   get ratingTotal() {
     return this.get('ratingTotal');
+  }
+  get category():Category {
+    return this.get('category');
   }
 
   get rating() {

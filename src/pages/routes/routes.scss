@@ -28,7 +28,9 @@ page-routes {
     padding: 3px;
   }
   .textRoute{
-    padding-top: 0.9em;
+    padding-top: 0.5em;
+    word-break: break-all;
+    white-space: normal;
   }
   .itemRoute{
     margin-bottom: 2px;
@@ -38,11 +40,10 @@ page-routes {
   }
   .item-ios [item-right], .item-ios [item-end] {
     margin: 0px;
-  } 
+  }
   .selectedItem {
-    height: 52px;
     width: 98%;
     display: inline-block;
   }
-  
+
 }

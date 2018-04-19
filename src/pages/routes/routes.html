@@ -26,12 +26,12 @@
   <div *ngIf="isContentViewVisible" class="divRoute">
     <ion-item class="itemRoute" *ngFor="let route of routes" color="dark" no-lines>
       <div class="selectedItem" (tap)="goToPlaces(route)">
-      <ion-avatar class="avatarRoute" item-start>
+      <ion-thumbnail class="avatarRoute" item-start>
         <img src="assets/img/tag.png" offset="100"
              [lazyLoad]="route.imageThumb.url()"
              [scrollTarget]="container.getScrollElement()">
-      </ion-avatar>
-      <h2 class="bold textRoute" ion-text color="secondaru">{{ route["title_"+lang] }}</h2>
+      </ion-thumbnail>
+      <h2 class="textRoute">{{ route["title_"+lang] }}</h2>
       </div>
         <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route)" item-end></ion-icon>
         <!-- <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route['title_'+lang],route['information_'+lang],route.center_map,route.waypoints,route.start_route,route.end_route)" item-end></ion-icon> -->

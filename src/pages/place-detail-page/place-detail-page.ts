@@ -91,7 +91,7 @@ export class PlaceDetailPage extends BasePage {
       }
     }
     this.markers = "";
-    this.icon = this.route.icon.url();
+    this.icon = this.place.category.icon.url();
     this.places.forEach(place => {
       this.markers += "&markers=icon:" + this.icon + "%7C" + place.location.latitude + "," + place.location.longitude;
     });

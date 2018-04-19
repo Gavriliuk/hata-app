@@ -13,6 +13,8 @@ import { AppConfig } from './app.config';
 import { User } from '../providers/parse-models/user-service';
 import { LocalStorage } from '../providers/local-storage';
 import { Preference } from '../providers/preference';
+import { TabsPage } from '../pages/tabs/tabs';
+import { WalkthroughPage } from '../pages/walkthrough-page/walkthrough-page';
 
 @Component({
   templateUrl: 'app.html'
@@ -20,11 +22,11 @@ import { Preference } from '../providers/preference';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any;
+  rootPage: any = TabsPage;
   user: User;
   trans: any;
 
-  pages: Array<{ title: string, icon: string, component: any }>;
+  // pages: Array<{ title: string, icon: string, component: any }>;
 
   constructor(public platform: Platform,
     private events: Events,
@@ -41,57 +43,57 @@ export class MyApp {
     this.initializeApp();
   }
 
-  onMenuOpened() {
-    this.events.publish('onMenuOpened');
-  }
+  // onMenuOpened() {
+  //   this.events.publish('onMenuOpened');
+  // }
 
-  onMenuClosed() {
-    this.events.publish('onMenuClosed');
-  }
+  // onMenuClosed() {
+  //   this.events.publish('onMenuClosed');
+  // }
 
-  buildMenu() {
+  // buildMenu() {
 
-    // let trans = ['ROUTES', 'MAP', 'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
-    // let trans = ['ROUTES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
-    let trans = ['ROUTES', 'ADD_PLACE', 'MY_FAVORITES',
-      'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
+  //   // let trans = ['ROUTES', 'MAP', 'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
+  //   // let trans = ['ROUTES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
+  //   let trans = ['ROUTES', 'ADD_PLACE', 'MY_FAVORITES',
+  //     'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
 
-    this.translate.get(trans).subscribe(values => {
+  //   this.translate.get(trans).subscribe(values => {
 
-      this.trans = values;
+  //     this.trans = values;
 
-      this.pages = [
-        // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
-        // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
-        // { title: values.MAP, icon: 'map', component: 'MapPage' },
-        // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },
-        // { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },
-        { title: values.SETTINGS, icon: 'settings', component: 'SettingsPage' }
-        // { title: values.SETTINGS, icon: 'heart', component: 'AudioPage' },
-      ];
+  //     this.pages = [
+  //       // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
+  //       // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
+  //       // { title: values.MAP, icon: 'map', component: 'MapPage' },
+  //       // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },
+  //       // { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },
+  //       { title: values.SETTINGS, icon: 'settings', component: 'SettingsPage' }
+  //       // { title: values.SETTINGS, icon: 'heart', component: 'AudioPage' },
+  //     ];
 
-      // if (User.getCurrentUser()) {
-      //   this.pages.push({ title: values.PROFILE, icon: 'contact', component: 'ProfilePage' })
-      //   this.pages.push({ title: values.LOGOUT, icon: 'exit', component: null })
-      // }
+  //     // if (User.getCurrentUser()) {
+  //     //   this.pages.push({ title: values.PROFILE, icon: 'contact', component: 'ProfilePage' })
+  //     //   this.pages.push({ title: values.LOGOUT, icon: 'exit', component: null })
+  //     // }
 
-    });
-  }
+  //   });
+  // }
 
   initializeApp() {
 
-    this.events.subscribe('user:login', (userEventData) => {
-      this.user = userEventData[0];
-      this.buildMenu();
-    });
+    // this.events.subscribe('user:login', (userEventData) => {
+    //   this.user = userEventData[0];
+    //   this.buildMenu();
+    // });
 
-    this.events.subscribe('user:logout', () => {
-      this.user = null;
-      this.buildMenu();
-    });
+    // this.events.subscribe('user:logout', () => {
+    //   this.user = null;
+    //   this.buildMenu();
+    // });
 
     this.events.subscribe('lang:change', (e) => {
-      this.buildMenu();
+      // this.buildMenu();
     });
 
     this.translate.setDefaultLang(AppConfig.DEFAULT_LANG);
@@ -107,10 +109,10 @@ export class MyApp {
 
       this.storage.skipIntroPage.then((skipIntroPage) => {
         //--------Open First Page Map---------------
-        this.rootPage = skipIntroPage ? 'RoutesPage' : 'WalkthroughPage';
+        this.rootPage = skipIntroPage ? TabsPage : WalkthroughPage;
       }).catch((e) => console.log(e));
 
-      this.buildMenu();
+      // this.buildMenu();
     }).catch((e) => console.log(e));
 
     this.storage.unit.then(val => {
@@ -184,29 +186,29 @@ export class MyApp {
     });
   }
 
-  openPage(page) {
+  // openPage(page) {
 
-    // if ((page.component === 'FavoritesPage' || page.component === 'AddPlacePage') && !User.getCurrentUser()) {
+  //   // if ((page.component === 'FavoritesPage' || page.component === 'AddPlacePage') && !User.getCurrentUser()) {
 
-    //   this.nav.push('SignInPage');
+  //   //   this.nav.push('SignInPage');
 
-    // } else if (page.component === null && User.getCurrentUser()) {
+  //   // } else if (page.component === null && User.getCurrentUser()) {
 
-    //   User.logout().then(success => {
+  //   //   User.logout().then(success => {
 
-    //     let toast = this.toastCtrl.create({
-    //       message: this.trans.LOGGED_OUT,
-    //       duration: 3000
-    //     });
+  //   //     let toast = this.toastCtrl.create({
+  //   //       message: this.trans.LOGGED_OUT,
+  //   //       duration: 3000
+  //   //     });
 
-    //     toast.present();
+  //   //     toast.present();
 
-    //     this.user = null;
-    //     this.buildMenu();
-    //   }, error => console.log(error));
+  //   //     this.user = null;
+  //   //     this.buildMenu();
+  //   //   }, error => console.log(error));
 
-    // } else {
-    this.nav.setRoot(page.component);
-    // }
-  }
+  //   // } else {
+  //   this.nav.setRoot(page.component);
+  //   // }
+  // }
 }

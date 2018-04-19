@@ -1,11 +1,10 @@
-import {IonicPage} from 'ionic-angular';
 import {Component, Injector} from '@angular/core';
 import {Events} from 'ionic-angular';
 import {LocalStorage} from '../../providers/local-storage';
 import {Preference} from '../../providers/preference';
 import {BasePage} from '../base-page/base-page';
 
-@IonicPage() @Component({
+@Component({
   selector: 'page-settings-page',
   templateUrl: 'settings-page.html'
 })

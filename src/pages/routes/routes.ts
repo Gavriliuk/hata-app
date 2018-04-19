@@ -1,4 +1,3 @@
-import {IonicPage} from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { Events, ModalController} from 'ionic-angular';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
@@ -9,7 +8,6 @@ import { User } from '../../providers/parse-models/user-service';
 import {LocalStorage} from '../../providers/local-storage';
 import {Place} from '../../providers/parse-models/place-service';
 
-@IonicPage()
 @Component({
   selector: 'page-routes',
   templateUrl: 'routes.html'

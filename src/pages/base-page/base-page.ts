@@ -83,7 +83,7 @@ export abstract class BasePage {
     this.isEmptyViewVisible = false;
     this.isErrorViewVisible = true;
 
-    this.loader.dismiss();
+    // this.loader.dismiss();
   }
 
   onRefreshComplete(data = null) {

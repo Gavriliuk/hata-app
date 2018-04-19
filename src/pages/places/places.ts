@@ -19,6 +19,7 @@ import { AlertController } from 'ionic-angular';
 import { PlayMode } from '../../providers/play-mode/play-mode';
 import { AbstractPlayMode } from '../../providers/play-mode/abstract-play-mode';
 
+
 @IonicPage()
 @Component({
   selector: 'page-places',
@@ -281,14 +282,14 @@ export class PlacesPage extends BasePage {
           place.location.latitude,
           place.location.longitude
         );
-        //TODO check icon
-        let icon = (this.params.route && this.params.route.get('icon')) ? {
-          url: this.params.route.get('icon').url(),
+        let iconUrl = (place.category && place.category.get('icon')) ? place.category.get('icon').url() : this.params.route.get('icon').url();
+        let icon = {
+          url: iconUrl,
           size: {
             width: 32,
             height: 32
           }
-        } : 'yellow';
+        };
 
         let markerOptions = {
           position: target,

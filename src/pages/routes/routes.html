@@ -8,13 +8,6 @@
 </ion-header>
 
 <ion-content #container>
-  <empty-view *ngIf="isErrorViewVisible" icon="alert"
-    [text]="'ERROR_ROUTES' | translate">
-  </empty-view>
-
-  <empty-view *ngIf="isEmptyViewVisible" icon="bookmark"
-    [text]="'EMPTY_ROUTES' | translate">
-  </empty-view>
 
   <ion-refresher (ionRefresh)="onReload($event)">
     <ion-refresher-content

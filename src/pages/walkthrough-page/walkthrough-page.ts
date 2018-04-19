@@ -2,6 +2,7 @@ import { IonicPage } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { NavController, MenuController } from 'ionic-angular';
 import { LocalStorage } from '../../providers/local-storage';
+import { TabsPage } from '../tabs/tabs';
 
 @IonicPage()
 @Component({
@@ -26,7 +27,7 @@ export class WalkthroughPage {
   goToHome() {
     this.skipIntroPage = true;
     this.storage.skipIntroPage = this.skipIntroPage;
-    this.navCtrl.setRoot('RoutesPage');
+    this.navCtrl.setRoot(TabsPage);
   }
 
 }

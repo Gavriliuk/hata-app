@@ -40,6 +40,10 @@ import { Ionic2RatingModule } from 'ionic2-rating';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpModule, Http } from '@angular/http';
+import { RoutesPage } from '../pages/routes/routes';
+import { SettingsPage } from '../pages/settings-page/settings-page';
+import { TabsPage } from '../pages/tabs/tabs';
+import { WalkthroughPage } from '../pages/walkthrough-page/walkthrough-page';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -47,11 +51,17 @@ export function HttpLoaderFactory(http: Http) {
 
 @NgModule({
   declarations: [
-    MyApp
+    MyApp,
+    RoutesPage,
+    SettingsPage,
+    WalkthroughPage,
+    TabsPage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp,{
+      tabsHideOnSubPages: true
+    }),
     IonicStorageModule.forRoot(),
     Ng2ImgFallbackModule,
     LazyLoadImageModule,
@@ -73,9 +83,13 @@ export function HttpLoaderFactory(http: Http) {
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp
+    MyApp,
+    RoutesPage,
+    SettingsPage,
+    WalkthroughPage,
+    TabsPage
   ],
-  providers: [Route, Place,Category, ParseFile, Review, LocalStorage, User,
+  providers: [Route, Place, Category, ParseFile, Review, LocalStorage, User,
     StatusBar,
     SplashScreen,
     Diagnostic,
@@ -93,4 +107,4 @@ export function HttpLoaderFactory(http: Http) {
     Preference, MapStyle, { provide: ErrorHandler, useClass: IonicErrorHandler }]
 })
 
-export class AppModule {}
+export class AppModule { }

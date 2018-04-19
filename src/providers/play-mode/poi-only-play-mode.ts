@@ -5,15 +5,15 @@ import { StoryPoiPlayMode } from './story-poi-play-mode';
 
 export class PoiOnlyPlayMode extends StoryPoiPlayMode {
 
+  async start() {
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+    super.onMove();
+  }
   async playNext() {
+
   }
 
   async playPrev() {
-  }
-
-  async play() {
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
-    super.onMove();
   }
 
   onPlayerReady(api: VgAPI) {

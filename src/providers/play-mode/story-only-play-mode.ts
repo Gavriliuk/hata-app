@@ -8,6 +8,7 @@ import { AbstractPlayMode } from './abstract-play-mode';
 export class StoryOnlyPlayMode extends AbstractPlayMode {
 
 
+
   sortedStories: Story[];
   subscribedEvents: any[] = [];
 
@@ -32,46 +33,48 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
       this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
         () => {
           console.log("StoryOnlyPlayMode: subscriptions.ended");
-
           this.playNext();
         }
       ));
     }
   }
 
-  async play() {
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+  async playStory() {
     this.currentAudio = this.getAudioFromStoriesByIndex(this.routeValues.listenedStoryIndex);
-    // debugger
     if (this.routeValues.selectedYear != this.currentAudio.selectedPeriodYear) {
       console.log("StoryOnly, broadcast event: periodChanged");
       this.events.publish("periodChanged", this.currentAudio.selectedPeriodYear);
     }
     this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
-    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+    await this.storage.updateRouteValues(this.params.route.id, this.routeValues);
   }
 
   async init(params) {
-    super.init(params);
+    await super.init(params);
     this.lang = await this.storage.lang;
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
     this.sortedStories = !this.sortedStories ? await this.loadSortedStories() : this.sortedStories;
     this.playBackRateIndex = await this.storage.playBackRateIndex;
     this.playBackRateValues = await this.storage.playBackRateValues;
   }
 
+  async start() {
+    if (!this.isLastStory()) {
+      this.playStory();
+    }
+  }
+
   async playNext() {
     if (!this.isLastStory()) {
       ++this.routeValues.listenedStoryIndex;
-      await this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-      this.play();
+      this.playStory()
     }
   }
 
   async playPrev() {
     if (!this.isFirstStory()) {
       --this.routeValues.listenedStoryIndex;
-      await this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-      this.play();
+      this.playStory();
     }
   }
 
@@ -80,8 +83,7 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
     const storyIndex = this.getStoryIndexByYear(this.sortedStories, year);
     if (storyIndex != -1) {
       this.routeValues.listenedStoryIndex = storyIndex;
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-      this.play();
+      this.playStory();
     }
   }
 

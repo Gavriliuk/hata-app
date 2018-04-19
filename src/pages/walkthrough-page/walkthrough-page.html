@@ -1,43 +1,35 @@
 <ion-content>
-  <ion-slides>
+  <ion-slides pager>
 
-    <ion-slide class="slide-1" color="dark">
-      <img src="assets/img/icon.png" class="slide-image"/>
+    <ion-slide class="slide" color="dark">
+      <img src="assets/img/guide-1.png" class="slide-image" />
       <div class="caption">
-        <h2 class="slide-title" ion-text color="light">
-          {{ 'SLIDE_ONE' | translate }}
+        <h2 class="slide-title">{{ "slide1_title" | translate }}</h2>
+        <h2 class="slide-description">
+          {{ "slide1_description" | translate }}
+        </h2>
+      </div>
+    </ion-slide>
+    <ion-slide class="slide" color="dark">
+      <img src="assets/img/guide-2.png" class="slide-image" />
+      <div class="caption">
+        <h2 class="slide-title">{{ "slide2_title" | translate }}</h2>
+        <h2 class="slide-description">
+          <br> {{ "slide2_description" | translate}}
+        </h2>
+      </div>
+    </ion-slide>
+    <ion-slide class="slide" color="dark">
+      <img src="assets/img/guide-3.png" class="slide-image" />
+      <div class="caption">
+        <h2 class="slide-title">{{ "slide3_title" | translate }}</h2>
+        <h2 class="slide-description">
+          <br> {{ "slide3_description" | translate }}
         </h2>
       </div>
     </ion-slide>
 
-    <ion-slide class="slide-2">
-      <img src="assets/img/slide-2.png" class="slide-image"/>
-      <div class="caption">
-        <h2 class="slide-title" ion-text color="dark">
-          {{ 'SLIDE_TWO' | translate }}
-        </h2>
-      </div>
-    </ion-slide>
-
-    <ion-slide class="slide-3">
-      <img src="assets/img/slide-3.png" class="slide-image"/>
-      <div class="caption">
-        <h2 class="slide-title" ion-text color="dark">
-          {{ 'SLIDE_THREE' | translate }}
-        </h2>
-      </div>
-    </ion-slide>
-
-    <ion-slide class="slide-4">
-      <img src="assets/img/slide-4.png" class="slide-image"/>
-      <div class="caption">
-        <h2 class="slide-title" ion-text color="light">
-          {{ 'SLIDE_FOUR' | translate }}
-        </h2>
-      </div>
-    </ion-slide>
-
-    <ion-slide class="slide-5">
+    <ion-slide class="slide">
       <div class="caption">
         <h2 ion-text color="light">{{ 'SLIDE_FIVE' | translate }}</h2>
       </div>
@@ -50,4 +42,5 @@
   <button class="skip-button" ion-button clear block color="light" (tap)="goToHome()">
     {{ "SKIP" | translate }}
   </button>
+  <img class="app-logo" clear block color="light" src="assets/img/guide-icon.png">
 </ion-content>

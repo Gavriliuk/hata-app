@@ -1,34 +1,23 @@
 page-walkthrough-page {
   ion-slides {
+    .swiper-pagination-bullet-active {
+      background: #ffffff;
+      opacity: 1;
+  }
+  background-image: url("/assets/img/guide-back.png");
+  background-size: 100% 100%;
 
     height: 100% !important;
 
     .swiper-wrapper {
+      .slide {
 
-      .slide-1 {
-        background-color: color($colors, dark, base);
-      }
-
-      .slide-2 {
-        background-color: color($colors, primary, base);
-      }
-
-      .slide-3 {
-        background-color: color($colors, light, base);
-      }
-
-      .slide-4 {
-        background-color: color($colors, dark, base);
-      }
-
-      .slide-5 {
-        background-color: color($colors, primary, base);
       }
 
       ion-slide {
 
         .slide-image {
-          width: 50%;
+          width: 100%;
         }
 
         .caption {
@@ -38,7 +27,12 @@ page-walkthrough-page {
           width: 80%;
 
           .slide-title {
+            font-size: 4vh;
+            color:#fff;
+          }
+          .slide-description {
             font-size: 3vh;
+            color:#fff;
           }
         }
       }
@@ -46,8 +40,8 @@ page-walkthrough-page {
 
     .swiper-pagination {
       height: 50px;
-      bottom: 60px !important;
-      padding-top: 15px;
+      bottom: 45px !important;
+      padding-top: 50px;
     }
   }
 
@@ -55,5 +49,15 @@ page-walkthrough-page {
     z-index: 9999;
     position: absolute;
     bottom: 0;
-  }
+    padding-left: 70%;
+    margin-bottom: 2vh;
+    }
+    .app-logo {
+      z-index: 9999;
+      position: absolute;
+      bottom: 0;
+      height: 8vh;
+      margin-left: 2vh;
+      margin-bottom: 2vh;
+      }
 }

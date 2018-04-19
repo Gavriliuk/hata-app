@@ -64,7 +64,7 @@ export abstract class AbstractPlayMode {
     this.params = params;
   }
 
-  abstract play();
+  abstract start();
   abstract playNext();
   abstract playPrev();
   abstract onPlayerReady(api: VgAPI);

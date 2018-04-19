@@ -5,6 +5,7 @@ import { Place } from '../parse-models/place-service';
 
 export class StoryPoiPlayMode extends StoryOnlyPlayMode {
 
+  radius: any;
   watchPositionSubscriber: any;
   playerState: string;
   // places: Place[];
@@ -36,9 +37,20 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
 
   }
 
-  async play() {
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
-    this.playNext();
+  async start() {
+    if (this.isLastStory()) {
+      this.onMove();
+    } else {
+      this.getCurrentPosition().then(
+        (position) => {
+          this.findAndPlayNearestPoi(position, () => {
+            super.playStory();
+          });
+        }
+        , error => {
+          super.playStory();
+        });
+    }
   }
 
   async playNext() {
@@ -48,12 +60,14 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
       this.getCurrentPosition().then(
         this.afterStoryPositionFound
         , error => {
-          ++this.routeValues.listenedStoryIndex;
-          this.storage.updateRouteValues(this.navParams.data.id, this.routeValues).then(() => {
-            super.play();
-          });
+          super.playNext();
         });
     }
+  }
+
+  async init(params) {
+    await super.init(params);
+    this.radius = await this.storage.radius;
   }
 
   getCurrentPosition() {
@@ -84,8 +98,7 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     let storyIndex = this.getStoryIndexByYear(this.sortedStories, year);
     if (storyIndex != -1) {
       this.routeValues.listenedStoryIndex = --storyIndex;
-      await this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-      this.playNext();
+      super.playNext();
     }
   }
 
@@ -104,13 +117,16 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     this.findAndPlayNearestPoi(position);
   }
   afterStoryPositionFound = (position) => {
-    this.findAndPlayNearestPoi(position, () => super.play());
+    this.findAndPlayNearestPoi(position, () => {
+      super.playNext();
+    });
   }
+
   private findAndPlayNearestPoi(position: any, cannotPlayCallback = () => { }) {
     console.log("StoryPoi watch position:", position);
     let prm: any = {};
     prm.location = position['coords'];
-    prm.distance = this.params.radius;
+    prm.distance = this.radius;
     let nearestPlace = Place.NearestPlace(this.params.places, this.routeValues.listenedPOI, prm);
     if (nearestPlace && this.playerState != 'playing') {
       this.playPoi(nearestPlace);
@@ -119,5 +135,3 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     }
   }
 }
-
-

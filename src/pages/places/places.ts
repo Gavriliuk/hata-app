@@ -39,7 +39,6 @@ export class PlacesPage extends BasePage {
   map: GoogleMap;
   mapStyle: any;
   unit: any;
-  radius: any;
 
   videogularApi: VgAPI;
   playBackRateValues: any[];
@@ -137,7 +136,7 @@ export class PlacesPage extends BasePage {
     this.playingMode && this.playingMode.unsubscribeEvents();
     this.playingMode = PlayMode.getInstance(this.injector, playMode);
     await this.playingMode.init(this.params);
-    await this.playingMode.play();
+    await this.playingMode.start();
     this.playingMode.onPlayerReady(this.videogularApi);
   }
   /**
@@ -148,7 +147,6 @@ export class PlacesPage extends BasePage {
   async ionViewDidLoad() {
     this.loading = true;
     await this.initLocalStorage()
-    this.params.radius = this.radius;
     await this.loadRoutePlaces();
     this.loading = false;
 
@@ -192,7 +190,6 @@ export class PlacesPage extends BasePage {
   async initLocalStorage() {
     this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
     this.mapStyle = await this.storage.mapStyle;
-    this.radius = await this.storage.radius;
     let savedPlayMode = await this.storage.playMode;
     this.playMode = savedPlayMode ? savedPlayMode : this.params.route.defaultPlayMode;
     this.unit = await this.storage.unit;
@@ -227,7 +224,6 @@ export class PlacesPage extends BasePage {
 
     this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
       this.map.setMyLocationEnabled(true);
-      // alert("Init Gmap");
       this.refreshMarkers();
     });
   }
@@ -245,7 +241,6 @@ export class PlacesPage extends BasePage {
   }
 
   selectYear(selectedYearStory) {
-    // this.events.publish("onYearChanged", selectedYearStory);
     this.yearSelectionSlider.selectedYear = selectedYearStory;
     this.playingMode.changePeriod(selectedYearStory);
   }
@@ -263,12 +258,12 @@ export class PlacesPage extends BasePage {
   }
   // Method that shows the next slide
   slideNext() {
-    this.slides.slideNext();
+    this.slides && this.slides.slideNext();
   }
 
   // Method that shows the previous slide
   slidePrev() {
-    this.slides.slidePrev();
+    this.slides && this.slides.slidePrev();
   }
 
   async loadRoutePlaces() {
@@ -327,6 +322,7 @@ export class PlacesPage extends BasePage {
     });
 
   }
+
   showPromoCodePrompt() {
     let prompt = this.alertCtrl.create({
       title: 'Enter Your Promocode for continue listening.',
@@ -357,37 +353,21 @@ export class PlacesPage extends BasePage {
 
   showCheckbox() {
     let alert = this.alertCtrl.create();
-    alert.setTitle('Select Playback Mode');
+    alert.setTitle(this.translate.instant('select_playback_mode'));
     this.params.route.playModes.forEach((mode) => {
       alert.addInput({
         type: 'radio',
-        label: mode,
+        label: this.translate.instant(mode),
         value: mode,
         checked: this.playMode == mode
       });
     })
 
-    // alert.addInput({
-    //   type: 'radio',
-    //   label: 'Story & POI',
-    //   value: 'storyPoi',
-    //   checked: this.playMode.indexOf('storyPoi') !== -1
-    // });
-    // alert.addInput({
-    //   type: 'radio',
-    //   label: 'POI Only',
-    //   value: 'poiOnly',
-    //   disabled: false,
-    //   checked: this.playMode.indexOf('poiOnly') !== -1
-    // });
-    alert.addButton('Cancel');
+    alert.addButton(this.translate.instant('CANCEL'));
     alert.addButton({
-      text: 'Ok',
+      text: this.translate.instant('OK'),
       handler: data => {
         this.changePlayMode(data);
-        // console.log('Checkbox data:', data);
-        // this.events.publish("playModeChanged", data);
-
       }
     });
     alert.present();

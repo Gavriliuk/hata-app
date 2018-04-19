@@ -5,15 +5,16 @@ import { StoryPoiPlayModeMock } from './mock-story-poi-play-mode';
 
 export class PoiOnlyPlayModeMock extends StoryPoiPlayModeMock {
 
+
+  async start() {
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+    super.onMove();
+  }
   async playNext() {
+
   }
 
   async playPrev() {
-  }
-
-  async play() {
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
-    super.onMove();
   }
 
   onPlayerReady(api: VgAPI) {

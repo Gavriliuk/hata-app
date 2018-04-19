@@ -69,8 +69,8 @@ export class StoryPoiPlayModeMock extends StoryPoiPlayMode {
           longitude: 28.865062589965873
         }
       };
-      // resolve(<Geoposition>position);
-      reject(<Geoposition>position);
+      resolve(<Geoposition>position);
+      // reject(<Geoposition>position);
     })
   }
 }

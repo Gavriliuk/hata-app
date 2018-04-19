@@ -13,9 +13,9 @@ export class PlayMode {
       case "storyOnly":
         return new StoryOnlyPlayMode(injector);
       case "storyPoi":
-        return new StoryPoiPlayMode(injector);
+        return new StoryPoiPlayModeMock(injector);
       case "poiOnly":
-        return new PoiOnlyPlayMode(injector);
+        return new PoiOnlyPlayModeMock(injector);
       default:
         throw new Error("Play mode not implemented.");
     }

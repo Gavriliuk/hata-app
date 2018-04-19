@@ -91,9 +91,8 @@ export class PlaceDetailPage extends BasePage {
       }
     }
     this.markers = "";
-    this.icon = this.place.category.icon.url();
     this.places.forEach(place => {
-      this.markers += "&markers=icon:" + this.icon + "%7C" + place.location.latitude + "," + place.location.longitude;
+      this.markers += "&markers=icon:" + place.category.icon.url() + "%7C" + place.location.latitude + "," + place.location.longitude;
     });
   }
 
@@ -107,6 +106,7 @@ export class PlaceDetailPage extends BasePage {
       this.loadPlace();
     });
   }
+
   loadPlace() {
     //debugger
     this.place = this.navParams.data.place;

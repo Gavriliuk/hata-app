@@ -10,6 +10,7 @@ import { VgBufferingModule } from 'videogular2/buffering';
 
 import { Route } from '../providers/parse-models/routes';
 import { Place } from '../providers/parse-models/place-service';
+import { Category } from '../providers/parse-models/category-service';
 import { Review } from '../providers/parse-models/review-service';
 import { ParseFile } from '../providers/parse-models/parse-file-service';
 import { User } from '../providers/parse-models/user-service';
@@ -74,7 +75,7 @@ export function HttpLoaderFactory(http: Http) {
   entryComponents: [
     MyApp
   ],
-  providers: [Route, Place, ParseFile, Review, LocalStorage, User,
+  providers: [Route, Place,Category, ParseFile, Review, LocalStorage, User,
     StatusBar,
     SplashScreen,
     Diagnostic,

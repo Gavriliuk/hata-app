@@ -56,7 +56,7 @@ export class Place extends Parse.Object {
       subQueryTwo.doesNotExist('expiresAt');
 
       query = Parse.Query.or(subQuery, subQueryTwo);
-      query.include('route');
+      query.include('category');
       query.equalTo('isApproved', true);
 
       if (params.route) {

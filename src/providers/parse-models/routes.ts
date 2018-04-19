@@ -27,6 +27,7 @@ export class Route extends Parse.Object {
     return new Promise((resolve, reject) => {
       var relation = route.relation('placesRelation');
       var query = relation.query(Place);
+      query.include('category');
       query.find().then(data => {
         resolve(data);
       }, error => {

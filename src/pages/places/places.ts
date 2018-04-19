@@ -146,6 +146,8 @@ export class PlacesPage extends BasePage {
    * It’s a nice place for init related tasks.
    */
   async ionViewDidLoad() {
+    //document.getElementsByTagName('html')[0].className += 'ion-tab-fix';
+
     this.loading = true;
     await this.initLocalStorage()
     await this.loadRoutePlaces();
@@ -159,15 +161,17 @@ export class PlacesPage extends BasePage {
   }
 
   ionViewWillEnter() {
+    document.getElementsByTagName('html')[0].className += 'ion-tab-fix';
   }
 
   /**
    * Fired when entering a page, after it becomes the active page.
    */
-  async ionViewDidEnter() {
+   ionViewDidEnter() {
     if (!this.loading) {
-      await this.initLocalStorage();
-      this.changePlayMode(this.playMode);
+       this.initLocalStorage().then(()=>{
+        this.changePlayMode(this.playMode);
+       });
     }
   }
   /**
@@ -175,6 +179,7 @@ export class PlacesPage extends BasePage {
    * Use it for things you need to run every time you are leaving a page (deactivate event listeners, etc.).
    */
   ionViewWillLeave() {
+    document.getElementsByTagName('html')[0].className = '';
     this.videogularApi && this.videogularApi.pause();
   }
 

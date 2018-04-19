@@ -1,7 +1,7 @@
 .PHONY: run
 
 # certs and output
-OUTPUT_FILE=DROMOS-V4.6.1.apk
+OUTPUT_FILE=DROMOS-V4.7.0.apk
 ALIAS=dromos
 KEYPASS=dromos
 

@@ -9,7 +9,8 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content class="placesContent">
+<ion-content #container>
+
     <div *ngIf="playMode!='poiOnly'" class="tolbarDateSlider">
         <ion-row class="filters year-row">
           <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>

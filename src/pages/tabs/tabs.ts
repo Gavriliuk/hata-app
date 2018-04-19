@@ -2,6 +2,7 @@ import { Component, Injector } from '@angular/core';
 import { RoutesPage } from '../routes/routes';
 import { SettingsPage } from '../settings-page/settings-page';
 import { BasePage } from '../base-page/base-page';
+import { Events } from 'ionic-angular';
 
 @Component({
   templateUrl: 'tabs.html'
@@ -12,12 +13,17 @@ export class TabsPage extends BasePage {
     routes: "",
     settings: ""
   };
+  show: boolean = true;
   enableMenuSwipe(): boolean {
     return false;
   }
 
-  constructor(injector: Injector) {
+  constructor(injector: Injector, private events: Events) {
     super(injector);
+    this.events = events;
+    this.events.subscribe('tabs:show', (show) => {
+      this.show = show;
+    });
   }
 
   ionViewDidLoad() {

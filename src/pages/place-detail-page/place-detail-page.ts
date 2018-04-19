@@ -92,7 +92,8 @@ export class PlaceDetailPage extends BasePage {
     }
     this.markers = "";
     this.places.forEach(place => {
-      this.markers += "&markers=icon:" + place.category.icon.url() + "%7C" + place.location.latitude + "," + place.location.longitude;
+      let placeIcon = (place.category && place.category.icon) ? place.category.icon.url() : this.route.icon.url();
+      this.markers += "&markers=icon:" + placeIcon + "%7C" + place.location.latitude + "," + place.location.longitude;
     });
   }
 

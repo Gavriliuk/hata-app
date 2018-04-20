@@ -84,13 +84,6 @@ export class LocalStorage {
     return this.storage.get('selectedYear');
   }
 
-  get playMode(): Promise<any> {
-    return this.storage.get('playMode');
-  }
-
-  set playMode(val) {
-    this.storage.set('playMode', val);
-  }
   get playBackRateIndex(): Promise<any> {
     return this.storage.get('playBackRateIndex');
   }
@@ -127,6 +120,7 @@ export class LocalStorage {
       listenedStories: [],
       listenedStoryIndex: 0,
       selectedYear: "",
+      playMode: null,
       purchased: false
     };
   }

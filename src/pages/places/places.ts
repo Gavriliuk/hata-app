@@ -131,7 +131,8 @@ export class PlacesPage extends BasePage {
 
   async changePlayMode(playMode) {
     console.log(" playModeChanged: ", playMode);
-    this.storage.playMode = playMode;
+    this.routeValues.playMode = playMode;
+    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
     this.playMode = playMode;
 
     this.playingMode && this.playingMode.unsubscribeEvents();
@@ -167,11 +168,11 @@ export class PlacesPage extends BasePage {
   /**
    * Fired when entering a page, after it becomes the active page.
    */
-   ionViewDidEnter() {
+  ionViewDidEnter() {
     if (!this.loading) {
-       this.initLocalStorage().then(()=>{
+      this.initLocalStorage().then(() => {
         this.changePlayMode(this.playMode);
-       });
+      });
     }
   }
   /**
@@ -196,7 +197,7 @@ export class PlacesPage extends BasePage {
   async initLocalStorage() {
     this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
     this.mapStyle = await this.storage.mapStyle;
-    let savedPlayMode = await this.storage.playMode;
+    let savedPlayMode = this.routeValues.playMode;
     this.playMode = savedPlayMode ? savedPlayMode : this.params.route.defaultPlayMode;
     this.unit = await this.storage.unit;
     this.lang = await this.storage.lang;

@@ -1,7 +1,7 @@
 .PHONY: run
 
 # certs and output
-OUTPUT_FILE=DROMOS-V4.7.1.apk
+OUTPUT_FILE=DROMOS-V4.7.6.apk
 ALIAS=dromos
 KEYPASS=dromos
 
@@ -37,7 +37,7 @@ build-android:
 	rm -f ${OUTPUT_FILE}
 	ionic cordova build android --release
 	jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore ${KEYSTORE} -storepass ${KEYPASS} ${UNSIGNED} ${ALIAS}
-	${ANDROID_PATH}/build-tools/23.0.2/zipalign -v 4 ${UNSIGNED} ${OUTPUT_FILE}
+	${ANDROID_PATH}/build-tools/23.0.2/zipalign -v 4 ${UNSIGNED} ./build/${OUTPUT_FILE}
 
 # run ios
 run-ios:

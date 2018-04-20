@@ -17,18 +17,21 @@
   </ion-refresher>
 
   <div *ngIf="isContentViewVisible" class="divRoute">
-    <ion-item class="itemRoute" *ngFor="let route of routes" color="dark" no-lines>
-      <div class="selectedItem" (tap)="goToPlaces(route)">
-      <ion-thumbnail class="avatarRoute" item-start>
+      <ion-list>
+
+    <ion-item class="itemRoute" *ngFor="let route of routes" color="dark" no-lines >
+      <!-- <div class="selectedItem" > -->
+      <ion-thumbnail class="avatarRoute" item-start (tap)="goToPlaces(route)">
         <img src="assets/img/tag.png" offset="100"
              [lazyLoad]="route.imageThumb.url()"
              [scrollTarget]="container.getScrollElement()">
       </ion-thumbnail>
-      <p class="textRoute">{{ route["title_"+lang] }}</p>
-      </div>
+      <h2 class="textRoute" (tap)="goToPlaces(route)">{{ route["title_"+lang] }}</h2>
+      <!-- </div> -->
         <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route)" item-end></ion-icon>
         <!-- <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route['title_'+lang],route['information_'+lang],route.center_map,route.waypoints,route.start_route,route.end_route)" item-end></ion-icon> -->
     </ion-item>
+    </ion-list>
   </div>
 
 </ion-content>

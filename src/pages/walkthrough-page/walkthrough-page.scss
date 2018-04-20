@@ -1,63 +1,62 @@
 page-walkthrough-page {
-  ion-slides {
+    ion-slides {
+        background-image: url("../assets/img/guide-back.png");
+        background-size: 100% 100%;
+        height: 100% !important;
 
-  background-image: url("/assets/img/guide-back.png");
-  background-size: 100% 100%;
-    height: 100% !important;
-
-    .swiper-pagination-bullet-active {
-      background: #ffffff;
-      opacity: 1;
-  }
-    .swiper-wrapper {
-      .slide {
-
-      }
-
-      ion-slide {
-
-        .slide-image {
-          width: 100%;
+        .swiper-pagination-bullet-active {
+            background: #ffffff;
+            opacity: 1;
         }
 
-        .caption {
-          margin-right: auto;
-          margin-left: auto;
-          margin-top: 40px;
-          width: 80%;
+        .swiper-wrapper {
+            .slide {}
 
-          .slide-title {
-            font-size: 4vh;
-            color:#fff;
-          }
-          .slide-description {
-            font-size: 3vh;
-            color:#fff;
-          }
+            ion-slide {
+                .slide-image {
+                    width: 100%;
+                }
+
+                .caption {
+                    margin-right: auto;
+                    margin-left: auto;
+                    margin-top: 40px;
+                    width: 80%;
+
+                    .slide-title {
+                        font-size: 4vh;
+                        color: #fff;
+                    }
+
+                    .slide-description {
+                        font-size: 2.5vh;
+                        color: #fff;
+                    }
+                }
+            }
         }
-      }
+
+        .swiper-pagination {
+            height: 50px;
+            bottom: 45px !important;
+            padding-top: 50px;
+        }
     }
 
-    .swiper-pagination {
-      height: 50px;
-      bottom: 45px !important;
-      padding-top: 50px;
+    .skip-button {
+        z-index: 9999;
+        position: absolute;
+        bottom: 0;
+        padding-left: 70%;
+        margin-bottom: 2vh;
     }
-  }
 
-  .skip-button {
-    z-index: 9999;
-    position: absolute;
-    bottom: 0;
-    padding-left: 70%;
-    margin-bottom: 2vh;
-    }
     .app-logo {
-      z-index: 9999;
-      position: absolute;
-      bottom: 0;
-      height: 8vh;
-      margin-left: 2vh;
-      margin-bottom: 2vh;
-      }
+        z-index: 9999;
+        position: absolute;
+        bottom: 0;
+        height: 8vh;
+        margin-left: 2vh;
+        margin-bottom: 2vh;
+    }
 }

@@ -131,10 +131,8 @@ export class LocalStorage {
     };
   }
 
-  clearLocalStorage() {
-    this.storage.clear().then(() => {
-      console.log('Keys have been cleared');
-    });
+  async clearLocalStorage() {
+    return this.storage.clear();
   }
 
 }

@@ -1,12 +1,12 @@
 import { Component, Injector } from '@angular/core';
-import { Events, ModalController} from 'ionic-angular';
+import { Events, ModalController } from 'ionic-angular';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Route } from '../../providers/parse-models/routes';
 import { BasePage } from '../base-page/base-page';
 import { User } from '../../providers/parse-models/user-service';
-import {LocalStorage} from '../../providers/local-storage';
-import {Place} from '../../providers/parse-models/place-service';
+import { LocalStorage } from '../../providers/local-storage';
+import { Place } from '../../providers/parse-models/place-service';
 
 @Component({
   selector: 'page-routes',
@@ -21,13 +21,13 @@ export class RoutesPage extends BasePage {
   audio_ru: any;
   audio_ro: any;
   audio_en: any;
-  routePlaces:any=[];
+  routePlaces: any = [];
   constructor(injector: Injector,
-              private storage: LocalStorage,
-              private events: Events,
-              private locationAccuracy: LocationAccuracy,
-              private diagnostic: Diagnostic,
-              public modalCtrl: ModalController) {
+    private storage: LocalStorage,
+    private events: Events,
+    private locationAccuracy: LocationAccuracy,
+    private diagnostic: Diagnostic,
+    public modalCtrl: ModalController) {
     super(injector);
 
 
@@ -57,9 +57,6 @@ export class RoutesPage extends BasePage {
       }
     }).catch((err) => console.log(err));
 
-    this.storage.lang.then((val) => {
-      this.lang = val;
-    });
   }
 
   enableMenuSwipe() {
@@ -73,32 +70,35 @@ export class RoutesPage extends BasePage {
 
   goToPlaces(route) {
     this.navigateTo('PlacesPage', route);
-console.log("GoToPlaces(route): ",route);
+    console.log("GoToPlaces(route): ", route);
   }
 
-  loadData() {
-    Route.load().then(data => {
-      this.routes = data;
+  async loadData() {
+    this.lang = await this.storage.lang;
+    this.routes = await Route.load();
 
-      if (this.routes.length) {
-        this.showContentView();
-      } else {
-        this.showEmptyView();
-      }
+    // .then(data => {
+    //   this.routes = data;
 
-      this.onRefreshComplete();
+    if (this.routes.length) {
+      this.showContentView();
+    } else {
+      this.showEmptyView();
+    }
 
-    }, error => {
+    this.onRefreshComplete();
 
-      if (error.code === 209) {
-        User.logOut().then(
-          res => this.events.publish('user:logout')),
-          err => console.log(err);
-      }
+    // }, error => {
 
-      this.showErrorView();
-      this.onRefreshComplete();
-    });
+    //   if (error.code === 209) {
+    //     User.logOut().then(
+    //       res => this.events.publish('user:logout')),
+    //       err => console.log(err);
+    //   }
+
+    //   this.showErrorView();
+    //   this.onRefreshComplete();
+    // });
   }
 
   onReload(refresher) {
@@ -112,12 +112,12 @@ console.log("GoToPlaces(route): ",route);
 
     Route.getPlacesRelation(route).then(data => {
       this.routePlaces = data;
-      let modal = this.modalCtrl.create('AddReviewPage', {route:route, places: this.routePlaces});
+      let modal = this.modalCtrl.create('AddReviewPage', { route: route, places: this.routePlaces });
       modal.present();
 
-  }, error => {
-    this.showErrorView();
-  });
+    }, error => {
+      this.showErrorView();
+    });
 
   }
 

@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform, ModalController, ToastController, Events } from 'ionic-angular';
 
-// import { GoogleAnalytics } from '@ionic-native/google-analytics';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HeaderColor } from '@ionic-native/header-color';
@@ -22,7 +21,7 @@ import { WalkthroughPage } from '../pages/walkthrough-page/walkthrough-page';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = TabsPage;
+  rootPage: any ;
   user: User;
   trans: any;
 
@@ -43,58 +42,7 @@ export class MyApp {
     this.initializeApp();
   }
 
-  // onMenuOpened() {
-  //   this.events.publish('onMenuOpened');
-  // }
-
-  // onMenuClosed() {
-  //   this.events.publish('onMenuClosed');
-  // }
-
-  // buildMenu() {
-
-  //   // let trans = ['ROUTES', 'MAP', 'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
-  //   // let trans = ['ROUTES', 'MAP', 'ADD_PLACE', 'MY_FAVORITES',
-  //   let trans = ['ROUTES', 'ADD_PLACE', 'MY_FAVORITES',
-  //     'SETTINGS', 'LOGOUT', 'LOGGED_OUT', 'PROFILE'];
-
-  //   this.translate.get(trans).subscribe(values => {
-
-  //     this.trans = values;
-
-  //     this.pages = [
-  //       // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
-  //       // { title: values.ROUTES, icon: 'pricetag', component: 'RoutesPage' },
-  //       // { title: values.MAP, icon: 'map', component: 'MapPage' },
-  //       // { title: values.ADD_PLACE, icon: 'create', component: 'AddPlacePage' },
-  //       // { title: values.MY_FAVORITES, icon: 'heart', component: 'FavoritesPage' },
-  //       { title: values.SETTINGS, icon: 'settings', component: 'SettingsPage' }
-  //       // { title: values.SETTINGS, icon: 'heart', component: 'AudioPage' },
-  //     ];
-
-  //     // if (User.getCurrentUser()) {
-  //     //   this.pages.push({ title: values.PROFILE, icon: 'contact', component: 'ProfilePage' })
-  //     //   this.pages.push({ title: values.LOGOUT, icon: 'exit', component: null })
-  //     // }
-
-  //   });
-  // }
-
   initializeApp() {
-
-    // this.events.subscribe('user:login', (userEventData) => {
-    //   this.user = userEventData[0];
-    //   this.buildMenu();
-    // });
-
-    // this.events.subscribe('user:logout', () => {
-    //   this.user = null;
-    //   this.buildMenu();
-    // });
-
-    this.events.subscribe('lang:change', (e) => {
-      // this.buildMenu();
-    });
 
     this.translate.setDefaultLang(AppConfig.DEFAULT_LANG);
 
@@ -128,13 +76,6 @@ export class MyApp {
       this.storage.radius = radius;
       this.preference.radius = radius;
     }).catch((e) => console.log(e));
-
-    // this.storage.playMode.then(val => {
-    //   let playMode = val || AppConfig.DEFAULT_PLAY_MODE;
-
-    //   this.storage.playMode = playMode;
-    //   this.preference.playMode = playMode;
-    // }).catch((e) => console.log(e));
 
     this.storage.playBackRateIndex.then(val => {
       let playBackRateIndex = val || AppConfig.DEFAULT_PLAYBACK_RATE_INDEX;
@@ -170,13 +111,6 @@ export class MyApp {
 
     this.platform.ready().then(() => {
 
-      // if (AppConfig.TRACKING_ID) {
-      //   this.googleAnalytics.startTrackerWithId(AppConfig.TRACKING_ID);
-      //   this.googleAnalytics.trackEvent('', 'App opened');
-      //   this.googleAnalytics.debugMode();
-      //   this.googleAnalytics.enableUncaughtExceptionReporting(true);
-      // }
-
       if (AppConfig.HEADER_COLOR && this.platform.is('android')) {
         this.headerColor.tint(AppConfig.HEADER_COLOR);
       }
@@ -186,29 +120,4 @@ export class MyApp {
     });
   }
 
-  // openPage(page) {
-
-  //   // if ((page.component === 'FavoritesPage' || page.component === 'AddPlacePage') && !User.getCurrentUser()) {
-
-  //   //   this.nav.push('SignInPage');
-
-  //   // } else if (page.component === null && User.getCurrentUser()) {
-
-  //   //   User.logout().then(success => {
-
-  //   //     let toast = this.toastCtrl.create({
-  //   //       message: this.trans.LOGGED_OUT,
-  //   //       duration: 3000
-  //   //     });
-
-  //   //     toast.present();
-
-  //   //     this.user = null;
-  //   //     this.buildMenu();
-  //   //   }, error => console.log(error));
-
-  //   // } else {
-  //   this.nav.setRoot(page.component);
-  //   // }
-  // }
 }

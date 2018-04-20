@@ -1,8 +1,10 @@
-import {Component, Injector} from '@angular/core';
-import {Events} from 'ionic-angular';
-import {LocalStorage} from '../../providers/local-storage';
-import {Preference} from '../../providers/preference';
-import {BasePage} from '../base-page/base-page';
+import { Component, Injector } from '@angular/core';
+import { Events } from 'ionic-angular';
+import { LocalStorage } from '../../providers/local-storage';
+import { Preference } from '../../providers/preference';
+import { BasePage } from '../base-page/base-page';
+import { WalkthroughPage } from '../walkthrough-page/walkthrough-page';
+import { MyApp } from '../../app/app.component';
 
 @Component({
   selector: 'page-settings-page',
@@ -16,9 +18,9 @@ export class SettingsPage extends BasePage {
   preference: Preference;
   filterRoute: string;
   constructor(private injector: Injector,
-              localStorage: LocalStorage,
-              events: Events,
-              preference: Preference) {
+    localStorage: LocalStorage,
+    events: Events,
+    preference: Preference) {
 
     super(injector);
 
@@ -74,9 +76,40 @@ export class SettingsPage extends BasePage {
   }
 
   goToWalkthrough() {
-    this.navigateTo('WalkthroughPage');
+    this.navigateTo(WalkthroughPage);
   }
+  // clearStorage() {
+
+
+
+
+
+  //   this.storage.clearLocalStorage();
+  // }
+
+
   clearStorage() {
-    this.storage.clearLocalStorage();
+    let prompt = this.alertCtrl.create({
+      title: this.translate.instant('clean_sure'),
+      message: this.translate.instant('clean_warning'),
+      buttons: [
+        {
+          text: this.translate.instant('clean_no'),
+          handler: data => {
+            console.log('Cancel clicked');
+
+          }
+        },
+        {
+          text: this.translate.instant('clean_yes'),
+          handler: data => {
+            this.storage.clearLocalStorage().then(() => {
+              this.navigateTo(MyApp);
+            });
+          }
+        }
+      ]
+    });
+    prompt.present();
   }
 }

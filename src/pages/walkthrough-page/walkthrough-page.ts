@@ -1,10 +1,10 @@
-import { IonicPage } from 'ionic-angular';
+// import { IonicPage } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { NavController, MenuController } from 'ionic-angular';
 import { LocalStorage } from '../../providers/local-storage';
 import { TabsPage } from '../tabs/tabs';
 
-@IonicPage()
+// @IonicPage()
 @Component({
   selector: 'page-walkthrough-page',
   templateUrl: 'walkthrough-page.html'

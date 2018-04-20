@@ -57,15 +57,15 @@
       <p ion-text class="bold" color="primary">{{ 'LANGUAGE' | translate }}</p>
     </ion-list-header>
     <ion-item no-lines>
-      <ion-label>{{ 'RUSSIAN' | translate }}</ion-label>
+      <ion-label>Руский</ion-label>
       <ion-radio value="ru"></ion-radio>
     </ion-item>
     <ion-item no-lines>
-      <ion-label>{{ 'ROMANIAN' | translate }}</ion-label>
+      <ion-label>Românã</ion-label>
       <ion-radio value="ro"></ion-radio>
     </ion-item>
     <ion-item no-lines>
-      <ion-label>{{ 'ENGLISH' | translate }}</ion-label>
+      <ion-label>English</ion-label>
       <ion-radio value="en"></ion-radio>
     </ion-item>
     <!--<ion-item no-lines>-->
@@ -110,7 +110,7 @@
       {{ 'OPEN_WALKTHROUGH' | translate }}
     </button>
 
-    <button ion-item no-lines (tap)="clearStorage()">
+    <button ion-button full round (tap)="clearStorage()">
       {{ 'Clear_the_history' | translate }}
     </button>
   </ion-list>

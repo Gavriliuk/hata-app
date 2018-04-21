@@ -33,13 +33,32 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
       this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
         () => {
           console.log("StoryOnlyPlayMode: subscriptions.ended");
-          this.playNext();
+          this.storage.incrementListenedStories().then(() => {
+            this.playNext();
+
+          });
         }
       ));
     }
   }
 
   async playStory() {
+    let listenedStoryCount = await this.storage.listenedStories || 0;
+    if (!this.routeValues.purchased && listenedStoryCount > 2) {
+      this.paymentUtils.showPromoCodePrompt(this.params.route.id, () => {
+        this.routeValues.purchased = true;
+        this.pushStoryAudio();
+      }, () => {
+        console.log("KOO");
+      });
+    } else {
+      await this.pushStoryAudio();
+    }
+
+
+  }
+
+  private async pushStoryAudio() {
     this.currentAudio = this.getAudioFromStoriesByIndex(this.routeValues.listenedStoryIndex);
     if (this.routeValues.selectedYear != this.currentAudio.selectedPeriodYear) {
       console.log("StoryOnly, broadcast event: periodChanged");

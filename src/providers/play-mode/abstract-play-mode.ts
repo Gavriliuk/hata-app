@@ -3,9 +3,11 @@ import { LocalStorage } from '../local-storage';
 import { Events, NavParams } from 'ionic-angular';
 import { Route } from '../parse-models/routes';
 import { VgAPI } from 'videogular2/core';
+import { PaymentUtils } from '../payment-utils';
 
 export abstract class AbstractPlayMode {
 
+  paymentUtils: PaymentUtils;
   lang: any;
   routeValues: any;
   navParams: NavParams;
@@ -30,6 +32,7 @@ export abstract class AbstractPlayMode {
     this.storage = injector.get(LocalStorage);
     this.events = injector.get(Events);
     this.navParams = injector.get(NavParams);
+    this.paymentUtils = new PaymentUtils(injector);
   }
 
   async loadSortedStories() {
@@ -63,6 +66,7 @@ export abstract class AbstractPlayMode {
   async init(params: any) {
     this.params = params;
   }
+
 
   abstract start();
   abstract playNext();

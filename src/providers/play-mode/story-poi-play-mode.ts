@@ -75,9 +75,10 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
   }
 
   playPoi(nearestPlace) {
-    this.routeValues.listenedPOI.push(nearestPlace.id);
-    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
-    this.events.publish("playPoi", nearestPlace);
+  //  .then(() => {
+      this.events.publish("playPoi", nearestPlace);
+
+    // })
   }
 
   unsubscribeEvents() {

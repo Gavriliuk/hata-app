@@ -12,6 +12,9 @@ import { BasePage } from '../base-page/base-page';
 import { ChangeDetectorRef } from '@angular/core';
 import Parse from 'parse';
 import { NavController } from 'ionic-angular';
+import { PaymentUtils } from '../../providers/payment-utils';
+import { RoutesPage } from '../routes/routes';
+import { TabsPage } from '../tabs/tabs';
 @IonicPage()
 @Component({
   selector: 'page-place-detail-page',
@@ -19,6 +22,8 @@ import { NavController } from 'ionic-angular';
 })
 export class PlaceDetailPage extends BasePage {
 
+  paymentUtils: PaymentUtils;
+  routeValues: any;
   params: any = {};
   places: Place[];
   images: Array<any>;
@@ -54,10 +59,10 @@ export class PlaceDetailPage extends BasePage {
     super(injector);
     this.events = events;
     this.events.publish("onPlayerStateChanged", "playing", this.navParams.data.place);
-
     this.storage = storage;
     this.initLocalStorage();
-
+    this.paymentUtils = new PaymentUtils(injector);
+    this.routeValues = this.navParams.data.routeValues;
     this.place = this.navParams.data.place;
     this.playBackValues = this.navParams.data.playBackValues;
     this.playBackRateIndex = this.navParams.data.playBackRateIndex;
@@ -108,11 +113,29 @@ export class PlaceDetailPage extends BasePage {
     });
   }
 
-  loadPlace() {
-    //debugger
+  async loadPlace() {
+    let listenedPoisCount = await this.storage.listenedPois || 0;
+    if (!this.routeValues.purchased && listenedPoisCount > 2) {
+      this.paymentUtils.showPromoCodePrompt(this.route.id, () => {
+        this.routeValues.purchased = true;
+        this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
+          this.pushPlaceAudio();
+        });
+      }, () => {
+        this.goRoutes();
+      });
+    } else {
+      this.pushPlaceAudio();
+    }
+  }
+
+  private pushPlaceAudio() {
     this.place = this.navParams.data.place;
-    let audioPOIURL = this.navParams.data.place["audio_" + this.lang].name();
-    this.audio = [this.getFileURL(audioPOIURL)];
+    this.routeValues.listenedPOI.push(this.place.id);
+    this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
+      let audioPOIURL = this.navParams.data.place["audio_" + this.lang].name();
+      this.audio = [this.getFileURL(audioPOIURL)];
+    });
   }
 
   //-----Auto Play player-------
@@ -124,7 +147,9 @@ export class PlaceDetailPage extends BasePage {
     );
     this.api.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
-        this.goBack();
+        this.storage.incrementListenedPois().then(() => {
+          this.goBack();
+        });
       }
     );
   }
@@ -135,6 +160,10 @@ export class PlaceDetailPage extends BasePage {
     });
   }
 
+  goRoutes() {
+    this.navPageBack.setRoot(TabsPage);
+  }
+
   changePlayBackRate() {
     this.playBackRateIndex = this.playBackRateIndex == this.playBackValues.length - 1 ? 0 : ++this.playBackRateIndex;
     this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
@@ -143,79 +172,6 @@ export class PlaceDetailPage extends BasePage {
 
   enableMenuSwipe() {
     return false;
-  }
-
-  openSignUpModal() {
-    this.navigateTo('SignInPage');
-  }
-
-  // openAddReviewModal() {
-  //   let modal = this.modalCtrl.create('AddReviewPage', {place: this.place});
-  //   modal.present();
-  // }
-
-  // onLike() {
-  //
-  //   if (User.getCurrentUser()) {
-  //     Place.like(this.place);
-  //     this.showToast('Liked');
-  //   } else {
-  //     this.openSignUpModal();
-  //   }
-  // }
-
-  // onRate() {
-  //   if (User.getCurrentUser()) {
-  //     this.openAddReviewModal();
-  //   } else {
-  //     this.openSignUpModal();
-  //   }
-  // }
-
-  // onShare() {
-  //   this.socialSharing.share(this.lang == "ru"?this.place.title_ru:this.place.title_en, null, null, this.place.website);
-  // }
-
-  // onCall() {
-  //   // this.callNumber.callNumber(this.place.phone, true)
-  // }
-
-  // openUrl() {
-  //
-  //   this.browserTab.isAvailable().then((isAvailable: boolean) => {
-  //
-  //     if (isAvailable) {
-  //       this.browserTab.openUrl(this.place.website);
-  //     } else {
-  //       this.inAppBrowser.create(this.place.website, '_system');
-  //     }
-  //
-  //   });
-  //
-  // }
-
-  // openUrl() {
-  //
-  //   this.browserTab.isAvailable().then((isAvailable: boolean) => {
-  //
-  //     if (isAvailable) {
-  //       this.browserTab.openUrl(this.place.website);
-  //     } else {
-  //       this.inAppBrowser.create(this.place.website, '_system');
-  //     }
-  //
-  //   });
-  //
-  // }
-
-  // goToMap() {
-  //   this.launchNavigator.navigate([this.place.location.latitude, this.place.location.longitude], {
-  //     start: [this.location.latitude, this.location.longitude]
-  //   });
-  // }
-
-  goToReviews() {
-    this.navigateTo('ReviewsPage', this.place);
   }
 
   ngAfterViewChecked(): void {

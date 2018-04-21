@@ -9,6 +9,7 @@ import { VgOverlayPlayModule } from 'videogular2/overlay-play';
 import { VgBufferingModule } from 'videogular2/buffering';
 
 import { Route } from '../providers/parse-models/routes';
+import { Promocode } from '../providers/parse-models/promocode-service';
 import { Place } from '../providers/parse-models/place-service';
 import { Category } from '../providers/parse-models/category-service';
 import { Review } from '../providers/parse-models/review-service';
@@ -89,7 +90,7 @@ export function HttpLoaderFactory(http: Http) {
     WalkthroughPage,
     TabsPage
   ],
-  providers: [Route, Place, Category, ParseFile, Review, LocalStorage, User,
+  providers: [Route, Place, Promocode,Category, ParseFile, Review, LocalStorage, User,
     StatusBar,
     SplashScreen,
     Diagnostic,

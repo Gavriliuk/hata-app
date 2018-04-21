@@ -102,7 +102,8 @@ export class PlacesPage extends BasePage {
         event: "playPoi",
         handler: (e) => {
           console.log("Places recieved playPoi:", e);
-          this.goToPlace(e);
+
+            this.goToPlace(e);
         }
       },
       {
@@ -328,34 +329,6 @@ export class PlacesPage extends BasePage {
       }
     });
 
-  }
-
-  showPromoCodePrompt() {
-    let prompt = this.alertCtrl.create({
-      title: 'Enter Your Promocode for continue listening.',
-      message: "Your reached the maximum allowed tracks per route. Please enter your Promocode to continue.",
-      inputs: [
-        {
-          name: 'code',
-          placeholder: 'Promocode'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: data => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Apply',
-          handler: data => {
-            console.log('Apply clicked', data);
-          }
-        }
-      ]
-    });
-    prompt.present();
   }
 
   showCheckbox() {

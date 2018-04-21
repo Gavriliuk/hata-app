@@ -100,12 +100,12 @@ export class LocalStorage {
     this.storage.set('playBackRateValues', val);
   }
 
-  async setRouteValue(routeId, key, val):Promise<any> {
+  async setRouteValue(routeId, key, val): Promise<any> {
     let allRouteValues = await this.storage.get(routeId)
     allRouteValues[key] = val;
     return this.storage.set(routeId, allRouteValues);
   }
-  updateRouteValues(routeId, allRouteValues):Promise<any> {
+  updateRouteValues(routeId, allRouteValues): Promise<any> {
     return this.storage.set(routeId, allRouteValues);
   }
 
@@ -113,7 +113,7 @@ export class LocalStorage {
     return this.storage.get(routeId)[key];
   }
 
-  async getRouteAllValues(routeId):Promise<any> {
+  async getRouteAllValues(routeId): Promise<any> {
     //TODO get selectedYear from route
     return await this.storage.get(routeId) || {
       listenedPOI: [],
@@ -123,6 +123,24 @@ export class LocalStorage {
       playMode: null,
       purchased: false
     };
+  }
+
+  async incrementListenedStories() {
+    let listenedStoriesCount = await this.listenedStories || 0;
+    await this.storage.set("listenedStoriesCount", ++listenedStoriesCount);
+  }
+
+  get listenedStories(): Promise<any>  {
+    return this.storage.get('listenedStoriesCount');
+  }
+
+  async incrementListenedPois() {
+    let listenedPoisCount = await this.listenedPois || 0;
+    await this.storage.set("listenedPoisCount", ++listenedPoisCount);
+  }
+
+  get listenedPois(): Promise<any>  {
+    return this.storage.get('listenedPoisCount');
   }
 
   async clearLocalStorage() {

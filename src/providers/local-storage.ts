@@ -125,24 +125,6 @@ export class LocalStorage {
     };
   }
 
-  async incrementListenedStories() {
-    let listenedStoriesCount = await this.listenedStories || 0;
-    await this.storage.set("listenedStoriesCount", ++listenedStoriesCount);
-  }
-
-  get listenedStories(): Promise<any>  {
-    return this.storage.get('listenedStoriesCount');
-  }
-
-  async incrementListenedPois() {
-    let listenedPoisCount = await this.listenedPois || 0;
-    await this.storage.set("listenedPoisCount", ++listenedPoisCount);
-  }
-
-  get listenedPois(): Promise<any>  {
-    return this.storage.get('listenedPoisCount');
-  }
-
   async clearLocalStorage() {
     return this.storage.clear();
   }

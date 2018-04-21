@@ -163,13 +163,14 @@ export class PlacesPage extends BasePage {
   }
 
   ionViewWillEnter() {
-    document.getElementsByTagName('html')[0].className += 'ion-tab-fix';
+    document.getElementsByTagName('html')[0].className = 'ion-tab-fix';
   }
 
   /**
    * Fired when entering a page, after it becomes the active page.
    */
   ionViewDidEnter() {
+    document.getElementsByTagName('html')[0].className = 'ion-tab-fix';
     if (!this.loading) {
       this.initLocalStorage().then(() => {
         this.changePlayMode(this.playMode);

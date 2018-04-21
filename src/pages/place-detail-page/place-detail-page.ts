@@ -102,6 +102,13 @@ export class PlaceDetailPage extends BasePage {
     });
   }
 
+  ionViewDidEnter() {
+    document.getElementsByTagName('html')[0].className = 'ion-tab-fix';
+  }
+  ionViewWillEnter() {
+    document.getElementsByTagName('html')[0].className = 'ion-tab-fix';
+  }
+
   initLocalStorage() {
     Promise.all([
       this.storage.lang
@@ -114,15 +121,20 @@ export class PlaceDetailPage extends BasePage {
   }
 
   async loadPlace() {
-    let listenedPoisCount = await this.storage.listenedPois || 0;
-    if (!this.routeValues.purchased && listenedPoisCount > 2) {
+    // let listenedPoisCount = await this.storage.listenedPois || 0;
+    if (!this.routeValues.purchased && this.routeValues.listenedPOI.length > 1) {
       this.paymentUtils.showPromoCodePrompt(this.route.id, () => {
         this.routeValues.purchased = true;
         this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
           this.pushPlaceAudio();
         });
       }, () => {
-        this.goRoutes();
+        this.routeValues.listenedPOI = [];
+        this.routeValues.listenedPOI = [];
+        this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
+          this.goRoutes();
+        });
+
       });
     } else {
       this.pushPlaceAudio();
@@ -147,9 +159,9 @@ export class PlaceDetailPage extends BasePage {
     );
     this.api.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
-        this.storage.incrementListenedPois().then(() => {
-          this.goBack();
-        });
+        // this.storage.incrementListenedPois().then(() => {
+        this.goBack();
+        // });
       }
     );
   }

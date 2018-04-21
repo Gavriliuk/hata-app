@@ -33,18 +33,18 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
       this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
         () => {
           console.log("StoryOnlyPlayMode: subscriptions.ended");
-          this.storage.incrementListenedStories().then(() => {
+          // this.storage.incrementListenedStories().then(() => {
             this.playNext();
 
-          });
+          // });
         }
       ));
     }
   }
 
   async playStory() {
-    let listenedStoryCount = await this.storage.listenedStories || 0;
-    if (!this.routeValues.purchased && listenedStoryCount > 2) {
+    // let listenedStoryCount = await this.storage.listenedStories || 0;
+    if (!this.routeValues.purchased && this.routeValues.listenedStoryIndex > 1) {
       this.paymentUtils.showPromoCodePrompt(this.params.route.id, () => {
         this.routeValues.purchased = true;
         this.pushStoryAudio();

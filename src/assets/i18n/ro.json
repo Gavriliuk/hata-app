@@ -1,10 +1,10 @@
 {
   "APP_TITLE": "Dromos",
   "ROUTES": "Rutele",
-  "KM":"km",
-  "MI":"mi",
-  "km":"km",
-  "mi":"mi",
+  "KM": "km",
+  "MI": "mi",
+  "km": "km",
+  "mi": "mi",
   "MAP": "Hartă",
   "MY_FAVORITES": "Preferatele mele",
   "SETTINGS": "Setări",
@@ -86,7 +86,7 @@
   "ERROR_PLACE_ADD": "Nu s-a putut adăuga locul",
   "ENTER_ADDRESS": "Introduceți o adresă",
   "ERROR_CORDOVA_MAPS": "Rulați aplicația într-un dispozitiv pentru a afișa harta",
-  "Clear_the_history" : "Ștergeți istoricul",
+  "Clear_the_history": "Ștergeți istoricul",
   "select_playback_mode": "Выберите режим воспроизведения",
   "storyPoi": "Истории и объекты",
   "storyOnly": "Только истории",
@@ -100,5 +100,12 @@
   "clean_sure": "You're sure?",
   "clean_warning": "All your listened history for POIs and Stories will be deleted.",
   "clean_no": "No, Thanks",
-  "clean_yeas": "Yes, Clean"
+  "clean_yeas": "Yes, Clean",
+  "promocode": "Промокод",
+  "promocode_title": "Чтобы продолжить введите промокод.",
+  "promocode_description": "Вы превысили лимит бесплатного  прослушивания контента. Чтобы продолжить, введите промокод.",
+  "promocode_check": "Проверка промокода...",
+  "promocode_valid": "Промокод принят!",
+  "promocode_check_error": "При проверке промокода возникла ошибка. Просим повторить.",
+  "promocode_invalid": "Недействительный промокод. Просим повторить."
 }

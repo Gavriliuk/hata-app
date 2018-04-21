@@ -35,10 +35,10 @@ export class PaymentUtils {
         {
           text: this.translation.instant('CONTINUE'),
           handler: data => {
-            prompt.data.message = "Promocode validation  ..."
+            prompt.data.message = this.translation.instant("promocode_check");
             Promocode.validate(data.code, routeId).then((result) => {
               if (result["action"] == "ok") {
-                prompt.data.message = "Promocode Valid!"
+                prompt.data.message = this.translation.instant("promocode_valid");
                 Promocode.apply(data.code, "dumyDeviceId").then((applyResult) => {
                   if (applyResult["action"] == "ok") {
                     setTimeout(() => {
@@ -46,18 +46,18 @@ export class PaymentUtils {
                       prompt.dismiss();
                     }, 2000);
                   } else {
-                    prompt.data.message = "Error occured while applying Promocode, please retry."
+                    prompt.data.message = this.translation.instant("promocode_check_error");
                   }
                 });
 
               } else {
-                prompt.data.message = "Promocode Invalid, please retry.";
+                prompt.data.message = this.translation.instant("promocode_invalid");
                 setTimeout(() => {
                   koCallback();
                 }, 2000);
               }
             }, error => {
-              prompt.data.message = "Error occurred while validating, please retry.";
+              prompt.data.message = this.translation.instant("promocode_check_error");
               setTimeout(() => {
                 koCallback();
               }, 2000);

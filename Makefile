@@ -1,7 +1,7 @@
 .PHONY: run
 
 # certs and output
-OUTPUT_FILE=DROMOS-V4.8.1.apk
+OUTPUT_FILE=DROMOS-V4.9.0.apk
 # CHECK IF APP IS NOT IN SIMULATOR MODE!!!!!!!!!!
 ALIAS=dromos
 KEYPASS=dromos

@@ -129,8 +129,6 @@ export class PlaceDetailPage extends BasePage {
           this.pushPlaceAudio();
         });
       }, () => {
-        this.routeValues.listenedPOI = [];
-        this.routeValues.listenedPOI = [];
         this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
           this.goRoutes();
         });

@@ -112,7 +112,7 @@ export class RoutesPage extends BasePage {
 
     Route.getPlacesRelation(route).then(data => {
       this.routePlaces = data;
-      let modal = this.modalCtrl.create('AddReviewPage', { route: route, places: this.routePlaces });
+      let modal = this.modalCtrl.create('AddReviewPage', { route: route, places: this.routePlaces, lang: this.lang });
       modal.present();
 
     }, error => {

@@ -71,4 +71,24 @@ export class PaymentUtils {
     prompt.present();
   }
 
+  activatePromocode(promocode, routeId, okCallback, koCallback) {
+    Promocode.validate(promocode, routeId).then((result) => {
+      if (result["action"] == "ok") {
+        Promocode.apply(promocode, "dumyInfoDeviceId").then((applyResult) => {
+          if (applyResult["action"] == "ok") {
+            setTimeout(() => {
+              okCallback();
+            }, 1000);
+          } else {
+            koCallback();
+          }
+        });
+      } else {
+        koCallback();
+      }
+    }, error => {
+      koCallback();
+    });
+  }
+
 }

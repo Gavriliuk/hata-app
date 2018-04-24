@@ -2,33 +2,74 @@
   <ion-toolbar color="secondary">
     <ion-buttons right>
       <button style="float:left;" ion-button clear (tap)="onDismiss()" icon-only>
-
         <ion-icon name="ios-close-circle-outline" showWhen="ios,core,android"></ion-icon>
       </button>
     </ion-buttons>
     <ion-title center>
-      {{title}}
+      {{ "ROUTE_INFO" | translate }}
     </ion-title>
- </ion-toolbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list text-center>
-    <ion-item style="padding-left:5px;" color="primary">
-      <p class="textAddReviw" ion-text>
-        {{information}}
-      </p>
-    </ion-item>
+<ion-content class="card-background-page">
+  <ion-card>
+    <ion-card-content>
+      <ion-card-title>
+        {{routeModal['title_' + lang]}}
+      </ion-card-title>
+      <div *ngIf="!routeValues.purchased">
+        <ion-row no-padding>
+          <ion-col text-center>
+            <button ion-button clear color="danger" icon-start>
+              <ion-icon name='md-close'></ion-icon>
+              {{ "ROUTE_NOT_ACTIVATED" | translate }}
+            </button>
+          </ion-col>
+        </ion-row>
+        <ion-row no-padding>
+          <ion-col text-center>
+            <ion-item>
+              <ion-label floating>{{ "HAVE_PROMO" | translate }}</ion-label>
+              <ion-input type="text" [(ngModel)]="routeValues.promocode"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row no-padding>
+          <ion-col text-center>
+            <button ion-button round icon-left (tap)="activatePromocode()">
+              <ion-icon name="md-checkmark"></ion-icon>
+              {{ "ROUTE_ACTIVATE" | translate }}
+            </button>
+          </ion-col>
+        </ion-row>
+      </div>
+      <div *ngIf="routeValues.purchased">
+        <ion-row no-padding>
+          <ion-col text-center>
+            <button ion-button clear color="balanced" icon-start>
+              <ion-icon name='md-checkmark'></ion-icon>
+              {{ "ROUTE_ACTIVATED" | translate }}
+            </button>
+          </ion-col>
+        </ion-row>
 
-      <img src="assets/img/avatar.png" offset="100"
-           src="http://maps.googleapis.com/maps/api/staticmap?center={{routeModal.center_map}}&sensor=false&{{markers}}&zoom={{mapZoom}}&format=png&maptype=roadmap&size=800x590&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
-           ng-reflect-lazy-image="http://maps.googleapis.com/map"
-           ng-reflect-scroll-target="[object HTMLDivElement]" ng-reflect-offset="100" class="ng-lazyloaded">
-<!--Key Map Dromos Valentin "&size=600x350&key=AIzaSyCJT6L8B515TjUQFPKKckPzORDWzV2FLZ8""-->
-    <div padding>
-      <button ion-button block color="primary" (tap)="onDismiss()">
-      {{ 'OK' | translate }}
-      </button>
-    </div>
-  </ion-list>
+      </div>
+      <p>
+        {{routeModal['information_' + lang]}}
+      </p>
+    </ion-card-content>
+
+    <img *ngIf="routePlaces.length" offset="100" src="http://maps.googleapis.com/maps/api/staticmap?center={{routeModal.center_map}}&sensor=false&{{markers}}&zoom={{mapZoom}}&format=png&maptype=roadmap&size=800x590&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
+      ng-reflect-lazy-image="http://maps.googleapis.com/map" ng-reflect-scroll-target="[object HTMLDivElement]" ng-reflect-offset="100"
+      class="ng-lazyloaded">
+    <img *ngIf="!routePlaces.length" src="{{routeModal.image.url()}}">
+    <ion-row no-padding>
+      <ion-col text-center>
+        <button ion-button round icon-left (tap)="onDismiss()">
+          <ion-icon name="md-close"></ion-icon>
+          {{ "CANCEL" | translate }}
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-card>
 </ion-content>

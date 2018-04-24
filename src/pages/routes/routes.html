@@ -10,27 +10,23 @@
 <ion-content #container>
 
   <ion-refresher (ionRefresh)="onReload($event)">
-    <ion-refresher-content
-      pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
-      refreshingText="{{ 'REFRESHING' | translate }}">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}" refreshingText="{{ 'REFRESHING' | translate }}">
     </ion-refresher-content>
   </ion-refresher>
 
   <div *ngIf="isContentViewVisible" class="divRoute">
-      <ion-list>
+    <ion-list>
 
-    <ion-item class="itemRoute" *ngFor="let route of routes" color="dark" no-lines >
-      <!-- <div class="selectedItem" > -->
-      <ion-thumbnail class="avatarRoute" item-start (tap)="goToPlaces(route)">
-        <img src="assets/img/tag.png" offset="100"
-             [lazyLoad]="route.imageThumb.url()"
-             [scrollTarget]="container.getScrollElement()">
-      </ion-thumbnail>
-      <h2 class="textRoute" (tap)="goToPlaces(route)">{{ route["title_"+lang] }}</h2>
-      <!-- </div> -->
+      <ion-item class="itemRoute" *ngFor="let route of routes" color="dark" no-lines>
+        <!-- <div class="selectedItem" > -->
+        <ion-thumbnail class="avatarRoute" item-start (tap)="goToPlaces(route)">
+          <img src="assets/img/tag.png" offset="100" [lazyLoad]="route.imageThumb.url()" [scrollTarget]="container.getScrollElement()">
+        </ion-thumbnail>
+        <h2 class="textRoute" (tap)="goToPlaces(route)">{{ route["title_"+lang] }}</h2>
+        <!-- </div> -->
         <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route)" item-end></ion-icon>
         <!-- <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route['title_'+lang],route['information_'+lang],route.center_map,route.waypoints,route.start_route,route.end_route)" item-end></ion-icon> -->
-    </ion-item>
+      </ion-item>
     </ion-list>
   </div>
 

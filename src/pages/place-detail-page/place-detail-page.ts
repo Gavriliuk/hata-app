@@ -1,4 +1,4 @@
-import { IonicPage } from 'ionic-angular';
+import { IonicPage, Loading } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { ModalController, Events } from 'ionic-angular';
 import { Place } from '../../providers/parse-models/place-service';
@@ -44,6 +44,8 @@ export class PlaceDetailPage extends BasePage {
   playBackValues: any[];
   playBackRateIndex: any;
   icon: any;
+  loadingPopup: Loading;
+
 
   constructor(injector: Injector,
     private modalCtrl: ModalController,
@@ -100,6 +102,33 @@ export class PlaceDetailPage extends BasePage {
       let placeIcon = (place.category && place.category.icon) ? place.category.icon.url() : this.route.icon.url();
       this.markers += "&markers=icon:" + placeIcon + "%7C" + place.location.latitude + "," + place.location.longitude;
     });
+
+    this.getEventsSubscription().forEach(event => {
+      this.events.unsubscribe(event.event);
+      this.events.subscribe(event.event, event.handler);
+    });
+
+    this.events.publish("load", true);
+  }
+
+  getEventsSubscription(): any {
+    return [
+      {
+        event: "load",
+        handler: (e) => {
+          console.log("PlaceDetails recieved load:", e);
+          if (e) {
+            this.loadingPopup = this.loadingCtrl.create({
+              content: this.translate.instant('LOADING')
+            });
+            this.loadingPopup.present();
+          } else {
+            this.loadingPopup && this.loadingPopup.dismiss();
+            this.loadingPopup=null;
+          }
+        }
+      }
+    ];
   }
 
   ionViewDidEnter() {
@@ -130,6 +159,7 @@ export class PlaceDetailPage extends BasePage {
         });
       }, () => {
         this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
+          this.events.publish("load", false);
           this.goRoutes();
         });
 
@@ -152,6 +182,7 @@ export class PlaceDetailPage extends BasePage {
   onPlayerReadyDetail(api) {
     this.api = api;
     this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(() => {
+      this.events.publish("load", false);
       this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
     }
     );
@@ -164,7 +195,7 @@ export class PlaceDetailPage extends BasePage {
 
   goBack() {
     if (this.routeValues.playMode == 'storyPoi') {
-      this.audio = ["assets/audio/back-to-story/"+(Math.floor(Math.random() * 4)+1)+".mp3"];
+      this.audio = ["assets/audio/back-to-story/" + (Math.floor(Math.random() * 4) + 1) + ".mp3"];
       this.api.getDefaultMedia().subscriptions.ended.subscribe(
         () => {
           this.navPageBack.pop().then(() => {

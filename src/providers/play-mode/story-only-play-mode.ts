@@ -22,6 +22,7 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
     if (this.videogularApi.getDefaultMedia()) {
       this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
         () => {
+          this.events.publish("load", false);
           this.videogularApi.playbackRate = this.playBackRateValues[this.playBackRateIndex];
         }
       ));

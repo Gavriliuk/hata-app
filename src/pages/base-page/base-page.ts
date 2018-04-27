@@ -23,7 +23,7 @@ export abstract class BasePage {
   private loader: any;
   private navCtrl: NavController;
   private toastCtrl: ToastController;
-  private loadingCtrl: LoadingController;
+  protected loadingCtrl: LoadingController;
   protected alertCtrl: AlertController;
 
   constructor(injector: Injector) {

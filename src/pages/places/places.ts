@@ -1,4 +1,4 @@
-import { IonicPage } from 'ionic-angular';
+import { IonicPage, LoadingController, Loading } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { BasePage } from '../base-page/base-page';
 import { Preference } from '../../providers/preference';
@@ -27,6 +27,7 @@ import { PaymentUtils } from '../../providers/payment-utils';
   templateUrl: 'places.html'
 })
 export class PlacesPage extends BasePage {
+  loadingPopup: Loading;
   paymentUtils: PaymentUtils;
   injector: Injector;
   playingMode: AbstractPlayMode;
@@ -63,7 +64,8 @@ export class PlacesPage extends BasePage {
     private events: Events,
     private platform: Platform,
     public alertCtrl: AlertController,
-    private cdr: ChangeDetectorRef) {
+    private cdr: ChangeDetectorRef,
+    public loadCtrl: LoadingController) {
     super(injector);
     this.storage = storage;
     this.injector = injector;
@@ -79,6 +81,8 @@ export class PlacesPage extends BasePage {
       this.events.unsubscribe(event.event);
       this.events.subscribe(event.event, event.handler);
     });
+
+    this.events.publish("load", true);
   }
 
   getEventsSubscription(): any {
@@ -89,6 +93,21 @@ export class PlacesPage extends BasePage {
           console.log("Places recieved onMenuOpened:", e);
           if (this.map) {
             this.map.setClickable(false);
+          }
+        }
+      },
+      {
+        event: "load",
+        handler: (e) => {
+          console.log("Places recieved load:", e);
+          if (e) {
+            this.loadingPopup = this.loadingCtrl.create({
+              content: this.translate.instant('LOADING')
+            });
+            this.loadingPopup.present();
+          } else {
+            this.loadingPopup && this.loadingPopup.dismiss();
+            this.loadingPopup=null;
           }
         }
       },
@@ -242,9 +261,10 @@ export class PlacesPage extends BasePage {
   }
 
   goToPlace(place) {
+    this.events.publish("load",false);
     this.events.publish("onPlayerStateChanged", "playing", place);
     if (this.routeValues.playMode == 'storyPoi') {
-      this.playingMode.currentAudio.src = "assets/audio/btw/"+(Math.floor(Math.random() * 5)+1)+".mp3";
+      this.playingMode.currentAudio.src = "assets/audio/btw/" + (Math.floor(Math.random() * 5) + 1) + ".mp3";
       const vgSubs = this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
         () => {
           this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex }).then(() => {

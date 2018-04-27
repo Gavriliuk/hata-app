@@ -63,7 +63,10 @@ export function HttpLoaderFactory(http: Http) {
     IonicModule.forRoot(MyApp,{
       tabsHideOnSubPages: true
     }),
-    IonicStorageModule.forRoot(),
+    IonicStorageModule.forRoot({
+      name: '__dromosdb',
+         driverOrder: ['indexeddb', 'sqlite', 'websql']
+    }),
     Ng2ImgFallbackModule,
     LazyLoadImageModule,
     Ionic2RatingModule,

@@ -60,12 +60,12 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
 
   private async pushStoryAudio() {
     this.currentAudio = this.getAudioFromStoriesByIndex(this.routeValues.listenedStoryIndex);
+    this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
+    this.storage.updateRouteValues(this.params.route.id, this.routeValues);
+
     if (this.routeValues.selectedYear != this.currentAudio.selectedPeriodYear) {
-      console.log("StoryOnly, broadcast event: periodChanged");
       this.events.publish("periodChanged", this.currentAudio.selectedPeriodYear);
     }
-    this.routeValues.selectedYear = this.currentAudio.selectedPeriodYear;
-    await this.storage.updateRouteValues(this.params.route.id, this.routeValues);
   }
 
   async init(params) {
@@ -79,30 +79,34 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
 
   async start() {
     if (!this.isLastStory()) {
-      this.playStory();
+       this.playStory();
     }
   }
 
   async playNext() {
     if (!this.isLastStory()) {
       ++this.routeValues.listenedStoryIndex;
-      this.playStory()
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(()=>{
+        this.playStory()
+      });
     }
   }
 
   async playPrev() {
     if (!this.isFirstStory()) {
       --this.routeValues.listenedStoryIndex;
-      this.playStory();
-    }
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(()=>{
+        this.playStory()
+      });
+        }
   }
 
-  changePeriod(year: any) {
+   changePeriod(year: any) {
     this.routeValues.selectedYear = year;
     const storyIndex = this.getStoryIndexByYear(this.sortedStories, year);
     if (storyIndex != -1) {
       this.routeValues.listenedStoryIndex = storyIndex;
-      this.playStory();
+       this.playStory();
     }
   }
 

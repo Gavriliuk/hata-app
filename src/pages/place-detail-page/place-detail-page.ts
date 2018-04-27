@@ -58,7 +58,7 @@ export class PlaceDetailPage extends BasePage {
     private cdr: ChangeDetectorRef) {
     super(injector);
     this.events = events;
-    this.events.publish("onPlayerStateChanged", "playing", this.navParams.data.place);
+    // this.events.publish("onPlayerStateChanged", "playing", this.navParams.data.place);
     this.storage = storage;
     this.initLocalStorage();
     this.paymentUtils = new PaymentUtils(injector);
@@ -157,17 +157,26 @@ export class PlaceDetailPage extends BasePage {
     );
     this.api.getDefaultMedia().subscriptions.ended.subscribe(
       () => {
-        // this.storage.incrementListenedPois().then(() => {
         this.goBack();
-        // });
       }
     );
   }
 
   goBack() {
-    this.navPageBack.pop().then(() => {
-      this.events.publish("onPlayerStateChanged", "ended", this.place);
-    });
+    if (this.routeValues.playMode == 'storyPoi') {
+      this.audio = ["assets/audio/back-to-story/1.mp3"];
+      this.api.getDefaultMedia().subscriptions.ended.subscribe(
+        () => {
+          this.navPageBack.pop().then(() => {
+            this.events.publish("onPlayerStateChanged", "ended", this.place);
+          });
+        }
+      );
+    } else {
+      this.navPageBack.pop().then(() => {
+        this.events.publish("onPlayerStateChanged", "ended", this.place);
+      });
+    }
   }
 
   goRoutes() {

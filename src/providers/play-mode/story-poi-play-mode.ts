@@ -7,7 +7,7 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
 
   radius: any;
   watchPositionSubscriber: any;
-  playerState: string;
+  playerState: string="ended";
   // places: Place[];
   private geolocation: Geolocation;
   geolocationOptions: GeolocationOptions = {
@@ -75,8 +75,8 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
   }
 
   playPoi(nearestPlace) {
-  //  .then(() => {
-      this.events.publish("playPoi", nearestPlace);
+    //  .then(() => {
+    this.events.publish("playPoi", nearestPlace);
 
     // })
   }
@@ -124,15 +124,20 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
   }
 
   private findAndPlayNearestPoi(position: any, cannotPlayCallback = () => { }) {
-    console.log("StoryPoi watch position:", position);
-    let prm: any = {};
-    prm.location = position['coords'];
-    prm.distance = this.radius;
-    let nearestPlace = Place.NearestPlace(this.params.places, this.routeValues.listenedPOI, prm);
-    if (nearestPlace && this.playerState != 'playing') {
-      this.playPoi(nearestPlace);
-    } else {
-      cannotPlayCallback();
+    // console.log("StoryPoi watch position:", position);
+    if (this.playerState == 'ended') {
+      let prm: any = {};
+      prm.location = position['coords'];
+      prm.distance = this.radius;
+      let nearestPlace = Place.NearestPlace(this.params.places, this.routeValues.listenedPOI, prm);
+
+      if (nearestPlace) {
+        console.log("StoryPoi watch position:", position);
+        console.log("StoryPoi watch playerState:", this.playerState);
+        this.playPoi(nearestPlace);
+      } else {
+        cannotPlayCallback();
+      }
     }
   }
 }

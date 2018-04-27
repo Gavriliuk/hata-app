@@ -11,29 +11,79 @@
 
 <ion-content #container>
 
-    <div *ngIf="playMode!='poiOnly'" class="tolbarDateSlider">
-        <ion-row class="filters year-row">
-          <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
-          <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
-          </ion-col>
+  <div *ngIf="playMode!='poiOnly'" class="tolbarDateSlider">
+    <ion-row class="filters year-row">
+      <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
+        <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
+      </ion-col>
 
-          <ion-col no-padding col-10>
-            <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
-              <ion-slide class="sliderDate" (click)="selectYear(period)"
-                         *ngFor="let period of yearSelectionSlider.periods">
-                <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
-              </ion-slide>
-            </ion-slides>
-          </ion-col>
-          <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
-            <ion-icon *ngIf="yearSelectionSlider.showRightButton" name="arrow-forward"></ion-icon>
-          </ion-col>
-        </ion-row>
-      </div>
+      <ion-col no-padding col-10>
+        <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
+          <ion-slide class="sliderDate" (click)="selectYear(period)" *ngFor="let period of yearSelectionSlider.periods">
+            <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
+          </ion-slide>
+        </ion-slides>
+      </ion-col>
+      <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
+        <ion-icon *ngIf="yearSelectionSlider.showRightButton" name="arrow-forward"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </div>
 
-  <div id="map" showWhen="android,ios"></div>
+  <div *ngIf="playMode!='storyOnly'" id="map" showWhen="android,ios"></div>
+  <div *ngIf="playMode=='storyOnly'">
+      <ion-card>
+          <img src="{{params.route.image.url()}}">
 
-<!-- <div class="sliderPOI">
+          <ion-card-content>
+
+            <ion-card-title>
+                {{params.route['title_' + lang]}}
+              </ion-card-title>
+            <div *ngIf="!routeValues.purchased">
+              <ion-row no-padding>
+                <ion-col text-center>
+                  <button ion-button clear color="danger" icon-start>
+                    {{ "ROUTE_NOT_ACTIVATED" | translate }}
+                  </button>
+                </ion-col>
+              </ion-row>
+              <ion-row no-padding>
+                <ion-col text-center>
+                  <ion-item>
+                    <ion-label floating>{{ "HAVE_PROMO" | translate }}</ion-label>
+                    <ion-input type="text" [(ngModel)]="routeValues.promocode"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row no-padding>
+                <ion-col text-center>
+                  <button ion-button round icon-left (tap)="activatePromocode()">
+                    <ion-icon name="md-checkmark"></ion-icon>
+                    {{ "ROUTE_ACTIVATE" | translate }}
+                  </button>
+                </ion-col>
+              </ion-row>
+            </div>
+            <div *ngIf="routeValues.purchased">
+              <ion-row no-padding>
+                <ion-col text-center>
+                  <button ion-button clear color="balanced" icon-start>
+                    <ion-icon name='md-checkmark'></ion-icon>
+                    {{ "ROUTE_ACTIVATED" | translate }}
+                  </button>
+                </ion-col>
+              </ion-row>
+
+            </div>
+            <p>
+              {{params.route['information_' + lang]}}
+            </p>
+          </ion-card-content>
+        </ion-card>
+  </div>
+
+  <!-- <div class="sliderPOI">
     <ion-slides *ngIf="!listeningPOI" pager class="ionSlides">
         <ion-slide *ngFor="let place of places">
           <ion-item (tap)="goToPlace(place)" color="dark" no-lines>
@@ -51,49 +101,43 @@
       </ion-slides>
 </div> -->
 
-<div class="mapFooter">
-  <!-- <div>State: {{videogularApi.state}}</div> -->
-  <!-- <div>{{currentAudio.type}}: {{currentAudio.title}}</div> -->
-  <!-- <div style="font-size:12px;">Period :{{currentAudio.period}}</div> -->
+  <div class="mapFooter">
+    <!-- <div>State: {{videogularApi.state}}</div> -->
+    <!-- <div>{{currentAudio.type}}: {{currentAudio.title}}</div> -->
+    <!-- <div style="font-size:12px;">Period :{{currentAudio.period}}</div> -->
 
-  <vg-player *ngIf="playMode!='poiOnly'" (onPlayerReady)="onPlayerReady($event)">
-    <ion-grid>
-      <ion-row align-items-center style="line-height: 23em">
-        <ion-col text-center class="colVGplayer">
-          <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay"
-                  (click)="changePlayBackRate()">
-            <p style="text-transform: lowercase;">{{playBackRateValues && playBackRateValues[playBackRateIndex]}}x</p>
-          </button>
-          <!-- Backwards -->
-          <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay"
-                  (click)="playPrevStory()">
-            <ion-icon name="skip-backward"></ion-icon>
-          </button>
-          <!-- Play/Pause -->
-          <button ion-button class="play-pause-btn" color="primary" (click)="videogularApi.play()"
-                  [disabled]="!videogularApi.canPlay" *ngIf="videogularApi && videogularApi.state!='playing'">
-            <ion-icon class="playPlaces" name="play"></ion-icon>
-          </button>
-          <button ion-button class="play-pause-btn" color="secondary" (click)="videogularApi.pause()"
-                  [disabled]="!videogularApi.canPlay" *ngIf="videogularApi && videogularApi.state=='playing'">
-            <ion-icon name="pause"></ion-icon>
-          </button>
-          <!-- Forwards -->
-          <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay"
-                  (click)="playNextStory()">
-            <ion-icon name="skip-forward"></ion-icon>
-          </button>
+    <vg-player *ngIf="playMode!='poiOnly'" (onPlayerReady)="onPlayerReady($event)">
+      <ion-grid>
+        <ion-row align-items-center style="line-height: 23em">
+          <ion-col text-center class="colVGplayer">
+            <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay" (click)="changePlayBackRate()">
+              <p style="text-transform: lowercase;">{{playBackRateValues && playBackRateValues[playBackRateIndex]}}x</p>
+            </button>
+            <!-- Backwards -->
+            <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay" (click)="playPrevStory()">
+              <ion-icon name="skip-backward"></ion-icon>
+            </button>
+            <!-- Play/Pause -->
+            <button ion-button class="play-pause-btn" color="primary" (click)="videogularApi.play()" [disabled]="!videogularApi.canPlay"
+              *ngIf="videogularApi && videogularApi.state!='playing'">
+              <ion-icon class="playPlaces" name="play"></ion-icon>
+            </button>
+            <button ion-button class="play-pause-btn" color="secondary" (click)="videogularApi.pause()" [disabled]="!videogularApi.canPlay"
+              *ngIf="videogularApi && videogularApi.state=='playing'">
+              <ion-icon name="pause"></ion-icon>
+            </button>
+            <!-- Forwards -->
+            <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay" (click)="playNextStory()">
+              <ion-icon name="skip-forward"></ion-icon>
+            </button>
 
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
-    <audio #media [vgMedia]="media" [src]="playingMode?playingMode.currentAudio.src:null" type="audio/mp3" autoplay
-           preload="metadata">
-    </audio>
+      <audio #media [vgMedia]="media" [src]="playingMode?playingMode.currentAudio.src:null" type="audio/mp3" autoplay preload="metadata">
+      </audio>
 
-  </vg-player>
-</div>
+    </vg-player>
+  </div>
 </ion-content>
-
-

@@ -18,6 +18,7 @@ import { ViewChild } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 import { PlayMode } from '../../providers/play-mode/play-mode';
 import { AbstractPlayMode } from '../../providers/play-mode/abstract-play-mode';
+import { PaymentUtils } from '../../providers/payment-utils';
 
 
 @IonicPage()
@@ -26,6 +27,7 @@ import { AbstractPlayMode } from '../../providers/play-mode/abstract-play-mode';
   templateUrl: 'places.html'
 })
 export class PlacesPage extends BasePage {
+  paymentUtils: PaymentUtils;
   injector: Injector;
   playingMode: AbstractPlayMode;
   loading: boolean;
@@ -71,6 +73,7 @@ export class PlacesPage extends BasePage {
     this.playMode = this.params.route.defaultPlayMode;
     this.allMarkers = [];
     this.yearSelectionSlider.periods = this.params.route.periods;
+    this.paymentUtils = new PaymentUtils(injector);
 
     this.getEventsSubscription().forEach(event => {
       this.events.unsubscribe(event.event);
@@ -103,7 +106,7 @@ export class PlacesPage extends BasePage {
         handler: (e) => {
           console.log("Places recieved playPoi:", e);
 
-            this.goToPlace(e);
+          this.goToPlace(e);
         }
       },
       {
@@ -132,6 +135,7 @@ export class PlacesPage extends BasePage {
 
   async changePlayMode(playMode) {
     console.log(" playModeChanged: ", playMode);
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
     this.routeValues.playMode = playMode;
     this.storage.updateRouteValues(this.params.route.id, this.routeValues);
     this.playMode = playMode;
@@ -238,7 +242,18 @@ export class PlacesPage extends BasePage {
   }
 
   goToPlace(place) {
-    this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex });
+    this.events.publish("onPlayerStateChanged", "playing", place);
+    if (this.routeValues.playMode == 'storyPoi') {
+      this.playingMode.currentAudio.src = "assets/audio/btw/1.mp3";
+      const vgSubs = this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
+        () => {
+          this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex }).then(() => {
+            vgSubs.unsubscribe();
+          });
+        });
+    } else {
+      this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex });
+    }
   }
 
   playNextStory() {
@@ -352,5 +367,23 @@ export class PlacesPage extends BasePage {
       }
     });
     alert.present();
+  }
+
+  activatePromocode() {
+    this.paymentUtils.activatePromocode(this.routeValues.promocode, this.params.route.id, () => {
+      this.routeValues.purchased = true;
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
+        this.playingMode.init(this.params).then(() => {
+          this.playingMode.start();
+        });
+      });
+    }, () => {
+      let alert = this.alertCtrl.create({
+        title: this.translate.instant('promocode_invalid'),
+        subTitle: this.translate.instant('promocode_check_error'),
+        buttons: ['OK']
+      });
+      alert.present();
+    });
   }
 }

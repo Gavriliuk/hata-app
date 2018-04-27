@@ -140,7 +140,7 @@ export abstract class BasePage {
   }
 
   navigateTo(page: any, params: any = {}) {
-    this.navCtrl.push(page, params);
+    return this.navCtrl.push(page, params);
   }
 
   getFileURL(fileName) {

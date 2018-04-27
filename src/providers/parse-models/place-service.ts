@@ -195,6 +195,7 @@ export class Place extends Parse.Object {
     for (let index = 0; index < places.length; ++index) {
       var dif = Place.PythagorasEquirectangular(params.location.latitude, params.location.longitude, places[index].location.latitude, places[index].location.longitude, params.distance);
       dif = Number.parseFloat(dif.toFixed(2));
+
       if (dif < Number.parseFloat(places[index].radius) && dif < mindif && listened.indexOf(places[index].id) == -1) {
         closestIndex = index;
         mindif = dif;

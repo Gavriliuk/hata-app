@@ -164,7 +164,7 @@ export class PlaceDetailPage extends BasePage {
 
   goBack() {
     if (this.routeValues.playMode == 'storyPoi') {
-      this.audio = ["assets/audio/back-to-story/1.mp3"];
+      this.audio = ["assets/audio/back-to-story/"+(Math.floor(Math.random() * 4)+1)+".mp3"];
       this.api.getDefaultMedia().subscriptions.ended.subscribe(
         () => {
           this.navPageBack.pop().then(() => {

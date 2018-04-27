@@ -244,7 +244,7 @@ export class PlacesPage extends BasePage {
   goToPlace(place) {
     this.events.publish("onPlayerStateChanged", "playing", place);
     if (this.routeValues.playMode == 'storyPoi') {
-      this.playingMode.currentAudio.src = "assets/audio/btw/1.mp3";
+      this.playingMode.currentAudio.src = "assets/audio/btw/"+(Math.floor(Math.random() * 5)+1)+".mp3";
       const vgSubs = this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
         () => {
           this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex }).then(() => {

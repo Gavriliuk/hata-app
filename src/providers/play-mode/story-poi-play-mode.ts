@@ -17,6 +17,7 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
   };
 
   onMove() {
+    this.events.publish("load", false);
     // Options: throw an error if no update is received every 5 seconds.
     this.watchPositionSubscriber = this.geolocation.watchPosition({
       timeout: 3000,

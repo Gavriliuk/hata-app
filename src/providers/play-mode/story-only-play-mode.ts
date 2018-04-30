@@ -50,13 +50,11 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
         this.routeValues.purchased = true;
         this.pushStoryAudio();
       }, () => {
-        console.log("KOO");
+        this.events.publish("load",false);
       });
     } else {
       await this.pushStoryAudio();
     }
-
-
   }
 
   private async pushStoryAudio() {

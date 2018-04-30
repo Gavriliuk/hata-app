@@ -7,7 +7,7 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
 
   radius: any;
   watchPositionSubscriber: any;
-  playerState: string="ended";
+  playerState: string = "ended";
   // places: Place[];
   private geolocation: Geolocation;
   geolocationOptions: GeolocationOptions = {
@@ -42,13 +42,16 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     if (this.isLastStory()) {
       this.onMove();
     } else {
+      this.events.publish("load", true, this.translate.instant("FINDING_POI"));
       this.getCurrentPosition().then(
         (position) => {
           this.findAndPlayNearestPoi(position, () => {
+            this.events.publish("load", true, this.translate.instant("POI_NOT_FOUND_PLAY_STORY"));
             super.playStory();
           });
         }
         , error => {
+          this.events.publish("load", true, this.translate.instant("POI_NOT_FOUND_PLAY_STORY"));
           super.playStory();
         });
     }
@@ -58,9 +61,11 @@ export class StoryPoiPlayMode extends StoryOnlyPlayMode {
     if (this.isLastStory()) {
       this.onMove();
     } else {
+      this.events.publish("load", true, this.translate.instant("FINDING_POI"));
       this.getCurrentPosition().then(
         this.afterStoryPositionFound
         , error => {
+          this.events.publish("load", true, this.translate.instant("POI_NOT_FOUND_PLAY_STORY"));
           super.playNext();
         });
     }

@@ -108,7 +108,7 @@ export class PlaceDetailPage extends BasePage {
       this.events.subscribe(event.event, event.handler);
     });
 
-    this.events.publish("load", true);
+    this.events.publish("load", true,"Loading Place Audio");
   }
 
   getEventsSubscription(): any {

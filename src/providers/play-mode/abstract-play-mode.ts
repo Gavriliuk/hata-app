@@ -4,6 +4,7 @@ import { Events, NavParams } from 'ionic-angular';
 import { Route } from '../parse-models/routes';
 import { VgAPI } from 'videogular2/core';
 import { PaymentUtils } from '../payment-utils';
+import { TranslateService } from '@ngx-translate/core';
 
 export abstract class AbstractPlayMode {
 
@@ -27,12 +28,15 @@ export abstract class AbstractPlayMode {
   };
   playBackRateValues: any;
   playBackRateIndex: any;
+  translate: TranslateService;
+
 
   constructor(injector: Injector) {
     this.storage = injector.get(LocalStorage);
     this.events = injector.get(Events);
     this.navParams = injector.get(NavParams);
     this.paymentUtils = new PaymentUtils(injector);
+    this.translate = injector.get(TranslateService);
   }
 
   async loadSortedStories() {

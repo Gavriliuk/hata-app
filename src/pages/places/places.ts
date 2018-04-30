@@ -82,7 +82,7 @@ export class PlacesPage extends BasePage {
       this.events.subscribe(event.event, event.handler);
     });
 
-    this.events.publish("load", true);
+    this.events.publish("load", true, this.translate.instant("LOADING_ROUTE"));
   }
 
   getEventsSubscription(): any {
@@ -98,16 +98,21 @@ export class PlacesPage extends BasePage {
       },
       {
         event: "load",
-        handler: (e) => {
+        handler: (e, content) => {
           console.log("Places recieved load:", e);
           if (e) {
-            this.loadingPopup = this.loadingCtrl.create({
-              content: this.translate.instant('LOADING')
-            });
-            this.loadingPopup.present();
+            if (this.loadingPopup) {
+              this.loadingPopup.setContent(content);
+            } else {
+              this.loadingPopup = this.loadingCtrl.create({
+                content: content
+              });
+              this.loadingPopup.present();
+            }
+
           } else {
             this.loadingPopup && this.loadingPopup.dismiss();
-            this.loadingPopup=null;
+            this.loadingPopup = null;
           }
         }
       },
@@ -174,7 +179,7 @@ export class PlacesPage extends BasePage {
     //document.getElementsByTagName('html')[0].className += 'ion-tab-fix';
 
     this.loading = true;
-    await this.initLocalStorage()
+    await this.initLocalStorage();
     await this.loadRoutePlaces();
     this.loading = false;
 
@@ -194,11 +199,11 @@ export class PlacesPage extends BasePage {
    */
   ionViewDidEnter() {
     document.getElementsByTagName('html')[0].className = 'ion-tab-fix';
-    if (!this.loading) {
-      this.initLocalStorage().then(() => {
+    this.initLocalStorage().then(() => {
+      this.loadRoutePlaces().then(() => {
         this.changePlayMode(this.playMode);
-      });
-    }
+      })
+    });
   }
   /**
    * Fired when you leave a page, before it stops being the active one.
@@ -261,7 +266,7 @@ export class PlacesPage extends BasePage {
   }
 
   goToPlace(place) {
-    this.events.publish("load",false);
+    this.events.publish("load", false);
     this.events.publish("onPlayerStateChanged", "playing", place);
     if (this.routeValues.playMode == 'storyPoi') {
       this.playingMode.currentAudio.src = "assets/audio/btw/" + (Math.floor(Math.random() * 5) + 1) + ".mp3";

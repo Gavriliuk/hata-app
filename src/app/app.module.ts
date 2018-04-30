@@ -46,6 +46,7 @@ import { SettingsPage } from '../pages/settings-page/settings-page';
 import { TabsPage } from '../pages/tabs/tabs';
 import { WalkthroughPage } from '../pages/walkthrough-page/walkthrough-page';
 
+
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }

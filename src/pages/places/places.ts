@@ -411,4 +411,23 @@ export class PlacesPage extends BasePage {
       alert.present();
     });
   }
+
+  filterPois(ev: any) {
+    // set val to the value of the searchbar
+    let val = ev.target.value;
+
+    // if the value is an empty string don't filter the items
+    if (val && val.trim() != '') {
+      this.places = this.params.places.filter((place) => {
+        return (place['title_' + this.lang].toLowerCase().indexOf(val.toLowerCase()) > -1);
+      })
+
+
+      this.refreshMarkers();
+    }else{
+      this.places = this.params.places;
+      this.refreshMarkers();
+    }
+    console.log("Filtered Places: ", this.places);
+  }
 }

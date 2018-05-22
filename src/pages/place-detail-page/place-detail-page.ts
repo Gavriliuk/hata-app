@@ -108,26 +108,26 @@ export class PlaceDetailPage extends BasePage {
       this.events.subscribe(event.event, event.handler);
     });
 
-    this.events.publish("load", true,"Loading Place Audio");
+    this.events.publish("load", true, this.translate.instant('LOADING_POI'));
   }
 
   getEventsSubscription(): any {
     return [
-      {
-        event: "load",
-        handler: (e) => {
-          console.log("PlaceDetails recieved load:", e);
-          if (e) {
-            this.loadingPopup = this.loadingCtrl.create({
-              content: this.translate.instant('LOADING')
-            });
-            this.loadingPopup.present();
-          } else {
-            this.loadingPopup && this.loadingPopup.dismiss();
-            this.loadingPopup=null;
-          }
-        }
-      }
+      //   {
+      //     event: "load-details",
+      //     handler: (e) => {
+      //       console.log("PlaceDetails recieved load:", e);
+      //       if (e) {
+      //         this.loadingPopup = this.loadingCtrl.create({
+      //           content: this.translate.instant('LOADING')
+      //         });
+      //         this.loadingPopup.present();
+      //       } else {
+      //         this.loadingPopup && this.loadingPopup.dismiss();
+      //         this.loadingPopup=null;
+      //       }
+      //     }
+      //   }
     ];
   }
 
@@ -194,20 +194,21 @@ export class PlaceDetailPage extends BasePage {
   }
 
   goBack() {
-    if (this.routeValues.playMode == 'storyPoi') {
-      this.audio = ["assets/audio/back-to-story/" + (Math.floor(Math.random() * 4) + 1) + ".mp3"];
-      this.api.getDefaultMedia().subscriptions.ended.subscribe(
-        () => {
-          this.navPageBack.pop().then(() => {
-            this.events.publish("onPlayerStateChanged", "ended", this.place);
-          });
-        }
-      );
-    } else {
-      this.navPageBack.pop().then(() => {
-        this.events.publish("onPlayerStateChanged", "ended", this.place);
-      });
-    }
+    // if (this.routeValues.playMode == 'storyPoi') {
+    //   this.audio = ["assets/audio/back-to-story/" + (Math.floor(Math.random() * 4) + 1) + ".mp3"];
+    //   this.api.getDefaultMedia().subscriptions.ended.subscribe(
+    //     () => {
+    //       this.navPageBack.pop().then(() => {
+    //         this.events.publish("onPlayerStateChanged", "ended", this.place);
+    //       });
+    //     }
+    //   );
+    // } else {
+
+    this.navPageBack.pop().then(() => {
+      this.events.publish("onPlayerStateChanged", "ended", this.place);
+    });
+    // }
   }
 
   goRoutes() {

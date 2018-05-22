@@ -45,7 +45,7 @@ import { RoutesPage } from '../pages/routes/routes';
 import { SettingsPage } from '../pages/settings-page/settings-page';
 import { TabsPage } from '../pages/tabs/tabs';
 import { WalkthroughPage } from '../pages/walkthrough-page/walkthrough-page';
-
+import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -92,6 +92,7 @@ export function HttpLoaderFactory(http: Http) {
     TabsPage
   ],
   providers: [Route, Place, Promocode,Category, ParseFile, Review, LocalStorage, User,
+    InAppPurchase2,
     StatusBar,
     SplashScreen,
     Diagnostic,

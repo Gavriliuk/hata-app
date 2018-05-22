@@ -1,10 +1,11 @@
-import { IonicPage } from 'ionic-angular';
+import { IonicPage, ActionSheetController, Platform } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 // import { Review } from '../../providers/review-service';
 import { BasePage } from '../base-page/base-page';
 import { LocalStorage } from '../../providers/local-storage';
 import { PaymentUtils } from '../../providers/payment-utils';
+import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2';
 // import { AlertController } from 'ionic-angular';
 
 
@@ -34,10 +35,16 @@ export class AddReviewPage extends BasePage {
     purchased: false,
     promocode: "",
   };
+  product: any = {
+    name: 'Адреса и имена старого Кишинева',
+    appleProductId: 'com.innapp.dromos.BKKExJtVzH',
+    googleProductId: 'com.innapp.dromos.bkkexjtvzh'
+  };
 
   constructor(injector: Injector,
     private viewCtrl: ViewController,
-    private storage: LocalStorage) {
+    private storage: LocalStorage, private actionSheetCtrl: ActionSheetController, private store: InAppPurchase2,
+    public platform: Platform) {
     super(injector);
     // this.alertCtrl = injector.get(AlertController);
 
@@ -46,6 +53,10 @@ export class AddReviewPage extends BasePage {
     this.routeModal = this.navParams.data.route;
     this.routePlaces = this.navParams.data.places;
     this.addWaypointsAndMarkers();
+    // this.paymentUtils.configurePurchasing(this.store, this.platform, this.product);
+  }
+  ionViewDidEnter() {
+    // this.paymentUtils.configurePurchasing(this.store, this.platform, this.product);
   }
 
   private addWaypointsAndMarkers() {
@@ -105,6 +116,49 @@ export class AddReviewPage extends BasePage {
 
   onDismiss() {
     this.viewCtrl.dismiss();
+  }
+  purchaseByPromocode() {
+    this.paymentUtils.showPromoCodePrompt(this.routeModal.id, () => {
+      this.routeValues.purchased = true;
+      this.storage.updateRouteValues(this.routeModal.id, this.routeValues).then(() => {
+      });
+    }, () => {
+    }, this.translate.instant('activate_promocode_title'), this.translate.instant('activate_promocode_description'));
+  }
+
+  presentActionSheet() {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: this.translate.instant('ROUTE_ACTIVATE'),
+      buttons: [
+        {
+          text: 'Using Promocode',
+          handler: () => {
+            this.purchaseByPromocode();
+          }
+        },
+        {
+          text: 'In-app Purchase',
+          handler: () => {
+            this.paymentUtils.purchase(this.store, this.platform, this.product);
+            // console.log('In-app Purchase');
+          }
+        },
+        {
+          text: 'Using Qiwi Code',
+          handler: () => {
+            console.log('Using Qiwi Code');
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
   }
 }
 

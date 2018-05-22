@@ -51,15 +51,7 @@
               </ion-row>
               <ion-row no-padding>
                 <ion-col text-center>
-                  <ion-item>
-                    <ion-label floating>{{ "HAVE_PROMO" | translate }}</ion-label>
-                    <ion-input type="text" [(ngModel)]="routeValues.promocode"></ion-input>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
-              <ion-row no-padding>
-                <ion-col text-center>
-                  <button ion-button round icon-left (tap)="activatePromocode()">
+                  <button ion-button round icon-left (tap)="purchaseByPromocode()">
                     <ion-icon name="md-checkmark"></ion-icon>
                     {{ "ROUTE_ACTIVATE" | translate }}
                   </button>

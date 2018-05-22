@@ -1,5 +1,5 @@
 import { Component, Injector } from '@angular/core';
-import { Events, ModalController } from 'ionic-angular';
+import { Events, ModalController, Platform } from 'ionic-angular';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Route } from '../../providers/parse-models/routes';
@@ -7,12 +7,16 @@ import { BasePage } from '../base-page/base-page';
 import { User } from '../../providers/parse-models/user-service';
 import { LocalStorage } from '../../providers/local-storage';
 import { Place } from '../../providers/parse-models/place-service';
+import { PaymentUtils } from '../../providers/payment-utils';
+import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2';
 
 @Component({
   selector: 'page-routes',
   templateUrl: 'routes.html'
 })
 export class RoutesPage extends BasePage {
+
+  paymentUtils: PaymentUtils;
   private routes: Array<Route>;
   place: Place;
   places: Place[];
@@ -27,15 +31,9 @@ export class RoutesPage extends BasePage {
     private events: Events,
     private locationAccuracy: LocationAccuracy,
     private diagnostic: Diagnostic,
-    public modalCtrl: ModalController) {
+    public modalCtrl: ModalController, private store: InAppPurchase2, public platform: Platform) {
     super(injector);
-
-
-
-
-    // Place.load(this.navParams).then(places => {
-    //   this.places = places;
-    // });
+    this.paymentUtils = new PaymentUtils(injector);
 
     this.locationAccuracy.canRequest().then((canRequest: boolean) => {
 
@@ -76,7 +74,7 @@ export class RoutesPage extends BasePage {
   async loadData() {
     this.lang = await this.storage.lang;
     this.routes = await Route.load();
-
+    // this.updatePurchases(this.routes);
     // .then(data => {
     //   this.routes = data;
 
@@ -99,6 +97,19 @@ export class RoutesPage extends BasePage {
     //   this.showErrorView();
     //   this.onRefreshComplete();
     // });
+  }
+
+  updatePurchases(routes: Array<Route>): any {
+    routes.forEach((route) => {
+      const product: any = {
+        name: route.title_ru,
+        appleProductId: 'com.innapp.dromos.' + route.id.toLocaleLowerCase(),
+        googleProductId: 'com.innapp.dromos.' + route.id.toLocaleLowerCase()
+      };
+      if(route.id.toLocaleLowerCase()=='bkkexjtvzh'){
+        // this.paymentUtils.configurePurchasing(this.store, this.platform, product, route);
+      }
+    })
   }
 
   onReload(refresher) {

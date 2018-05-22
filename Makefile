@@ -1,7 +1,7 @@
 .PHONY: run
 
 # certs and output
-OUTPUT_FILE=DROMOS-V4.9.1.apk
+OUTPUT_FILE=DROMOS-V4.9.6.apk
 # CHECK IF APP IS NOT IN SIMULATOR MODE!!!!!!!!!!
 ALIAS=dromos
 KEYPASS=dromos
@@ -40,13 +40,17 @@ build-android:
 	jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore ${KEYSTORE} -storepass ${KEYPASS} ${UNSIGNED} ${ALIAS}
 	${ANDROID_PATH}/build-tools/23.0.2/zipalign -v 4 ${UNSIGNED} ./build/${OUTPUT_FILE}
 
-# run ios
+# run android
+run-android:
+	ionic cordova run android --livereload
+
+  # run ios
 run-ios:
 	ionic cordova run ios --target "iPhone-6, 11.2" --livereload
 
 # create ios build
 build-ios:
-	ionic cordova build ios --release
+	ionic cordova build ios
 
 execute:
 	adb shell am start -n ${PACKAGE}/${PACKAGE}.MainActivity

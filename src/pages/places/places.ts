@@ -27,11 +27,11 @@ import { PaymentUtils } from '../../providers/payment-utils';
   templateUrl: 'places.html'
 })
 export class PlacesPage extends BasePage {
-  loadingPopup: Loading;
+
+
   paymentUtils: PaymentUtils;
   injector: Injector;
   playingMode: AbstractPlayMode;
-  loading: boolean;
   @ViewChild(Slides) slides: Slides;
 
   params: any = {};
@@ -64,8 +64,7 @@ export class PlacesPage extends BasePage {
     private events: Events,
     private platform: Platform,
     public alertCtrl: AlertController,
-    private cdr: ChangeDetectorRef,
-    public loadCtrl: LoadingController) {
+    private cdr: ChangeDetectorRef) {
     super(injector);
     this.storage = storage;
     this.injector = injector;
@@ -93,26 +92,6 @@ export class PlacesPage extends BasePage {
           console.log("Places recieved onMenuOpened:", e);
           if (this.map) {
             this.map.setClickable(false);
-          }
-        }
-      },
-      {
-        event: "load",
-        handler: (e, content) => {
-          console.log("Places recieved load:", e);
-          if (e) {
-            if (this.loadingPopup) {
-              this.loadingPopup.setContent(content);
-            } else {
-              this.loadingPopup = this.loadingCtrl.create({
-                content: content
-              });
-              this.loadingPopup.present();
-            }
-
-          } else {
-            this.loadingPopup && this.loadingPopup.dismiss();
-            this.loadingPopup = null;
           }
         }
       },
@@ -178,10 +157,10 @@ export class PlacesPage extends BasePage {
   async ionViewDidLoad() {
     //document.getElementsByTagName('html')[0].className += 'ion-tab-fix';
 
-    this.loading = true;
+    // this.loading = true;
     await this.initLocalStorage();
     await this.loadRoutePlaces();
-    this.loading = false;
+    // this.events.publish("load", false);
 
     if (this.platform.is('cordova')) {
       this.initGoogleMap();
@@ -268,17 +247,17 @@ export class PlacesPage extends BasePage {
   goToPlace(place) {
     this.events.publish("load", false);
     this.events.publish("onPlayerStateChanged", "playing", place);
-    if (this.routeValues.playMode == 'storyPoi') {
-      this.playingMode.currentAudio.src = "assets/audio/btw/" + (Math.floor(Math.random() * 5) + 1) + ".mp3";
-      const vgSubs = this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
-        () => {
-          this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex }).then(() => {
-            vgSubs.unsubscribe();
-          });
-        });
-    } else {
+    // if (this.routeValues.playMode == 'storyPoi') {
+    //   this.playingMode.currentAudio.src = "assets/audio/btw/" + (Math.floor(Math.random() * 5) + 1) + ".mp3";
+    //   const vgSubs = this.videogularApi.getDefaultMedia().subscriptions.ended.subscribe(
+    //     () => {
+    //       this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex }).then(() => {
+    //         vgSubs.unsubscribe();
+    //       });
+    //     });
+    // } else {
       this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex });
-    }
+    // }
   }
 
   playNextStory() {
@@ -410,6 +389,15 @@ export class PlacesPage extends BasePage {
       });
       alert.present();
     });
+  }
+
+    purchaseByPromocode() {
+    this.paymentUtils.showPromoCodePrompt(this.params.route.id, () => {
+      this.routeValues.purchased = true;
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
+      });
+    }, () => {
+    }, this.translate.instant('activate_promocode_title'), this.translate.instant('activate_promocode_description'));
   }
 
   filterPois(ev: any) {

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, ModalController, ToastController, Events } from 'ionic-angular';
+import { Nav, Platform, ModalController, ToastController, Events, Loading, LoadingController } from 'ionic-angular';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -25,6 +25,8 @@ export class MyApp {
   user: User;
   trans: any;
 
+  loadingPopup: Loading;
+  loading: boolean;
   // pages: Array<{ title: string, icon: string, component: any }>;
 
   constructor(public platform: Platform,
@@ -37,12 +39,30 @@ export class MyApp {
     private splashScreen: SplashScreen,
     // private googleAnalytics: GoogleAnalytics,
     private headerColor: HeaderColor,
-    private modalCtrl: ModalController) {
+    private modalCtrl: ModalController,
+    public loadCtrl: LoadingController) {
 
     this.initializeApp();
   }
 
   initializeApp() {
+
+    this.events.subscribe('load', (e, content) => {
+      console.log("Places recieved load:", e);
+      if (e) {
+        if (this.loadingPopup) {
+          this.loadingPopup.setContent(content);
+        } else {
+          this.loadingPopup = this.loadCtrl.create({
+            content: content
+          });
+          this.loadingPopup.present();
+        }
+      } else {
+        this.loadingPopup && this.loadingPopup.dismiss();
+        this.loadingPopup = null;
+      }
+    });
 
     this.translate.setDefaultLang(AppConfig.DEFAULT_LANG);
 

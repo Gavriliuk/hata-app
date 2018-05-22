@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.innapp.dromos" version="4.9.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.innapp.dromos" version="4.9.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Dromos</name>
     <description />
     <author email="valentinbragaru@gmail.com" href="http://innapp.com/">QuanLabs</author>
@@ -106,7 +106,7 @@
     <plugin name="cordova-plugin-splashscreen" spec="^4.1.0" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3">
-        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value=" " />
+        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="This app requires access to your location when the screen is on and the app is displayed for finding the nearest point of interests and playing the audiogiude of it." />
     </plugin>
     <plugin name="cordova.plugins.diagnostic" spec="^3.9.2" />
     <plugin name="cordova-plugin-headercolor" spec="^1.0.0" />
@@ -127,4 +127,7 @@
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="24.1.0" />
     </plugin>
     <plugin name="cordova-plugin-uniquedeviceid" spec="^1.3.2" />
+    <plugin name="cc.fovea.cordova.purchase" spec="^7.1.3">
+        <variable name="BILLING_KEY" value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAijb5KBCVXH+Wzv+Bj3ayUftxKhNS6yCkA7RfWYcecdJvcAUAfxwTP7SxP2NPr8YR2X5L4VqAPBboNEZq4iPRDhLM3ZWHZ6/0wKQeoR1KItoT2qmn6/aI8H3bN2AHDsvM1RZkim4rUUvq/Fa0x/5z3/yPihd5MMy4X+wcTh1GqoHD8G17M4EnDw5TLoAngPVUTD/0u/B31h6lam/0DJnouhFapDEISPx7jen2jeIC7nsdJzXMSMoJhp5j9XBtjw6DXyHFronwHJXMM5muzOerN5mbQUvVDCyAx1jwvdQmRdRGQCjH2JTnNh6QuWZrMRjpHzCR9F3Lctx8ApjawxqIRQIDAQAB" />
+    </plugin>
 </widget>

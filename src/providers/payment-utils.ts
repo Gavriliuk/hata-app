@@ -2,14 +2,20 @@ import { Injectable, Injector } from '@angular/core';
 import { AlertController, Platform, ToastController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Promocode } from './parse-models/promocode-service';
-import { InAppPurchase2, IAPProduct } from '@ionic-native/in-app-purchase-2';
+import { InAppPurchase } from '@ionic-native/in-app-purchase';
+import { Route } from './parse-models/routes';
+import { LocalStorage } from './local-storage';
+import { Cordova } from '@ionic-native/core';
 
 @Injectable()
 export class PaymentUtils {
 
-  updatePurchases(arg0: any): any {
-    throw new Error("Method not implemented.");
-  }
+  iap: InAppPurchase;
+  platform: Platform;
+  localStorage: LocalStorage;
+  // updatePurchases(arg0: any): any {
+  //   throw new Error("Method not implemented.");
+  // }
   translation: TranslateService;
   alertCtrl: AlertController;
   toastCtrl: ToastController
@@ -17,7 +23,9 @@ export class PaymentUtils {
     this.alertCtrl = injector.get(AlertController);
     this.translation = injector.get(TranslateService);
     this.toastCtrl = injector.get(ToastController);
-
+    this.localStorage = injector.get(LocalStorage);
+    this.platform = injector.get(Platform);
+    this.iap = injector.get(InAppPurchase);
   }
 
   showPromoCodePrompt(routeId, okCallback, koCallback, title = this.translation.instant('promocode_title'), message = this.translation.instant('promocode_description')) {
@@ -96,62 +104,6 @@ export class PaymentUtils {
       koCallback();
     });
   }
-  /**
-   *
-   * @param store
-   * @param platform
-   * @param product
-   * public product: any = {
-   *    name: 'My Product',
-   *    appleProductId: '1234',
-   *    googleProductId: 'com.38plank.spartan_one'
-   *  };
-   */
-  configurePurchasing(store: InAppPurchase2, platform: Platform, product: any, route = {}) {
-    if (!platform.is('cordova')) {
-      console.log('not cordova');
-      return;
-    }
-    let productId;
-    try {
-      if (platform.is('ios')) {
-        productId = product.appleProductId;
-      } else if (platform.is('android')) {
-        productId = product.googleProductId;
-      }
-
-      // Register Product
-      // Set Debug High
-      store.verbosity = store.DEBUG;
-      // Register the product with the store
-      store.register({
-        id: productId,
-        alias: productId,
-        type: store.NON_CONSUMABLE
-      });
-
-      this.registerHandlers(store, productId, route);
-
-      store.ready().then((status) => {
-        // alert('Store is Ready: '+JSON.stringify(store.get(productId)));
-
-        console.log(JSON.stringify(store.get(productId)));
-        console.log('Store is Ready: ' + JSON.stringify(status));
-        console.log('Products: ' + JSON.stringify(store.products));
-      });
-
-      // Errors On The Specific Product
-      store.when(productId).error((error) => {
-        //this.showToast("An error occurred: " + error);
-      });
-      // Refresh Always
-      console.log('Refresh Store');
-      store.refresh();
-      route['purchased'] = "loading";
-    } catch (err) {
-      console.log('Error On Store Issues' + JSON.stringify(err));
-    }
-  }
 
   private showToast(message) {
     const toast = this.toastCtrl.create({
@@ -162,59 +114,34 @@ export class PaymentUtils {
     toast.present();
   }
 
-  private registerHandlers(store, productId, route) {
-    // Handlers
-    store.when(productId).approved((product: IAPProduct) => {
-      // Purchase was approved
-      product.finish();
-      //this.showToast("Payment approved for: " + product.title);
-    });
-
-    store.when(productId).registered((product: IAPProduct) => {
-      // route['purchased'] = product.owned;
-      // alert('P registered: '+JSON.stringify(product));
-      console.log('Registered: ' + JSON.stringify(product));
-    });
-
-    store.when(productId).updated((product: IAPProduct) => {
-      route['purchased'] = product.owned;
-      if (product.loaded && product.valid && product.state === store.APPROVED) {
-        product.finish();
-      }
-    });
-
-    store.when(productId).cancelled((product) => {
-      this.showToast('Purchase was Cancelled');
-    });
-
-    // Overall Store Error
-    store.error((err) => {
-      this.showToast('Store Error ' + JSON.stringify(err));
-    });
+   getProducts(routes: Array<Route>) {
+    return this.iap.getProducts(routes.map(route => 'com.innapp.dromos.' + route.id.toLocaleLowerCase()));
   }
 
-  async purchase(store: InAppPurchase2, platform: Platform, product: any) {
-    /* Only configuring purchase when you want to buy, because when you configure a purchase
-    It prompts the user to input their apple id info on config which is annoying */
-    if (!platform.is('cordova')) { return };
+  async buy(productId) {
+    return this.iap.getProducts(['com.innapp.dromos.' + productId.toLocaleLowerCase()]).then((productData) => {
+      return this.iap.buy(productData[0].productId).then(data => {
+        this.enableItem(productData[0].productId);
+        return data;
+      })
+    })
+  }
 
-    let productId;
+  enableItem(productId) {
+    this.localStorage.setRouteValue(productId.substr(productId.lastIndexOf('.') + 1), "purchased", true);
+  }
 
-    if (platform.is('ios')) {
-      productId = product.appleProductId;
-    } else if (platform.is('android')) {
-      productId = product.googleProductId;
-    }
-
-    alert('Products: ' + JSON.stringify(store.products));
-    console.log('Ordering From Store: ' + productId);
-    try {
-      let product = store.get(productId);
-      console.log('Product Info: ' + JSON.stringify(product));
-      let order = await store.order(productId);
-      this.showToast('Finished Purchase');
-    } catch (err) {
-      console.log('Error Ordering ' + JSON.stringify(err));
+  restorePurchases() {
+    if (this.platform.is('cordova')) {
+      return this.iap.restorePurchases().then(purchases => {
+        // Unlock the features of the purchases!
+        for (let prev of purchases) {
+          this.enableItem(prev.productId)
+        }
+        return purchases.map((purchase) => purchase.productId.substr(purchase.productId.lastIndexOf('.') + 1));
+      });
+    } else {
+      return Promise.resolve([]);
     }
   }
 }

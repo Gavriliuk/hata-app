@@ -35,7 +35,7 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
         () => {
           console.log("StoryOnlyPlayMode: subscriptions.ended");
           // this.storage.incrementListenedStories().then(() => {
-            this.playNext();
+          this.playNext();
 
           // });
         }
@@ -46,12 +46,12 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
   async playStory() {
     // let listenedStoryCount = await this.storage.listenedStories || 0;
     if (!this.routeValues.purchased && this.routeValues.listenedStoryIndex > 1) {
-      this.paymentUtils.showPromoCodePrompt(this.params.route.id, () => {
+      this.paymentUtils.buy(this.params.route.id).then((data) => {
         this.routeValues.purchased = true;
         this.pushStoryAudio();
-      }, () => {
-        this.events.publish("load",false);
-      });
+      }).catch((error) => {
+        this.events.publish("load", false);
+      })
     } else {
       await this.pushStoryAudio();
     }
@@ -78,14 +78,14 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
 
   async start() {
     if (!this.isLastStory()) {
-       this.playStory();
+      this.playStory();
     }
   }
 
   async playNext() {
     if (!this.isLastStory()) {
       ++this.routeValues.listenedStoryIndex;
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(()=>{
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
         this.playStory()
       });
     }
@@ -94,18 +94,18 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
   async playPrev() {
     if (!this.isFirstStory()) {
       --this.routeValues.listenedStoryIndex;
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(()=>{
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
         this.playStory()
       });
-        }
+    }
   }
 
-   changePeriod(year: any) {
+  changePeriod(year: any) {
     this.routeValues.selectedYear = year;
     const storyIndex = this.getStoryIndexByYear(this.sortedStories, year);
     if (storyIndex != -1) {
       this.routeValues.listenedStoryIndex = storyIndex;
-       this.playStory();
+      this.playStory();
     }
   }
 

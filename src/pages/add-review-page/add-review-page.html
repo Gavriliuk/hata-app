@@ -28,9 +28,9 @@
         </ion-row>
         <ion-row no-padding>
           <ion-col text-center>
-            <button ion-button round icon-left (tap)="purchaseByPromocode()">
+            <button ion-button round icon-left (tap)="purchaseByIAP()">
               <ion-icon name="md-checkmark"></ion-icon>
-              {{ "ROUTE_ACTIVATE" | translate }}
+              {{ "ROUTE_ACTIVATE" | translate }} {{routeModal.productData.price}}
             </button>
           </ion-col>
         </ion-row>
@@ -40,7 +40,7 @@
           <ion-col text-center>
             <button ion-button clear color="balanced" icon-start>
               <ion-icon name='md-checkmark'></ion-icon>
-              {{ "ROUTE_ACTIVATED" | translate }}
+              {{"ROUTE_ACTIVATED" | translate}}
             </button>
           </ion-col>
         </ion-row>

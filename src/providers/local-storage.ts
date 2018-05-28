@@ -101,21 +101,21 @@ export class LocalStorage {
   }
 
   async setRouteValue(routeId, key, val): Promise<any> {
-    let allRouteValues = await this.storage.get(routeId)
+    let allRouteValues = await this.getRouteAllValues(routeId.toLocaleLowerCase());
     allRouteValues[key] = val;
-    return this.storage.set(routeId, allRouteValues);
+    await this.updateRouteValues(routeId.toLocaleLowerCase(),allRouteValues);
   }
   updateRouteValues(routeId, allRouteValues): Promise<any> {
-    return this.storage.set(routeId, allRouteValues);
+    return this.storage.set(routeId.toLocaleLowerCase(), allRouteValues);
   }
 
-  getRouteValue(routeId, key) {
-    return this.storage.get(routeId)[key];
+  async getRouteValue(routeId, key) {
+    return await this.storage.get(routeId.toLocaleLowerCase())[key];
   }
 
   async getRouteAllValues(routeId): Promise<any> {
     //TODO get selectedYear from route
-    return await this.storage.get(routeId) || {
+    return await this.storage.get(routeId.toLocaleLowerCase()) || {
       listenedPOI: [],
       listenedStories: [],
       listenedStoryIndex: 0,

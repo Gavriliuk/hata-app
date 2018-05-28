@@ -5,7 +5,7 @@ import { ViewController } from 'ionic-angular';
 import { BasePage } from '../base-page/base-page';
 import { LocalStorage } from '../../providers/local-storage';
 import { PaymentUtils } from '../../providers/payment-utils';
-import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2';
+import { resolve } from 'path';
 // import { AlertController } from 'ionic-angular';
 
 
@@ -36,14 +36,12 @@ export class AddReviewPage extends BasePage {
     promocode: "",
   };
   product: any = {
-    name: 'Адреса и имена старого Кишинева',
-    appleProductId: 'com.innapp.dromos.BKKExJtVzH',
-    googleProductId: 'com.innapp.dromos.bkkexjtvzh'
+    productId: 'com.innapp.dromos.bkkexjtvzh'
   };
 
   constructor(injector: Injector,
     private viewCtrl: ViewController,
-    private storage: LocalStorage, private actionSheetCtrl: ActionSheetController, private store: InAppPurchase2,
+    private storage: LocalStorage, private actionSheetCtrl: ActionSheetController,
     public platform: Platform) {
     super(injector);
     // this.alertCtrl = injector.get(AlertController);
@@ -51,12 +49,15 @@ export class AddReviewPage extends BasePage {
     this.paymentUtils = new PaymentUtils(injector);
     this.lang = this.navParams.data.lang;
     this.routeModal = this.navParams.data.route;
+    this.routeModal.productData = {};
     this.routePlaces = this.navParams.data.places;
     this.addWaypointsAndMarkers();
     // this.paymentUtils.configurePurchasing(this.store, this.platform, this.product);
   }
   ionViewDidEnter() {
-    // this.paymentUtils.configurePurchasing(this.store, this.platform, this.product);
+    this.paymentUtils.getProducts([this.routeModal]).then((productData) => {
+      this.routeModal.productData = productData[0];
+    });
   }
 
   private addWaypointsAndMarkers() {
@@ -137,16 +138,9 @@ export class AddReviewPage extends BasePage {
           }
         },
         {
-          text: 'In-app Purchase',
+          text: 'Using InApp Purchase',
           handler: () => {
-            this.paymentUtils.purchase(this.store, this.platform, this.product);
-            // console.log('In-app Purchase');
-          }
-        },
-        {
-          text: 'Using Qiwi Code',
-          handler: () => {
-            console.log('Using Qiwi Code');
+            this.purchaseByIAP();
           }
         },
         {
@@ -159,6 +153,14 @@ export class AddReviewPage extends BasePage {
       ]
     });
     actionSheet.present();
+  }
+
+  purchaseByIAP() {
+    this.paymentUtils.buy(this.routeModal.id).then((data) => {
+      this.routeValues.purchased = true;
+    }).catch((error) => {
+
+    });
   }
 }
 

@@ -256,7 +256,7 @@ export class PlacesPage extends BasePage {
     //       });
     //     });
     // } else {
-      this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex });
+    this.navigateTo('PlaceDetailPage', { routeValues: this.routeValues, place: place, places: this.places, route: this.params.route, playBackValues: this.playBackRateValues, playBackRateIndex: this.playBackRateIndex });
     // }
   }
 
@@ -373,31 +373,39 @@ export class PlacesPage extends BasePage {
     alert.present();
   }
 
-  activatePromocode() {
-    this.paymentUtils.activatePromocode(this.routeValues.promocode, this.params.route.id, () => {
-      this.routeValues.purchased = true;
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
-        this.playingMode.init(this.params).then(() => {
-          this.playingMode.start();
-        });
-      });
-    }, () => {
-      let alert = this.alertCtrl.create({
-        title: this.translate.instant('promocode_invalid'),
-        subTitle: this.translate.instant('promocode_check_error'),
-        buttons: ['OK']
-      });
-      alert.present();
-    });
-  }
+  // activatePromocode() {
+  //   this.paymentUtils.activatePromocode(this.routeValues.promocode, this.params.route.id, () => {
+  //     this.routeValues.purchased = true;
+  //     this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
+  //       this.playingMode.init(this.params).then(() => {
+  //         this.playingMode.start();
+  //       });
+  //     });
+  //   }, () => {
+  //     let alert = this.alertCtrl.create({
+  //       title: this.translate.instant('promocode_invalid'),
+  //       subTitle: this.translate.instant('promocode_check_error'),
+  //       buttons: ['OK']
+  //     });
+  //     alert.present();
+  //   });
+  // }
 
-    purchaseByPromocode() {
+  purchaseByPromocode() {
     this.paymentUtils.showPromoCodePrompt(this.params.route.id, () => {
       this.routeValues.purchased = true;
       this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
       });
     }, () => {
     }, this.translate.instant('activate_promocode_title'), this.translate.instant('activate_promocode_description'));
+  }
+
+  purchaseByIAP() {
+    this.paymentUtils.buy(this.params.route.id).then((data) => {
+      this.routeValues.purchased = true;
+      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
+      });
+    })
   }
 
   filterPois(ev: any) {
@@ -412,7 +420,7 @@ export class PlacesPage extends BasePage {
 
 
       this.refreshMarkers();
-    }else{
+    } else {
       this.places = this.params.places;
       this.refreshMarkers();
     }

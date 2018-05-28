@@ -152,17 +152,17 @@ export class PlaceDetailPage extends BasePage {
   async loadPlace() {
     // let listenedPoisCount = await this.storage.listenedPois || 0;
     if (!this.routeValues.purchased && this.routeValues.listenedPOI.length > 1) {
-      this.paymentUtils.showPromoCodePrompt(this.route.id, () => {
+      this.paymentUtils.buy(this.params.route.id).then((purchase) => {
+        // this.paymentUtils.showPromoCodePrompt(this.route.id, () => {
         this.routeValues.purchased = true;
         this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
           this.pushPlaceAudio();
         });
-      }, () => {
+      }).catch((error) => {
         this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
           this.events.publish("load", false);
           this.goRoutes();
         });
-
       });
     } else {
       this.pushPlaceAudio();

@@ -8,7 +8,7 @@ import { User } from '../../providers/parse-models/user-service';
 import { LocalStorage } from '../../providers/local-storage';
 import { Place } from '../../providers/parse-models/place-service';
 import { PaymentUtils } from '../../providers/payment-utils';
-import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2';
+import { InAppPurchase } from '@ionic-native/in-app-purchase';
 
 @Component({
   selector: 'page-routes',
@@ -31,7 +31,7 @@ export class RoutesPage extends BasePage {
     private events: Events,
     private locationAccuracy: LocationAccuracy,
     private diagnostic: Diagnostic,
-    public modalCtrl: ModalController, private store: InAppPurchase2, public platform: Platform) {
+    public modalCtrl: ModalController, public platform: Platform) {
     super(injector);
     this.paymentUtils = new PaymentUtils(injector);
 
@@ -74,6 +74,17 @@ export class RoutesPage extends BasePage {
   async loadData() {
     this.lang = await this.storage.lang;
     this.routes = await Route.load();
+    this.paymentUtils.restorePurchases().then((purchases) => {
+      this.routes.forEach((route) => {
+        this.storage.getRouteAllValues(route.id).then((values) => {
+          route["purchased"] = values["purchased"];
+          if (purchases.includes(route.id.toLocaleLowerCase())) {
+            route["purchased"] = true;
+          }
+        })
+
+      })
+    });
     // this.updatePurchases(this.routes);
     // .then(data => {
     //   this.routes = data;
@@ -99,18 +110,18 @@ export class RoutesPage extends BasePage {
     // });
   }
 
-  updatePurchases(routes: Array<Route>): any {
-    routes.forEach((route) => {
-      const product: any = {
-        name: route.title_ru,
-        appleProductId: 'com.innapp.dromos.' + route.id.toLocaleLowerCase(),
-        googleProductId: 'com.innapp.dromos.' + route.id.toLocaleLowerCase()
-      };
-      if(route.id.toLocaleLowerCase()=='bkkexjtvzh'){
-        // this.paymentUtils.configurePurchasing(this.store, this.platform, product, route);
-      }
-    })
-  }
+  // updatePurchases(routes: Array<Route>): any {
+  //   routes.forEach((route) => {
+  //     const product: any = {
+  //       name: route.title_ru,
+  //       appleProductId: 'com.innapp.dromos.' + route.id.toLocaleLowerCase(),
+  //       googleProductId: 'com.innapp.dromos.' + route.id.toLocaleLowerCase()
+  //     };
+  //     if(route.id.toLocaleLowerCase()=='bkkexjtvzh'){
+  //       // this.paymentUtils.configurePurchasing(this.store, this.platform, product, route);
+  //     }
+  //   })
+  // }
 
   onReload(refresher) {
     this.refresher = refresher;

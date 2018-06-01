@@ -7,8 +7,8 @@ import { BasePage } from '../base-page/base-page';
 import { User } from '../../providers/parse-models/user-service';
 import { LocalStorage } from '../../providers/local-storage';
 import { Place } from '../../providers/parse-models/place-service';
-import { PaymentUtils } from '../../providers/payment-utils';
-import { InAppPurchase } from '@ionic-native/in-app-purchase';
+// import { PaymentUtils } from '../../providers/payment-utils';
+// import { InAppPurchase } from '@ionic-native/in-app-purchase';
 
 @Component({
   selector: 'page-routes',
@@ -16,7 +16,7 @@ import { InAppPurchase } from '@ionic-native/in-app-purchase';
 })
 export class RoutesPage extends BasePage {
 
-  paymentUtils: PaymentUtils;
+  // paymentUtils: PaymentUtils;
   private routes: Array<Route>;
   place: Place;
   places: Place[];
@@ -33,7 +33,7 @@ export class RoutesPage extends BasePage {
     private diagnostic: Diagnostic,
     public modalCtrl: ModalController, public platform: Platform) {
     super(injector);
-    this.paymentUtils = new PaymentUtils(injector);
+    // this.paymentUtils = new PaymentUtils(injector);
 
     this.locationAccuracy.canRequest().then((canRequest: boolean) => {
 
@@ -55,6 +55,14 @@ export class RoutesPage extends BasePage {
       }
     }).catch((err) => console.log(err));
 
+    this.events.subscribe('restoredPurchases', (purchasedItems) => {
+      this.routes.forEach((route) => {
+        if (purchasedItems.includes(route.id.toLocaleLowerCase())) {
+          route["purchased"] = true;
+        }
+      });
+    });
+
   }
 
   enableMenuSwipe() {
@@ -74,17 +82,17 @@ export class RoutesPage extends BasePage {
   async loadData() {
     this.lang = await this.storage.lang;
     this.routes = await Route.load();
-    this.paymentUtils.restorePurchases().then((purchases) => {
-      this.routes.forEach((route) => {
-        this.storage.getRouteAllValues(route.id).then((values) => {
-          route["purchased"] = values["purchased"];
-          if (purchases.includes(route.id.toLocaleLowerCase())) {
-            route["purchased"] = true;
-          }
-        })
-
+    // this.paymentUtils.restorePurchases().then((purchases) => {
+    this.routes.forEach((route) => {
+      this.storage.getRouteAllValues(route.id).then((values) => {
+        route["purchased"] = values["purchased"];
+        // if (purchases.includes(route.id.toLocaleLowerCase())) {
+        //   route["purchased"] = true;
+        // }
       })
-    });
+
+    })
+    // });
     // this.updatePurchases(this.routes);
     // .then(data => {
     //   this.routes = data;

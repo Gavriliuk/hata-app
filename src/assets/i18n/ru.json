@@ -121,5 +121,8 @@
   "LOADING_POI": "Загрузка содержимого объекта",
   "FINDING_POI": "Поиск ближайших объектов",
   "POI_NOT_FOUND_PLAY_STORY": "Загрузка истории",
-  "SEARCH_POI":"Поиск объектов"
+  "SEARCH_POI":"Поиск объектов",
+  "restore_purchases":"Восстановить покупки",
+  "restored_purchases_title":"Восстановление маршрутов",
+  "restored_purchases_description":"Восстановлено {{ restored }} маршрутов."
 }

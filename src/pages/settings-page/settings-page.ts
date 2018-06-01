@@ -5,6 +5,7 @@ import { Preference } from '../../providers/preference';
 import { BasePage } from '../base-page/base-page';
 import { WalkthroughPage } from '../walkthrough-page/walkthrough-page';
 import { MyApp } from '../../app/app.component';
+import { PaymentUtils } from '../../providers/payment-utils';
 
 @Component({
   selector: 'page-settings-page',
@@ -17,13 +18,15 @@ export class SettingsPage extends BasePage {
   events: Events;
   preference: Preference;
   filterRoute: string;
+  paymentUtils: PaymentUtils;
+
   constructor(private injector: Injector,
     localStorage: LocalStorage,
     events: Events,
     preference: Preference) {
 
     super(injector);
-
+    this.paymentUtils = new PaymentUtils(injector);
     this.storage = localStorage;
     this.events = events;
     this.preference = preference;
@@ -78,15 +81,28 @@ export class SettingsPage extends BasePage {
   goToWalkthrough() {
     this.navigateTo(WalkthroughPage);
   }
-  // clearStorage() {
 
-
-
-
-
-  //   this.storage.clearLocalStorage();
-  // }
-
+  restorePurchases() {
+    // let purchases=["bkkexjtvzh","j8nc2uhpsc"];
+    this.events.publish("load", true, this.translate.instant('LOADING'));
+    this.paymentUtils.restorePurchases().then((purchases) => {
+      this.events.publish("load", false);
+      let prompt = this.alertCtrl.create({
+        title: this.translate.instant('restore_purchases'),
+        message: this.translate.instant('restored_purchases_description', { 'restored': purchases.length }),
+        buttons: [
+          {
+            text: this.translate.instant('OK'),
+            handler: data => {
+              console.log('OK clicked');
+              this.events.publish("restoredPurchases", purchases);
+            }
+          }
+        ]
+      });
+      prompt.present();
+    });
+  }
 
   clearStorage() {
     let prompt = this.alertCtrl.create({

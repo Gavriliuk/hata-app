@@ -38,18 +38,6 @@
       <ion-label>0.2 {{ preference.unit | translate}}</ion-label>
       <ion-radio value="0.2"></ion-radio>
     </ion-item>
-    <ion-item no-lines>
-      <ion-label>0.5 {{ preference.unit | translate}}</ion-label>
-      <ion-radio value="0.5"></ion-radio>
-    </ion-item>
-    <ion-item no-lines>
-      <ion-label>1 {{ preference.unit | translate }} </ion-label>
-      <ion-radio value="1"></ion-radio>
-    </ion-item>
-    <ion-item no-lines>
-      <ion-label>5 {{ preference.unit | translate }} </ion-label>
-      <ion-radio value="5"></ion-radio>
-    </ion-item>
   </ion-list>
 
   <ion-list radio-group (ionChange)="onChangeLang()" [(ngModel)]="settings.lang">
@@ -75,17 +63,17 @@
   </ion-list>
 
   <!--<ion-list radio-group (ionChange)="onChangeFilterRoute()" [(ngModel)]="settings.filterRoute">-->
-    <!--<ion-list-header>-->
-      <!--<p ion-text class="bold" color="primary">{{ 'TYPE_ROUTE' | translate }}</p>-->
-    <!--</ion-list-header>-->
-    <!--<ion-item no-lines>-->
-      <!--<ion-label>{{ 'COMBINED' | translate }}</ion-label>-->
-      <!--<ion-radio value="combined"></ion-radio>-->
-    <!--</ion-item>-->
-    <!--<ion-item no-lines>-->
-      <!--<ion-label>{{ 'SIMPLE' | translate }}</ion-label>-->
-      <!--<ion-radio value="simple"></ion-radio>-->
-    <!--</ion-item>-->
+  <!--<ion-list-header>-->
+  <!--<p ion-text class="bold" color="primary">{{ 'TYPE_ROUTE' | translate }}</p>-->
+  <!--</ion-list-header>-->
+  <!--<ion-item no-lines>-->
+  <!--<ion-label>{{ 'COMBINED' | translate }}</ion-label>-->
+  <!--<ion-radio value="combined"></ion-radio>-->
+  <!--</ion-item>-->
+  <!--<ion-item no-lines>-->
+  <!--<ion-label>{{ 'SIMPLE' | translate }}</ion-label>-->
+  <!--<ion-radio value="simple"></ion-radio>-->
+  <!--</ion-item>-->
   <!--</ion-list>-->
 
   <!-- <ion-list radio-group (ionChange)="onChangeMapStyle()" [(ngModel)]="settings.mapStyle">
@@ -109,8 +97,12 @@
     <button ion-item no-lines (tap)="goToWalkthrough()">
       {{ 'OPEN_WALKTHROUGH' | translate }}
     </button>
-
-    <button ion-button full round (tap)="clearStorage()">
+    <button ion-button full round (tap)="restorePurchases()" icon-left>
+      <ion-icon name="ios-unlock" item-end> </ion-icon>
+      {{ 'restore_purchases' | translate }}
+    </button>
+    <button ion-button full round (tap)="clearStorage()" icon-left>
+      <ion-icon name="ios-trash" item-end> </ion-icon>
       {{ 'Clear_the_history' | translate }}
     </button>
   </ion-list>

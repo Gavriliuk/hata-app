@@ -120,5 +120,7 @@
   "LOADING_POI": "Loading Object content",
   "FINDING_POI": "Finding nearest objects",
   "POI_NOT_FOUND_PLAY_STORY": "Story Loading",
-  "SEARCH_POI":"Object searching"
+  "SEARCH_POI":"Object searching",
+  "restore_purchases":"Restore purchases",
+  "restored_purchases_description":"Restored {{ restored }} routes."
 }

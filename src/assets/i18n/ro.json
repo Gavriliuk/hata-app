@@ -116,5 +116,7 @@
   "LOADING_ROUTE": "Загрузка содержимого маршрута",
   "FINDING_POI": "Поиск ближайших точек интереса",
   "POI_NOT_FOUND_PLAY_STORY": "Точки интереса не найдены. Загрузка истории",
-  "SEARCH_POI":"Поиск объектов"
+  "SEARCH_POI":"Поиск объектов",
+  "restore_purchases":"Restore purchases",
+  "restored_purchases_description":"Восстановлено {{ restored }} маршрутов."
 }

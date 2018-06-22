@@ -24,6 +24,7 @@ ionic cordova run android --device
 ionic cordova plugin remove cordova-plugin-whitelist
 ionic cordova plugin add cordova-plugin-whitelist
 ionic cordova prepare
+Update ionic global(last v nodejs 8.9.1):   npm update -g ionic
 
 --> keytool -genkey -v -keystore Dromos.keystore -alias Dromos -keyalg RSA -keysize 2048 -validity 10000
 --> ionic cordova build android --release

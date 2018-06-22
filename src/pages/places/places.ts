@@ -228,7 +228,7 @@ export class PlacesPage extends BasePage {
   }
 
   enableMenuSwipe() {
-    return true;
+    return false;
   }
 
   private initGoogleMap() {

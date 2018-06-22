@@ -7,37 +7,33 @@
       </button>
     </ion-buttons>
   </ion-navbar>
+      <ion-searchbar class="tolbarDateSlider" *ngIf="playMode=='poiOnly'" placeholder="{{ 'SEARCH_POI' | translate }}" (ionInput)="filterPois($event)"></ion-searchbar>
+          <div *ngIf="playMode!='poiOnly'" class="tolbarDateSlider">
+            <ion-row class="filters year-row">
+                <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
+                  <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
+                </ion-col>
+
+                <ion-col no-padding col-10>
+                  <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
+                    <ion-slide class="sliderDate" (click)="selectYear(period)" *ngFor="let period of yearSelectionSlider.periods">
+                      <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
+                    </ion-slide>
+                  </ion-slides>
+                </ion-col>
+                <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
+                  <ion-icon *ngIf="yearSelectionSlider.showRightButton" name="arrow-forward"></ion-icon>
+                </ion-col>
+            </ion-row>
+          </div>
 </ion-header>
 
 <ion-content #container>
-    <ion-searchbar class="tolbarDateSlider" *ngIf="playMode=='poiOnly'" placeholder="{{ 'SEARCH_POI' | translate }}" (ionInput)="filterPois($event)"></ion-searchbar>
-
-  <div *ngIf="playMode!='poiOnly'" class="tolbarDateSlider">
-    <ion-row class="filters year-row">
-      <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
-        <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
-      </ion-col>
-
-      <ion-col no-padding col-10>
-        <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
-          <ion-slide class="sliderDate" (click)="selectYear(period)" *ngFor="let period of yearSelectionSlider.periods">
-            <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
-          </ion-slide>
-        </ion-slides>
-      </ion-col>
-      <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
-        <ion-icon *ngIf="yearSelectionSlider.showRightButton" name="arrow-forward"></ion-icon>
-      </ion-col>
-    </ion-row>
-  </div>
-
   <div *ngIf="playMode!='storyOnly'" id="map" showWhen="android,ios"></div>
   <div *ngIf="playMode=='storyOnly'">
       <ion-card>
           <img src="{{params.route.image.url()}}">
-
           <ion-card-content>
-
             <ion-card-title>
                 {{params.route['title_' + lang]}}
               </ion-card-title>
@@ -67,15 +63,16 @@
                   </button>
                 </ion-col>
               </ion-row>
-
             </div>
             <p>
               {{params.route['information_' + lang]}}
             </p>
           </ion-card-content>
+          <div padding></div>
+          <div padding></div>
         </ion-card>
   </div>
-
+</ion-content>
   <!-- <div class="sliderPOI">
     <ion-slides *ngIf="!listeningPOI" pager class="ionSlides">
         <ion-slide *ngFor="let place of places">
@@ -94,15 +91,14 @@
       </ion-slides>
 </div> -->
 
-  <div class="mapFooter">
     <!-- <div>State: {{videogularApi.state}}</div> -->
     <!-- <div>{{currentAudio.type}}: {{currentAudio.title}}</div> -->
     <!-- <div style="font-size:12px;">Period :{{currentAudio.period}}</div> -->
-
-    <vg-player *ngIf="playMode!='poiOnly'" (onPlayerReady)="onPlayerReady($event)">
-      <ion-grid>
-        <ion-row align-items-center style="line-height: 23em">
-          <ion-col text-center class="colVGplayer">
+<ion-footer>
+  <vg-player *ngIf="playMode!='poiOnly'" (onPlayerReady)="onPlayerReady($event)">
+    <ion-grid class="vgGrid">
+      <ion-row align-items-center style="line-height: 23em">
+          <ion-col text-center class="colVGplayer" col-12>
             <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay" (click)="changePlayBackRate()">
               <p style="text-transform: lowercase;">{{playBackRateValues && playBackRateValues[playBackRateIndex]}}x</p>
             </button>
@@ -123,14 +119,26 @@
             <button ion-button class="skip-btn" color="primary" [disabled]="!videogularApi.canPlay" (click)="playNextStory()">
               <ion-icon name="skip-forward"></ion-icon>
             </button>
-
           </ion-col>
-        </ion-row>
+      </ion-row>
+      <ion-row>
+        <ion-col col-10>
+        <vg-scrub-bar style="pointer-events: none;"> 
+          <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+          <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+        </vg-scrub-bar>
+        <!-- <vg-time-display [vgProperty]="'left'" [vgFormat]="'mm:ss'"></vg-time-display>  -->
+        <!-- <vg-time-display vgProperty="current" vgFormat="mm:ss" text-right></vg-time-display> -->
+        </ion-col>
+        <ion-col col-2>
+          <vg-controls>
+             <vg-time-display [vgProperty]="'left'" [vgFormat]="'mm:ss'"></vg-time-display> 
+         </vg-controls>
+        </ion-col>
+      </ion-row>
       </ion-grid>
-
       <audio #media [vgMedia]="media" [src]="playingMode?playingMode.currentAudio.src:null" type="audio/mp3" autoplay preload="metadata">
       </audio>
-
     </vg-player>
-  </div>
-</ion-content>
+</ion-footer>
+

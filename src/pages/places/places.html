@@ -7,28 +7,33 @@
       </button>
     </ion-buttons>
   </ion-navbar>
-      <ion-searchbar class="tolbarDateSlider" *ngIf="playMode=='poiOnly'" placeholder="{{ 'SEARCH_POI' | translate }}" (ionInput)="filterPois($event)"></ion-searchbar>
-          <div *ngIf="playMode!='poiOnly'" class="tolbarDateSlider">
-            <ion-row class="filters year-row">
-                <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
-                  <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
-                </ion-col>
 
-                <ion-col no-padding col-10>
-                  <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
-                    <ion-slide class="sliderDate" (click)="selectYear(period)" *ngFor="let period of yearSelectionSlider.periods">
-                      <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
-                    </ion-slide>
-                  </ion-slides>
-                </ion-col>
-                <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
-                  <ion-icon *ngIf="yearSelectionSlider.showRightButton" name="arrow-forward"></ion-icon>
-                </ion-col>
-            </ion-row>
-          </div>
+  
 </ion-header>
-
 <ion-content #container>
+  <ion-toolbar class="toolbarSlider" transparent>
+ 
+    <ion-searchbar class="dateSlider" transparent *ngIf="playMode=='poiOnly'" placeholder="{{ 'SEARCH_POI' | translate }}" (ionInput)="filterPois($event)"></ion-searchbar>
+    <div class="dateSlider" transparent *ngIf="playMode!='poiOnly'">
+      <ion-row class="filters year-row">
+          <ion-col class="col-with-arrow" (click)="slidePrev()" no-padding col-1>
+            <ion-icon *ngIf="yearSelectionSlider.showLeftButton" name="arrow-back"></ion-icon>
+          </ion-col>
+
+          <ion-col no-padding col-10>
+            <ion-slides (ionSlideDidChange)="slideChanged()" slidesPerView="4">
+              <ion-slide class="sliderDate" (click)="selectYear(period)" *ngFor="let period of yearSelectionSlider.periods">
+                <p [class.selected]="yearSelectionSlider.selectedYear === period">{{period}}</p>
+              </ion-slide>
+            </ion-slides>
+          </ion-col>
+          <ion-col class="col-with-arrow" (click)="slideNext()" no-padding col-1>
+            <ion-icon *ngIf="yearSelectionSlider.showRightButton" name="arrow-forward"></ion-icon>
+          </ion-col>
+      </ion-row>
+    </div> 
+  </ion-toolbar>
+
   <div *ngIf="playMode!='storyOnly'" id="map" showWhen="android,ios"></div>
   <div *ngIf="playMode=='storyOnly'">
       <ion-card>
@@ -72,7 +77,6 @@
           <div padding></div>
         </ion-card>
   </div>
-</ion-content>
   <!-- <div class="sliderPOI">
     <ion-slides *ngIf="!listeningPOI" pager class="ionSlides">
         <ion-slide *ngFor="let place of places">
@@ -90,7 +94,7 @@
         </ion-slide>
       </ion-slides>
 </div> -->
-
+</ion-content>
     <!-- <div>State: {{videogularApi.state}}</div> -->
     <!-- <div>{{currentAudio.type}}: {{currentAudio.title}}</div> -->
     <!-- <div style="font-size:12px;">Period :{{currentAudio.period}}</div> -->
@@ -121,19 +125,15 @@
             </button>
           </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col col-10>
-        <vg-scrub-bar style="pointer-events: none;"> 
-          <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
-          <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
-        </vg-scrub-bar>
-        <!-- <vg-time-display [vgProperty]="'left'" [vgFormat]="'mm:ss'"></vg-time-display>  -->
-        <!-- <vg-time-display vgProperty="current" vgFormat="mm:ss" text-right></vg-time-display> -->
+      <ion-row align-items-center>
+        <ion-col class="scrubTimeDisplay" col-8 offset-1 align-self-start>
+          <vg-scrub-bar style="pointer-events: none;"> 
+            <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+            <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+          </vg-scrub-bar>
         </ion-col>
-        <ion-col col-2>
-          <vg-controls>
-             <vg-time-display [vgProperty]="'left'" [vgFormat]="'mm:ss'"></vg-time-display> 
-         </vg-controls>
+        <ion-col col-2 align-self-end>
+          <vg-time-display class="timeDisplay" [vgProperty]="'left'" [vgFormat]="'mm:ss'"></vg-time-display> 
         </ion-col>
       </ion-row>
       </ion-grid>

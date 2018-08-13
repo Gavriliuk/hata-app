@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-navbar color="primary" text-center>
+    <ion-title>{{ "BUNDLE_INFO" | translate }}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content #container>
+
+    <ion-refresher (ionRefresh)="onReload($event)">
+        <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}" refreshingText="{{ 'REFRESHING' | translate }}">
+        </ion-refresher-content>
+    </ion-refresher>
+
+  <ion-card *ngIf="isContentViewVisible" class="cardRoute">
+    <ion-card-title text-center>
+          {{bundle["title_"+lang]}}
+    </ion-card-title>
+   <ion-list style="margin-top: 3px;">
+      <ion-item ion-item class="itemRoute" *ngFor="let route of bundle.routes">
+        <ion-thumbnail class="avatarRoute" item-start>
+          <img src="assets/img/tag.png" offset="100" [lazyLoad]="route.imageThumb.url()">
+        </ion-thumbnail>
+           <h3 class="textRoute">{{ route["title_"+lang] }}</h3>
+           <ion-note item-end class="priceRoute">{{route.productData.price}}</ion-note>
+           <ion-icon class="iconRoute" color="{{route.purchased ? 'balanced' : ''}}" name="{{route.purchased ? 'ios-unlock' : 'ios-lock'}}" item-end></ion-icon>
+      </ion-item>
+    </ion-list>
+
+  <div *ngIf="!bundleValues.purchased">
+        <ion-row no-padding>
+          <ion-col text-center>
+            <button class="bundleButtonNotAct" ion-button clear color="danger" icon-start>
+              <ion-label class="labelDiscount">{{ "BUNDLE_DISCOUNT_ACTIVATED" | translate }} :</ion-label>
+              
+            </button>
+          </ion-col>
+        </ion-row>
+
+        <ion-row no-padding>
+          <ion-col text-center>
+            <button class="bundleButtonAct" ion-button round icon-left (tap)="purchaseBundleByIAP()">
+              <ion-icon name="md-checkmark"></ion-icon>
+              {{ "BUNDLE_ACTIVATE" | translate }} {{bundle.productData.price ? bundle.productData.price : bundle.sum}}
+            </button>
+          </ion-col>
+        </ion-row>
+  </div>
+  <div *ngIf="bundleValues.purchased">
+      <ion-row no-padding>
+        <ion-col text-center>
+          <button ion-button clear color="balanced" icon-start>
+            <ion-icon name='md-checkmark'></ion-icon>
+            {{ "BUNDLE_ACTIVATED" | translate }}
+          </button>
+        </ion-col>
+      </ion-row>
+    </div>
+
+  </ion-card>
+</ion-content>

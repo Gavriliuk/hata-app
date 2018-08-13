@@ -1,6 +1,7 @@
 {
   "APP_TITLE": "Dromos",
   "ROUTES": "Routes",
+  "BUNDLE":"Bundle",
   "KM": "km",
   "MI": "mi",
   "km": "km",
@@ -115,6 +116,11 @@
   "ROUTE_ACTIVATE": "Activate",
   "ROUTE_NOT_ACTIVATED": "Activation required",
   "ROUTE_INFO": "Route Information",
+  "BUNDLE_ACTIVATED": "Bundle Activated!",
+  "BUNDLE_ACTIVATE": "Activate ",
+  "BUNDLE_DISCOUNT_ACTIVATED": "Activate all routes in the package at a discount price",
+  "BUNDLE_INFO": "Bundle Information",
+  "BY_BUNDLE":"Or buy a discount bundle",
   "HAVE_PROMO": "Have a promocode?",
   "LOADING_ROUTE": "Loading Route content",
   "LOADING_POI": "Loading Object content",
@@ -122,5 +128,6 @@
   "POI_NOT_FOUND_PLAY_STORY": "Story Loading",
   "SEARCH_POI":"Object searching",
   "restore_purchases":"Restore purchases",
-  "restored_purchases_description":"Restored {{ restored }} routes."
+  "restored_purchases_title":"Restoring purchases",
+  "restored_purchases_description":"Restored {{ restored }} purchases."
 }

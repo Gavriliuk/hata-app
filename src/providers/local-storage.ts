@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { AsyncPipe } from '@angular/common';
+// import { AsyncPipe } from '@angular/common';
 
 
 @Injectable()
@@ -127,6 +127,25 @@ export class LocalStorage {
 
   async clearLocalStorage() {
     return this.storage.clear();
+  }
+
+  async setBundleValue(bundleId, key, val): Promise<any> {
+    let allBundleValues = await this.getBundleAllValues(bundleId.toLocaleLowerCase());
+    allBundleValues[key] = val;
+    await this.updateBundleValues(bundleId.toLocaleLowerCase(),allBundleValues);
+  }
+  updateBundleValues(bundleId, allBundleValues): Promise<any> {
+    return this.storage.set(bundleId.toLocaleLowerCase(), allBundleValues);
+  }
+
+  async getBundleValue(bundleId, key) {
+    return await this.storage.get(bundleId.toLocaleLowerCase())[key];
+  }
+
+  async getBundleAllValues(bundleId): Promise<any> {
+    return await this.storage.get(bundleId.toLocaleLowerCase()) || {
+      purchased: false
+    };
   }
 
 }

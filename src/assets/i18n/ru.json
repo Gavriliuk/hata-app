@@ -1,6 +1,7 @@
 {
   "APP_TITLE": "Dromos",
   "ROUTES": "Маршруты",
+  "BUNDLE": "Пакет",
   "RADIUS_SEARCH": "Радиус поиска",
   "MAP": "Карта",
   "KM": "км",
@@ -116,6 +117,11 @@
   "ROUTE_ACTIVATE": "Активировать",
   "ROUTE_NOT_ACTIVATED": "Необходима активация",
   "ROUTE_INFO": "Информация о маршруте",
+  "BUNDLE_ACTIVATED": "Пакет активирован",
+  "BUNDLE_ACTIVATE": "Активировать ",
+  "BUNDLE_DISCOUNT_ACTIVATED": "Активируйте все маршруты в пакете по скидочной цене",
+  "BUNDLE_INFO": "Информация о пакете",
+  "BY_BUNDLE":"Или купить пакет со скидкой",
   "HAVE_PROMO": "Имеете промокод?",
   "LOADING_ROUTE": "Загрузка содержимого маршрута",
   "LOADING_POI": "Загрузка содержимого объекта",
@@ -123,6 +129,6 @@
   "POI_NOT_FOUND_PLAY_STORY": "Загрузка истории",
   "SEARCH_POI":"Поиск объектов",
   "restore_purchases":"Восстановить покупки",
-  "restored_purchases_title":"Восстановление маршрутов",
-  "restored_purchases_description":"Восстановлено {{ restored }} маршрутов."
+  "restored_purchases_title":"Восстановление покупок",
+  "restored_purchases_description":"Восстановлено {{ restored }} покупок."
 }

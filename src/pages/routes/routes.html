@@ -25,7 +25,7 @@
         <h2 class="textRoute" (tap)="goToPlaces(route)">{{ route["title_"+lang] }}</h2>
         <!-- </div> -->
         <ion-icon class="iconRoute" color="{{route.purchased ? 'balanced' : ''}}" name="{{route.purchased ? 'ios-unlock' : 'ios-lock'}}"
-          (tap)="openModalAddReviewRoute(route)" item-end></ion-icon>
+          (tap)="openReviewRoute(route)" item-end></ion-icon>
         <!-- <ion-icon class="iconRoute" name="ios-lock" item-end></ion-icon> -->
         <!-- <ion-icon class="iconRoute" name="ios-information-circle-outline" (tap)="openModalAddReviewRoute(route['title_'+lang],route['information_'+lang],route.center_map,route.waypoints,route.start_route,route.end_route)" item-end></ion-icon> -->
       </ion-item>

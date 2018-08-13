@@ -1,4 +1,5 @@
-import { IonicPage, LoadingController, Loading } from 'ionic-angular';
+import { IonicPage } from 'ionic-angular';
+// import { IonicPage, LoadingController, Loading } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
 import { BasePage } from '../base-page/base-page';
 import { Preference } from '../../providers/preference';
@@ -339,7 +340,6 @@ export class PlacesPage extends BasePage {
         points.push(target);
       }
 
-
       if (points.length) {
         this.map.moveCamera({
           target: points,
@@ -402,7 +402,9 @@ export class PlacesPage extends BasePage {
 
   purchaseByIAP() {
     this.paymentUtils.buy(this.params.route.id).then((data) => {
-      this.routeValues.purchased = true;
+      if(data){
+        this.routeValues.purchased = true;
+      }
       this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
       });
     })

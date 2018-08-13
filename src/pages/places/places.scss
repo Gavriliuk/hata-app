@@ -208,7 +208,7 @@
   
     vg-scrub-bar {
       box-shadow: 0 0 3px #999;
-      background-color: #f63d3d38;
+      background-color: #f63d3d00;
       border-radius: 30px;
       overflow: hidden;
       height: 0.8em;
@@ -234,6 +234,7 @@
     vg-scrub-bar-buffering-time .background {
     border-radius: 15px !important;
     min-width: 12px;
+    background-color: #f12f2f61;
     }
     .colVGplayer {
         line-height: 6em !important;

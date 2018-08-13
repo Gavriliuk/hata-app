@@ -1,53 +1,64 @@
 <ion-header>
-  <ion-toolbar color="secondary">
-    <ion-buttons right>
-      <button style="float:left;" ion-button clear (tap)="onDismiss()" icon-only>
-        <ion-icon name="ios-close-circle-outline" showWhen="ios,core,android"></ion-icon>
-      </button>
-    </ion-buttons>
-    <ion-title center>
-      {{ "ROUTE_INFO" | translate }}
-    </ion-title>
-  </ion-toolbar>
+    <ion-navbar hideBackButton color="primary" text-center>
+        <ion-buttons left>
+            <button ion-button (click)="goBackRoutes()">
+                <ion-icon class="customIcon" name="arrow-back"> </ion-icon>
+                Back
+            </button>
+        </ion-buttons>
+        <ion-title text-center class="titleReview"> {{ "ROUTE_INFO" | translate }}</ion-title>
+     </ion-navbar>
 </ion-header>
 
 <ion-content class="card-background-page">
   <ion-card>
     <ion-card-content>
-      <ion-card-title>
+      <ion-card-title class="cardTitle">
         {{routeModal['title_' + lang]}}
       </ion-card-title>
+
       <div *ngIf="!routeValues.purchased">
-        <ion-row no-padding>
-          <ion-col text-center>
-            <button ion-button clear color="danger" icon-start>
-              <ion-icon name='md-close'></ion-icon>
-              {{ "ROUTE_NOT_ACTIVATED" | translate }}
-            </button>
-          </ion-col>
-        </ion-row>
+        <div class="notActivated" text-center>
+          <ion-icon name='md-close'></ion-icon>
+          {{ "ROUTE_NOT_ACTIVATED" | translate }}
+        </div>
         <ion-row no-padding>
           <ion-col text-center>
             <button ion-button round icon-left (tap)="purchaseByIAP()">
               <ion-icon name="md-checkmark"></ion-icon>
-              {{ "ROUTE_ACTIVATE" | translate }} {{routeModal.productData.price}}
+              <span class="activateButton"> {{ "ROUTE_ACTIVATE" | translate }} </span> 
+              <span *ngIf="!routeValues.purchased">  {{ routeModal.productData.price }} </span>
             </button>
           </ion-col>
         </ion-row>
       </div>
+
       <div *ngIf="routeValues.purchased">
         <ion-row no-padding>
           <ion-col text-center>
             <button ion-button clear color="balanced" icon-start>
               <ion-icon name='md-checkmark'></ion-icon>
-              {{"ROUTE_ACTIVATED" | translate}}
+              {{ "ROUTE_ACTIVATED" | translate }} 
+              <span *ngIf="!routeValues.purchased" > {{  routeModal.productData.price }} </span>
             </button>
           </ion-col>
         </ion-row>
-
       </div>
-      <p>
-        {{routeModal['information_' + lang]}}
+      
+      <ion-list *ngIf="!routeValues.purchased">
+        <ion-item-group class="itemGroupBundle">
+        <ion-title class="itemTitle" *ngIf="!routeValues.purchased"><h3 style="color:#3f7a04;" text-center> {{ "BY_BUNDLE"|translate }} :</h3></ion-title>
+          <button class="itemButton" ion-item *ngFor="let bundle of bundles" (tap)="goToBundle(bundle)">
+              <ion-label> {{ bundle["title_"+lang] }} </ion-label>
+              <ion-note item-end *ngIf="!bundle.purchased"> {{  bundle.productData ? bundle.productData.price : bundle.sum }} </ion-note>
+              <!-- <ion-note item-end *ngIf="!bundle.purchased">{{bundle.productData.price ? bundle.productData.price : bundle.sum }}</ion-note> -->
+              <ion-icon class="iconRoute" color="{{bundle.purchased ? 'balanced' : ''}}" name="{{bundle.purchased ? 'ios-unlock' : 'ios-lock'}}" item-end></ion-icon>
+          </button>
+        </ion-item-group>
+      </ion-list>
+
+      <p text-center style="margin: 12px 0px -13px;">
+        {{ routeModal['information_' + lang] }}
       </p>
     </ion-card-content>
 
@@ -55,13 +66,5 @@
       ng-reflect-lazy-image="http://maps.googleapis.com/map" ng-reflect-scroll-target="[object HTMLDivElement]" ng-reflect-offset="100"
       class="ng-lazyloaded">
     <img *ngIf="!routePlaces.length" src="{{routeModal.image.url()}}">
-    <ion-row no-padding>
-      <ion-col text-center>
-        <button ion-button round icon-left (tap)="onDismiss()">
-          <ion-icon name="md-close"></ion-icon>
-          {{ "CLOSE" | translate }}
-        </button>
-      </ion-col>
-    </ion-row>
   </ion-card>
 </ion-content>

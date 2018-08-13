@@ -1,6 +1,7 @@
 {
   "APP_TITLE": "Dromos",
   "ROUTES": "Rutele",
+  "BUNDLE":"Pachet",
   "KM": "km",
   "MI": "mi",
   "km": "km",
@@ -112,11 +113,17 @@
   "ROUTE_ACTIVATE": "Активировать",
   "ROUTE_NOT_ACTIVATED": "Необходима активация",
   "ROUTE_INFO": "Информация о маршруте",
+  "BUNDLE_ACTIVATED": "Пакет активирован",
+  "BUNDLE_ACTIVATE": "Активировать ",
+  "BUNDLE_DISCOUNT_ACTIVATED": "Activați toate rutele din pachet la un preț redus",
+  "BUNDLE_INFO": "Два маршрута XX века",
+  "BY_BUNDLE": "Sau cumpărați un pachet de reduceri",
   "HAVE_PROMO": "Имеете промокод?",
   "LOADING_ROUTE": "Загрузка содержимого маршрута",
   "FINDING_POI": "Поиск ближайших точек интереса",
   "POI_NOT_FOUND_PLAY_STORY": "Точки интереса не найдены. Загрузка истории",
   "SEARCH_POI":"Поиск объектов",
   "restore_purchases":"Restore purchases",
-  "restored_purchases_description":"Восстановлено {{ restored }} маршрутов."
+  "restored_purchases_title":"Восстановление покупок",
+  "restored_purchases_description":"Восстановлено {{ restored }} покупок."
 }

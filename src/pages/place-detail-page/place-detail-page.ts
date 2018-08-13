@@ -4,16 +4,16 @@ import { ModalController, Events } from 'ionic-angular';
 import { Place } from '../../providers/parse-models/place-service';
 import { Preference } from '../../providers/preference';
 import { LocalStorage } from '../../providers/local-storage';
-import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
+import { Geolocation } from '@ionic-native/geolocation';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { BrowserTab } from '@ionic-native/browser-tab';
 import { LaunchNavigator } from '@ionic-native/launch-navigator';
 import { BasePage } from '../base-page/base-page';
 import { ChangeDetectorRef } from '@angular/core';
-import Parse from 'parse';
+// import Parse from 'parse';
 import { NavController } from 'ionic-angular';
 import { PaymentUtils } from '../../providers/payment-utils';
-import { RoutesPage } from '../routes/routes';
+// import { RoutesPage } from '../routes/routes';
 import { TabsPage } from '../tabs/tabs';
 @IonicPage()
 @Component({
@@ -108,7 +108,7 @@ export class PlaceDetailPage extends BasePage {
       this.events.subscribe(event.event, event.handler);
     });
 
-    this.events.publish("load", true, this.translate.instant('LOADING_POI'));
+    // this.events.publish("load", true, this.translate.instant('LOADING_POI'));
   }
 
   getEventsSubscription(): any {
@@ -160,7 +160,7 @@ export class PlaceDetailPage extends BasePage {
         });
       }).catch((error) => {
         this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
-          this.events.publish("load", false);
+          // this.events.publish("load", false);
           this.goRoutes();
         });
       });
@@ -182,7 +182,7 @@ export class PlaceDetailPage extends BasePage {
   onPlayerReadyDetail(api) {
     this.api = api;
     this.api.getDefaultMedia().subscriptions.canPlayThrough.subscribe(() => {
-      this.events.publish("load", false);
+      // this.events.publish("load", false);
       this.api.playbackRate = this.playBackValues[this.playBackRateIndex];
     }
     );

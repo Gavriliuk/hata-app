@@ -46,6 +46,7 @@ import { SettingsPage } from '../pages/settings-page/settings-page';
 import { TabsPage } from '../pages/tabs/tabs';
 import { WalkthroughPage } from '../pages/walkthrough-page/walkthrough-page';
 import { InAppPurchase } from '@ionic-native/in-app-purchase';
+// import { BundlesPage } from '../pages/bundles/bundles';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -62,7 +63,8 @@ export function HttpLoaderFactory(http: Http) {
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp,{
-      tabsHideOnSubPages: true
+      tabsHideOnSubPages: true,
+      swipeBackEnabled: true
     }),
     IonicStorageModule.forRoot(),
     Ng2ImgFallbackModule,

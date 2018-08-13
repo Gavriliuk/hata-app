@@ -101,7 +101,9 @@ export class SettingsPage extends BasePage {
         ]
       });
       prompt.present();
-    });
+    }).catch((error) => {
+      console.log(error);
+  });
   }
 
   clearStorage() {
@@ -121,7 +123,9 @@ export class SettingsPage extends BasePage {
           handler: data => {
             this.storage.clearLocalStorage().then(() => {
               this.navigateTo(MyApp);
-            });
+            }).catch((error) => {
+              console.log(error);
+          });
           }
         }
       ]

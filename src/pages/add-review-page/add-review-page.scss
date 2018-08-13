@@ -21,4 +21,49 @@ page-add-review-page {
     text-align: justify;
     color: #fff;
   }
+  .itemButton{
+    border: solid 1px #f4f4fa;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+  }
+  .itemGroupBundle{
+    margin:0px;
+  }
+  .cardTitle{
+    text-align:center;
+    font-size: 1.8rem;
+    padding:0px;
+  }
+  .titleReview{
+    padding-left: 4em !important;
+    ;
+  }
+  .notActivated{
+    padding-top: 5px;
+    font-size: 1.1em;
+    padding-bottom: 5px;
+    color: #f63d3d;
+  }
+  .itemTitle{
+    font-size: 1.3rem !important;
+    
+  color: #f63d3d;
+  }
+  .customIcon{
+    margin-left: -2px;
+    font-size: 1.4em  !important;
+  }
+  .bar-button-ios {
+    padding-bottom: 5px;
+    border-radius: 4px;
+    height: 32px;
+    border: 0;
+    font-size: 1.7rem;
+  }
+  .activateButton{
+    padding-right: 6px;
+  }
+  .iconRoute{
+    margin-right: auto !important;
+  }
 }

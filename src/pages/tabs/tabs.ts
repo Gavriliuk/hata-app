@@ -27,11 +27,9 @@ export class TabsPage extends BasePage {
   }
 
   ionViewDidLoad() {
-
     this.translate.get('ROUTES').subscribe((res: string) => {
       this.labels.routes = res;
     });
-    // debugger;
   }
   tab1Root = RoutesPage;
   tab2Root = SettingsPage;

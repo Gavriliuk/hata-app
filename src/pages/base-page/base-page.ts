@@ -20,8 +20,8 @@ export abstract class BasePage {
   protected navParams: NavParams;
   protected translate: TranslateService;
 
-  private loader: any;
-  private navCtrl: NavController;
+  // private loader: any;
+  public navCtrl: NavController;
   private toastCtrl: ToastController;
   protected loadingCtrl: LoadingController;
   protected alertCtrl: AlertController;

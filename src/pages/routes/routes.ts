@@ -4,11 +4,12 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Route } from '../../providers/parse-models/routes';
 import { BasePage } from '../base-page/base-page';
-import { User } from '../../providers/parse-models/user-service';
+// import { User } from '../../providers/parse-models/user-service';
 import { LocalStorage } from '../../providers/local-storage';
 import { Place } from '../../providers/parse-models/place-service';
-// import { PaymentUtils } from '../../providers/payment-utils';
+import { PaymentUtils } from '../../providers/payment-utils';
 // import { InAppPurchase } from '@ionic-native/in-app-purchase';
+import { Bundle } from '../../providers/parse-models/bundle-service';
 
 @Component({
   selector: 'page-routes',
@@ -16,7 +17,7 @@ import { Place } from '../../providers/parse-models/place-service';
 })
 export class RoutesPage extends BasePage {
 
-  // paymentUtils: PaymentUtils;
+  paymentUtils: PaymentUtils;
   private routes: Array<Route>;
   place: Place;
   places: Place[];
@@ -26,6 +27,9 @@ export class RoutesPage extends BasePage {
   audio_ro: any;
   audio_en: any;
   routePlaces: any = [];
+  bundles: Array<Bundle>;
+  bundlesSorted: any = [];
+
   constructor(injector: Injector,
     private storage: LocalStorage,
     private events: Events,
@@ -33,24 +37,19 @@ export class RoutesPage extends BasePage {
     private diagnostic: Diagnostic,
     public modalCtrl: ModalController, public platform: Platform) {
     super(injector);
-    // this.paymentUtils = new PaymentUtils(injector);
+    this.paymentUtils = new PaymentUtils(injector);
 
     this.locationAccuracy.canRequest().then((canRequest: boolean) => {
-
       if (canRequest) {
-
         let priority = this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY;
-
         this.locationAccuracy.request(priority)
           .then(() => console.log('Request successful'))
           .catch((error) => {
-
             if (error && error.code !== this.locationAccuracy.ERROR_USER_DISAGREED) {
               this.translate.get('ERROR_LOCATION_MODE').subscribe((res: string) => {
                 this.showConfirm(res).then(() => this.diagnostic.switchToLocationSettings());
               });
             }
-
           });
       }
     }).catch((err) => console.log(err));
@@ -62,16 +61,26 @@ export class RoutesPage extends BasePage {
         }
       });
     });
-
+    
   }
 
   enableMenuSwipe() {
-    return true;
+    return false;
   }
 
   ionViewDidLoad() {
     // this.showLoadingView();
     this.loadData();
+  }
+  
+  ionViewWillEnter() {
+    this.events.subscribe('purchased', (purchasedItem) => {
+      this.routes.forEach((route) => {
+        if (purchasedItem.includes(route.id.toLocaleLowerCase())) {
+          route["purchased"] = true;
+        }
+      });
+    });
   }
 
   goToPlaces(route) {
@@ -89,22 +98,21 @@ export class RoutesPage extends BasePage {
         // if (purchases.includes(route.id.toLocaleLowerCase())) {
         //   route["purchased"] = true;
         // }
-      })
+      }).catch((error) => {
+          console.log(error);
+      });
 
     })
     // });
     // this.updatePurchases(this.routes);
     // .then(data => {
     //   this.routes = data;
-
     if (this.routes.length) {
       this.showContentView();
     } else {
       this.showEmptyView();
     }
-
     this.onRefreshComplete();
-
     // }, error => {
 
     //   if (error.code === 209) {
@@ -117,7 +125,6 @@ export class RoutesPage extends BasePage {
     //   this.onRefreshComplete();
     // });
   }
-
   // updatePurchases(routes: Array<Route>): any {
   //   routes.forEach((route) => {
   //     const product: any = {
@@ -136,25 +143,17 @@ export class RoutesPage extends BasePage {
     this.loadData();
   }
 
-
-
-  openModalAddReviewRoute(route) {
-
-    Route.getPlacesRelation(route).then(data => {
+  async openReviewRoute(routeSelected) { 
+    this.bundles = await Bundle.load();
+    this.bundles = this.bundles.filter(bundle => bundle.route.indexOf(routeSelected.id) !== -1);
+    let routesAll = this.routes;
+    Route.getPlacesRelation(routeSelected).then(data => {
       this.routePlaces = data;
-      let modal = this.modalCtrl.create('AddReviewPage', { route: route, places: this.routePlaces, lang: this.lang });
-      modal.present();
 
+      this.navigateTo('AddReviewPage', { route: routeSelected, places: this.routePlaces, lang: this.lang , bundles: this.bundles, routesAll: routesAll});
+        console.log('Bundles Sorted in routes: ', this.bundles);
     }, error => {
       this.showErrorView();
     });
-
   }
-
-  // openModalAddReviewRoute(title, information, center_map, waypoints, start_route, end_route) {
-  //   let modal = this.modalCtrl.create('AddReviewPage', {title, information, center_map,start_route, end_route, waypoints, places: this.places});
-  //   modal.present();
-  // }
-
-
 }

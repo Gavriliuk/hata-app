@@ -22,6 +22,8 @@ page-routes {
   .iconRoute {
     display: inline-block;
     padding-bottom: 2px;
+    width: 0.8em;
+    text-align: left;
     font-size: 2.3em;
   }
   .divRoute{
@@ -43,5 +45,8 @@ page-routes {
     width: 98%;
     display: inline-block;
   }
-
+  .item-ios.item-block .item-inner {
+    padding-right: 8px;
+    padding-right: 0px !important;
+  }
 }

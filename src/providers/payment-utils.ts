@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { AlertController, Platform, ToastController, Events  } from 'ionic-angular';
+import { AlertController, Platform, ToastController, Events } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Promocode } from './parse-models/promocode-service';
 import { Bundle } from './parse-models/bundle-service';
@@ -90,7 +90,7 @@ export class PaymentUtils {
   }
 
   getProducts(routes: Array<Route>) {
-   return this.iap.getProducts(routes.map(route => 'com.innapp.dromos.' + route.id.toLocaleLowerCase()));
+    return this.iap.getProducts(routes.map(route => 'com.innapp.dromos.' + route.id.toLocaleLowerCase()));
   }
 
   async getProductBundlRoute(productId) {
@@ -98,59 +98,64 @@ export class PaymentUtils {
       return productData;
     }).catch((err) => {
       console.log(err);
-   });
+    });
   }
 
   async buy(productId) {
     return this.iap.getProducts(['com.innapp.dromos.' + productId.toLocaleLowerCase()]).then((productData) => {
       return this.iap.buy(productData[0].productId).then(data => {
-        
+
         this.events.publish("purchased", productId.toLocaleLowerCase());
-        this.enableItem(productData[0].productId);
-        
+        this.enableRoute(productData[0].productId);
+
         return data;
       }).catch((err) => {
-         console.log(err);
+        console.log(err);
       });
     }).catch((error) => {
       console.log(error);
-  });
+    });
   }
 
-  enableItemBundle(productId) {
-    this.localStorage.setBundleValue(productId.substr(productId.lastIndexOf('.') + 1), "purchased", true);
+  enableBundle(bundle) {
+    this.localStorage.setBundleValue(bundle.id, "purchased", true);
+    for (let routeId of bundle.route) {
+      this.enableRoute(routeId);
+    }
   }
-  enableItem(productId) {
+
+  enableRoute(productId) {
     this.localStorage.setRouteValue(productId.substr(productId.lastIndexOf('.') + 1), "purchased", true);
   }
- 
+
   async restorePurchases() {
-    let bandleRoutes = [];
-    if (this.platform.is('cordova')) {   
+    let bundleRoutes = [];
+    if (this.platform.is('cordova')) {
       let bundlesLoadAll = await Bundle.load();
       return this.iap.restorePurchases().then(purchases => {
-        
+
         // Unlock the features of the purchases!
         let bundlesFiltered = purchases.filter((bundl) => bundl.productId.indexOf('bundle') != -1);
         let routesFiltered = purchases.filter((route) => route.productId.indexOf('bundle') == -1);
+
         bundlesFiltered.forEach((bundle) => {
-          let bundleValue = bundlesLoadAll.filter(dataBundle => dataBundle.id.toLocaleLowerCase().includes(bundle.productId.substr(bundle.productId.lastIndexOf('.') + 1)));
-  
+          let bundleValue = bundlesLoadAll.filter(dataBundle => bundle.productId.includes(dataBundle.id.toLocaleLowerCase()));
+
           bundleValue[0].route.forEach((routeId) => {
-            bandleRoutes.push(routeId.toLocaleLowerCase());
-            this.localStorage.setRouteValue(routeId, "purchased", true);
+            bundleRoutes.push(routeId.toLocaleLowerCase());
           })
+
+          this.enableBundle(bundleValue[0]);
         });
-        for (let bundle of bundlesFiltered) {
-          this.enableItemBundle(bundle.productId);
-        }
-        for (let route of routesFiltered) {
-          this.enableItem(route.productId);
-        }
+
+        routesFiltered.forEach((route) => {
+          this.enableRoute(route.productId);
+        });
+
         let purchasesALL = purchases.map((purchase) => purchase.productId.substr(purchase.productId.lastIndexOf('.') + 1));
-        let resultPurchasesALL = purchasesALL.concat(bandleRoutes);
-        resultPurchasesALL =  Array.from(new Set(resultPurchasesALL));
-        return resultPurchasesALL;
+        purchasesALL = purchasesALL.concat(bundleRoutes);
+        purchasesALL = Array.from(new Set(purchasesALL));
+        return purchasesALL;
       }).catch((error) => {
         console.log(error);
       });
@@ -159,63 +164,53 @@ export class PaymentUtils {
     }
   }
 
-// ----------LOAD BUNDLES--------------
- getProductsBundles(bundles: Array<Bundle>) {
-  return this.iap.getProducts(bundles.map(bundle => 'com.innapp.dromos.bundle.' + bundle.id.toLocaleLowerCase()));
-}
+  // ----------LOAD BUNDLES--------------
+  getProductsBundles(bundles: Array<Bundle>) {
+    return this.iap.getProducts(bundles.map(bundle => 'com.innapp.dromos.bundle.' + bundle.id.toLocaleLowerCase()));
+  }
 
-async buyBundle(bundle) {
-  let productId = bundle.id;
-  return this.iap.getProducts(['com.innapp.dromos.bundle.' + productId.toLocaleLowerCase()]).then((productData) => {
-    return this.iap.buy(productData[0].productId).then(data => {
-      
-      bundle.purchased = true;
-      bundle.routes.forEach((route)=>{
-        route.purchased = true;
+  async buyBundle(bundle) {
+    let productId = bundle.id;
+    return this.iap.getProducts(['com.innapp.dromos.bundle.' + productId.toLocaleLowerCase()]).then((productData) => {
+      return this.iap.buy(productData[0].productId).then(data => {
+
+        bundle.purchased = true;
+        bundle.routes.forEach((route) => {
+          route.purchased = true;
+        });
+
+        this.enableBundle(bundle);
+        return data;
+      }).catch((err) => {
+        console.log(err);
       });
-
-      this.enableBundleRoutes(productData[0].productId, bundle);
-      return data;
-    }).catch((err)=>{
-      console.log(err);
+    }).catch((error) => {
+      console.log(error);
     });
-  }).catch((error) => {
-    console.log(error);
-});
-}
+  }
 
-enableBundleRoutes(productId, bundle) {
-  let routes = bundle.routes;
-  this.localStorage.setBundleValue(productId.substr(productId.lastIndexOf('.') + 1), "purchased", true);
-
-  routes.forEach((route) => {
-    let routeId = route.id.toLocaleLowerCase();
-    this.localStorage.setRouteValue(routeId.substr(routeId.lastIndexOf('.') + 1), "purchased", true);
-  });
-}
-
-activateBundle(bundle, routeId, okCallback, koCallback) {
-  Bundle.validate(bundle, routeId).then((result) => {
-    if (result["action"] == "ok") {
-      Bundle.apply(bundle, "dumyInfoDeviceId").then((applyResult) => {
-        if (applyResult["action"] == "ok") {
-          setTimeout(() => {
-            okCallback();
-          }, 1000);
-        } else {
-          koCallback();
-        }
-      }).catch((error) => {
-        console.log(error);
-    });
-    } else {
+  activateBundle(bundle, routeId, okCallback, koCallback) {
+    Bundle.validate(bundle, routeId).then((result) => {
+      if (result["action"] == "ok") {
+        Bundle.apply(bundle, "dumyInfoDeviceId").then((applyResult) => {
+          if (applyResult["action"] == "ok") {
+            setTimeout(() => {
+              okCallback();
+            }, 1000);
+          } else {
+            koCallback();
+          }
+        }).catch((error) => {
+          console.log(error);
+        });
+      } else {
+        koCallback();
+      }
+    }, error => {
       koCallback();
-    }
-  }, error => {
-    koCallback();
-  });
-}
-// activatePromocode(promocode, routeId, okCallback, koCallback) {
+    });
+  }
+  // activatePromocode(promocode, routeId, okCallback, koCallback) {
   //   Promocode.validate(promocode, routeId).then((result) => {
   //     if (result["action"] == "ok") {
   //       Promocode.apply(promocode, "dumyInfoDeviceId").then((applyResult) => {

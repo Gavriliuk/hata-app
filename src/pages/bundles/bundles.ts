@@ -15,7 +15,6 @@ export class BundlesPage extends BasePage {
   paymentUtils: PaymentUtils;
   routes: Array<Route>;
   bundle: any = {};
-  route: any = {};
   lang: any;
   routePlaces: any = [];
   bundleValues: any = {
@@ -32,15 +31,6 @@ export class BundlesPage extends BasePage {
     this.bundle = this.navParams.data.bundle;
     this.routes = this.navParams.data.routes;
     this.bundle.productData = {};
-    this.route.productData = {};
-
-    this.events.subscribe('restoredPurchases', (purchasedItems) => {
-      this.bundle.routes.forEach((route) => {
-        if (purchasedItems.includes(route.id.toLocaleLowerCase())) {
-          route["purchased"] = true;
-        }
-      });
-    });
   }
 
   enableMenuSwipe() {
@@ -48,6 +38,7 @@ export class BundlesPage extends BasePage {
   }
 
   async ionViewDidLoad() {
+    this.lang = await this.storage.lang;
     this.bundleValues = await this.storage.getBundleAllValues(this.bundle.id);
     
     this.bundle.routes.forEach((bundlRoute) => {
@@ -58,11 +49,8 @@ export class BundlesPage extends BasePage {
         });
     });
     
-    this.loadData();
-
     this.paymentUtils.getProducts(this.bundle.routes).then((productsData) => {
       this.bundle.routes.forEach((route) => {
-        // route["purchased"] = this.storage.getRouteAllValues(route.id)
         route.productData = productsData.filter((product) => product.productId.includes(route.id.toLocaleLowerCase()))[0];
       });
     }).catch((err) => {
@@ -76,16 +64,6 @@ export class BundlesPage extends BasePage {
     });
   }
 
-  async loadData() {
-    this.lang = await this.storage.lang;
-    if (this.bundle.routes.length) {
-      this.showContentView();
-    } else {
-      this.showEmptyView();
-    }
-    this.onRefreshComplete();
-  };
-
   async purchaseBundleByIAP() {
     await this.paymentUtils.buyBundle(this.bundle).then((data) => {
       if(data){
@@ -95,11 +73,5 @@ export class BundlesPage extends BasePage {
       console.log(error);
     });
   };
-
-  onReload(refresher) {
-    this.refresher = refresher;
-    this.loadData();
-  }
-
 
 }

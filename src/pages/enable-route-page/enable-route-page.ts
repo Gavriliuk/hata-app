@@ -1,27 +1,23 @@
-import { IonicPage, ActionSheetController, Platform, ModalController} from 'ionic-angular';
+import { IonicPage, ActionSheetController, Platform, ModalController } from 'ionic-angular';
 import { Component, Injector } from '@angular/core';
-import { ViewController, Events, NavController} from 'ionic-angular';
+import { ViewController, Events, NavController } from 'ionic-angular';
 import { BasePage } from '../base-page/base-page';
 import { LocalStorage } from '../../providers/local-storage';
 import { PaymentUtils } from '../../providers/payment-utils';
-// import { resolve } from 'path';
-// import {RoutesPage } from '../routes/routes';
-// import { Route } from '../../providers/parse-models/routes';
-
 
 @IonicPage()
 @Component({
-  selector: 'page-add-review-page',
-  templateUrl: 'add-review-page.html'
+  selector: 'page-enable-route-page',
+  templateUrl: 'enable-route-page.html'
 })
 
-export class AddReviewPage extends BasePage {
-  
+export class EnableRoutePage extends BasePage {
+
   paymentUtils: PaymentUtils;
 
   routeModal: any = [];
   bundles: any = [];
-  review: any = {};
+  // review: any = {};
   markers: any;
   waypoints: any;
   mapZoom: any;
@@ -35,20 +31,16 @@ export class AddReviewPage extends BasePage {
     listenedStoryIndex: 0,
     selectedYear: "",
     playMode: null,
-    purchased: false,
-    promocode: ""
+    purchased: false
   };
-  product: any = {
-    productId: 'com.innapp.dromos.bkkexjtvzh'
-  };
+
   bundleValues: any = {
-    purchased: false,
-    promocode: ""
+    purchased: false
   };
 
   constructor(injector: Injector,
     private viewCtrl: ViewController,
-    private storage: LocalStorage, 
+    private storage: LocalStorage,
     private actionSheetCtrl: ActionSheetController,
     public platform: Platform,
     public modalCtrl: ModalController,
@@ -72,7 +64,14 @@ export class AddReviewPage extends BasePage {
           bundle["purchased"] = true;
         }
       });
-     
+    });
+
+    this.events.subscribe('purchased', (purchasedItem) => {
+      this.bundles.forEach((bundle) => {
+        if (purchasedItem.includes(bundle.id.toLocaleLowerCase())) {
+          bundle["purchased"] = true;
+        }
+      });
     });
   }
 
@@ -107,52 +106,34 @@ export class AddReviewPage extends BasePage {
       }
     });
   }
-  
+
   enableMenuSwipe() {
     return false;
   }
+
   ionViewDidLoad() {
     this.getProductsPrice();
   }
 
-  ionViewWillEnter(){
-    // this.events.subscribe('purchased', (purchasedItem) => {
-    //   if (purchasedItem.includes(this.routeModal.id.toLocaleLowerCase())) {
-    //     this.routeModal["purchased"] = true;
-    //   }
-    // });
+  ionViewWillEnter() {
     this.loadDataBundles();
   }
 
-  async loadDataBundles() { 
-      this.lang = await this.storage.lang;
-      this.routeValues = await this.storage.getRouteAllValues(this.routeModal.id);
-  
-      this.bundles.forEach((bundle) => {
-       this.storage.getBundleAllValues(bundle.id).then((values) => {
-          bundle["purchased"] = values["purchased"];
-        }).catch((error) => {
-          console.log(error);
-        });
-      });
-      if (this.bundles.length) {
-        this.showContentView();
-      } else {
-        this.showEmptyView();
-      }
-      this.onRefreshComplete();
+  async loadDataBundles() {
+    this.lang = await this.storage.lang;
+    this.routeValues = await this.storage.getRouteAllValues(this.routeModal.id);
+    this.onRefreshComplete();
   };
-  
+
   getProductsPrice() {
     this.paymentUtils.getProducts([this.routeModal]).then((productsData) => {
       this.routeModal.productData = productsData[0];
     }).catch((err) => {
-        console.log(err);
+      console.log(err);
     });
 
     this.paymentUtils.getProductsBundles(this.bundles).then((productsData) => {
       this.bundles.forEach((bundle) => {
-        // route["purchased"] = this.storage.getRouteAllValues(route.id)
         bundle.productData = productsData.filter((product) => product.productId.includes(bundle.id.toLocaleLowerCase()))[0];
       });
     }).catch((err) => {
@@ -163,52 +144,24 @@ export class AddReviewPage extends BasePage {
   onDismiss() {
     this.viewCtrl.dismiss();
   }
-  purchaseByPromocode() {
-    this.paymentUtils.showPromoCodePrompt(this.routeModal.id, () => {
-      this.routeValues.purchased = true;
-      this.storage.updateRouteValues(this.routeModal.id, this.routeValues).then(() => {
-      }).catch((error) => {
-        console.log(error);
-    });
-    }, () => {
-    }, this.translate.instant('activate_promocode_title'), this.translate.instant('activate_promocode_description'));
-  }
 
   purchaseByIAP() {
     this.paymentUtils.buy(this.routeModal.id).then((data) => {
-      if(data){
+      if (data) {
         this.routeValues.purchased = true;
       }
     }).catch((error) => {
-        console.log(error);
+      console.log(error);
     });
-  };
-
-  goBackRoutes(){
-    this.navCtrl.pop();
   };
 
   async goToBundle(bundle) {
-    bundle.routes = bundle.route.map((routeId)=>{
+    bundle.routes = bundle.route.map((routeId) => {
       let bundleRoute = this.routesAll.filter(route => route.id.includes(routeId));
       return bundleRoute[0];
     });
-    this.navigateTo('BundlesPage', {bundle: bundle, routes:this.routesAll});
+    this.navigateTo('BundlesPage', { bundle: bundle, routes: this.routesAll });
   };
-
-  // activatePromocode() {
-  //   this.paymentUtils.activatePromocode(this.routeValues.promocode, this.routeModal.id, () => {
-  //     this.routeValues.purchased = true;
-  //     this.storage.updateRouteValues(this.routeModal.id, this.routeValues);
-  //   }, () => {
-  //     let alert = this.alertCtrl.create({
-  //       title: this.translate.instant('promocode_invalid'),
-  //       subTitle: this.translate.instant('promocode_check_error'),
-  //       buttons: ['OK']
-  //     });
-  //     alert.present();
-  //   });
-  // }
 
 }
 

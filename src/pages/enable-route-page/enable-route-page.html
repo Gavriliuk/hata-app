@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-navbar color="primary" text-center>
+    <ion-title text-center class="titleReview"> {{ "ROUTE_INFO" | translate }}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="card-background-page">
+  <ion-card>
+    <ion-card-content>
+      <ion-card-title class="cardTitle">
+        {{routeModal['title_' + lang]}}
+      </ion-card-title>
+
+      <div *ngIf="!routeValues.purchased">
+        <div class="notActivated" text-center>
+          <ion-icon name='md-close'></ion-icon>
+          {{ "ROUTE_NOT_ACTIVATED" | translate }}
+        </div>
+        <ion-row no-padding>
+          <ion-col text-center>
+            <button ion-button round icon-left (tap)="purchaseByIAP()">
+              <ion-icon name="md-checkmark"></ion-icon>
+              <span class="activateButton"> {{ "ROUTE_ACTIVATE" | translate }} </span>
+              <span> {{ routeModal.productData.price }} </span>
+            </button>
+          </ion-col>
+        </ion-row>
+
+        <ion-list>
+          <ion-item-group class="itemGroupBundle">
+            <ion-title class="itemTitle">
+              <h3 style="color:#3f7a04;" text-center> {{ "BY_BUNDLE"|translate }} :</h3>
+            </ion-title>
+            <button class="itemButton" ion-item *ngFor="let bundle of bundles" (tap)="goToBundle(bundle)">
+              <ion-label> {{ bundle["title_"+lang] }} </ion-label>
+              <ion-note item-end *ngIf="!bundle.purchased"> {{ bundle.productData ? bundle.productData.price : bundle.sum }} </ion-note>
+              <ion-icon class="iconRoute" color="{{bundle.purchased ? 'balanced' : ''}}" name="{{bundle.purchased ? 'ios-unlock' : 'ios-lock'}}"
+                item-end></ion-icon>
+            </button>
+          </ion-item-group>
+        </ion-list>
+      </div>
+
+      <div *ngIf="routeValues.purchased">
+        <ion-row no-padding>
+          <ion-col text-center>
+            <button ion-button clear color="balanced" icon-start>
+              <ion-icon name='md-checkmark'></ion-icon>
+              {{ "ROUTE_ACTIVATED" | translate }}
+            </button>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <p text-center style="margin: 12px 0px -13px;">
+        {{ routeModal['information_' + lang] }}
+      </p>
+    </ion-card-content>
+
+    <img *ngIf="routePlaces.length" offset="100" src="http://maps.googleapis.com/maps/api/staticmap?center={{routeModal.center_map}}&sensor=false&{{markers}}&zoom={{mapZoom}}&format=png&maptype=roadmap&size=800x590&key=AIzaSyAlxUfLNUfBLnuJBJBOpcXpmB_UGDUTuTY"
+      ng-reflect-lazy-image="http://maps.googleapis.com/map" ng-reflect-scroll-target="[object HTMLDivElement]" ng-reflect-offset="100"
+      class="ng-lazyloaded">
+    <img *ngIf="!routePlaces.length" src="{{routeModal.image.url()}}">
+  </ion-card>
+</ion-content>

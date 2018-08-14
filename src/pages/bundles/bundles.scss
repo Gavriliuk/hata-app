@@ -1,7 +1,7 @@
 page-bundles {
-  .itemButton{
-    border: solid 1px #f4f4fa !important;
-  }
+  // .itemButton{
+  //   border: solid 1px #f4f4fa !important;
+  // }
   .itemRoute{
     border: 0.55px solid #c8c7cc;
     margin-top: -1px;
@@ -23,14 +23,7 @@ page-bundles {
     position: relative;
     right: -12px;
   }
-  .back-button.show-back-button {
-    position: absolute;
-    display: inline-block;
-  }
-  .back-button-icon-ios {
-    min-width: 12px;
-    font-size: 2.4rem;
-  }
+
   .bundleButtonNotAct {
     padding-left: 0px;
     margin: 0.4rem -0rem;
@@ -54,5 +47,17 @@ page-bundles {
     text-align:center;
     white-space: normal;
     overflow: hidden;
+  }
+  .itemRoute{
+    margin-bottom: 2px;
+    border-radius: 3px;
+  }
+  .textRoute{
+    padding-top: 0.3em;
+    // word-break: break-all;
+    white-space: normal;
+  }
+  .divRoute{
+    padding: 3px;
   }
 }  

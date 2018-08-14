@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { AddReviewPage } from './add-review-page';
+import { EnableRoutePage } from './enable-route-page';
 import { SharedModule } from '../../shared.module';
  
 @NgModule({
   declarations: [
-    AddReviewPage,
+    EnableRoutePage,
   ],
   imports: [
-    IonicPageModule.forChild(AddReviewPage),
+    IonicPageModule.forChild(EnableRoutePage),
     SharedModule
   ],
   exports: [
-    AddReviewPage
+    EnableRoutePage
   ]
 })
-export class AddReviewPageModule {}
+export class EnableRoutePageModule {}

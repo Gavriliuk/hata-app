@@ -61,6 +61,14 @@ export class RoutesPage extends BasePage {
         }
       });
     });
+
+    this.events.subscribe('purchased', (purchasedItem) => {
+      this.routes.forEach((route) => {
+        if (purchasedItem.includes(route.id.toLocaleLowerCase())) {
+          route["purchased"] = true;
+        }
+      });
+    });
     
   }
 
@@ -69,19 +77,9 @@ export class RoutesPage extends BasePage {
   }
 
   ionViewDidLoad() {
-    // this.showLoadingView();
     this.loadData();
   }
   
-  ionViewWillEnter() {
-    this.events.subscribe('purchased', (purchasedItem) => {
-      this.routes.forEach((route) => {
-        if (purchasedItem.includes(route.id.toLocaleLowerCase())) {
-          route["purchased"] = true;
-        }
-      });
-    });
-  }
 
   goToPlaces(route) {
     this.navigateTo('PlacesPage', route);
@@ -91,66 +89,35 @@ export class RoutesPage extends BasePage {
   async loadData() {
     this.lang = await this.storage.lang;
     this.routes = await Route.load();
-    // this.paymentUtils.restorePurchases().then((purchases) => {
     this.routes.forEach((route) => {
       this.storage.getRouteAllValues(route.id).then((values) => {
         route["purchased"] = values["purchased"];
-        // if (purchases.includes(route.id.toLocaleLowerCase())) {
-        //   route["purchased"] = true;
-        // }
       }).catch((error) => {
           console.log(error);
       });
 
     })
-    // });
-    // this.updatePurchases(this.routes);
-    // .then(data => {
-    //   this.routes = data;
     if (this.routes.length) {
       this.showContentView();
     } else {
       this.showEmptyView();
     }
     this.onRefreshComplete();
-    // }, error => {
-
-    //   if (error.code === 209) {
-    //     User.logOut().then(
-    //       res => this.events.publish('user:logout')),
-    //       err => console.log(err);
-    //   }
-
-    //   this.showErrorView();
-    //   this.onRefreshComplete();
-    // });
   }
-  // updatePurchases(routes: Array<Route>): any {
-  //   routes.forEach((route) => {
-  //     const product: any = {
-  //       name: route.title_ru,
-  //       appleProductId: 'com.innapp.dromos.' + route.id.toLocaleLowerCase(),
-  //       googleProductId: 'com.innapp.dromos.' + route.id.toLocaleLowerCase()
-  //     };
-  //     if(route.id.toLocaleLowerCase()=='bkkexjtvzh'){
-  //       // this.paymentUtils.configurePurchasing(this.store, this.platform, product, route);
-  //     }
-  //   })
-  // }
 
   onReload(refresher) {
     this.refresher = refresher;
     this.loadData();
   }
 
-  async openReviewRoute(routeSelected) { 
+  async openEnableRoute(routeSelected) { 
     this.bundles = await Bundle.load();
     this.bundles = this.bundles.filter(bundle => bundle.route.indexOf(routeSelected.id) !== -1);
     let routesAll = this.routes;
     Route.getPlacesRelation(routeSelected).then(data => {
       this.routePlaces = data;
 
-      this.navigateTo('AddReviewPage', { route: routeSelected, places: this.routePlaces, lang: this.lang , bundles: this.bundles, routesAll: routesAll});
+      this.navigateTo('EnableRoutePage', { route: routeSelected, places: this.routePlaces, lang: this.lang , bundles: this.bundles, routesAll: routesAll});
         console.log('Bundles Sorted in routes: ', this.bundles);
     }, error => {
       this.showErrorView();

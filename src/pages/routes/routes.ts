@@ -77,6 +77,7 @@ export class RoutesPage extends BasePage {
   }
 
   ionViewDidLoad() {
+    this.events.publish("load", false);
     this.loadData();
   }
   

@@ -66,6 +66,8 @@ export class PaymentUtils {
                   } else {
                     prompt.data.message = this.translation.instant("promocode_check_error");
                   }
+                }).catch((error) => {
+                  console.log(error);
                 });
 
               } else {
@@ -104,16 +106,12 @@ export class PaymentUtils {
   async buy(productId) {
     return this.iap.getProducts(['com.innapp.dromos.' + productId.toLocaleLowerCase()]).then((productData) => {
       return this.iap.buy(productData[0].productId).then(data => {
-
-        this.events.publish("purchased", productId.toLocaleLowerCase());
-        this.enableRoute(productData[0].productId);
-
-        return data;
-      }).catch((err) => {
-        console.log(err);
-      });
-    }).catch((error) => {
-      console.log(error);
+        if(data.transactionId){
+          this.events.publish("purchased", productId.toLocaleLowerCase());
+          this.enableRoute(productData[0].productId);
+          return data;
+        }
+      })
     });
   }
 

@@ -1,14 +1,15 @@
 .PHONY: run
 
 # certs and output
-OUTPUT_FILE=DROMOS-V4.9.15.apk
+OUTPUT_FILE=DROMOS-V4.9.16.apk
 # CHECK IF APP IS NOT IN SIMULATOR MODE!!!!!!!!!!
 ALIAS=dromos
 KEYPASS=dromos
 
 # Example: /Users/your_user/Dev/release_keystore.keystore
 KEYSTORE=Dromos.keystore
-ANDROID_PATH=/usr/local/Cellar/android-sdk/24.2
+ANDROID_PATH=${ANDROID_SDK_ROOT}
+#ANDROID_PATH=/usr/local/Cellar/android-sdk/24.2
 
 UNSIGNED=platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
 
@@ -19,7 +20,7 @@ PACKAGE='eu.innovapp.app.dromos'
 rm-add-android:
 	ionic cordova platform rm android
 	rm -rf platforms/android
-	ionic cordova platform add android@7.0.0
+	ionic cordova platform add android
 
 # update ios platform
 rm-add-ios:
@@ -38,7 +39,7 @@ build-android:
 	rm -f ./build/${OUTPUT_FILE}
 	ionic cordova build android --release
 	jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore ${KEYSTORE} -storepass ${KEYPASS} ${UNSIGNED} ${ALIAS}
-	${ANDROID_PATH}/build-tools/23.0.2/zipalign -v 4 ${UNSIGNED} ./build/${OUTPUT_FILE}
+	${ANDROID_PATH}/build-tools/22.0.0/zipalign -v 4 ${UNSIGNED} ./build/${OUTPUT_FILE}
 
 # run android
 run-android:

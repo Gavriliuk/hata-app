@@ -4,10 +4,7 @@ import { Story } from '../parse-models/stories';
 import { VgAPI } from 'videogular2/core';
 import { AbstractPlayMode } from './abstract-play-mode';
 
-
 export class StoryOnlyPlayMode extends AbstractPlayMode {
-
-
 
   sortedStories: Story[];
   subscribedEvents: any[] = [];
@@ -18,7 +15,6 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
 
   onPlayerReady(api: VgAPI) {
     this.videogularApi = api;
-    // debugger
     if (this.videogularApi.getDefaultMedia()) {
       this.playerSubscriptions.push(this.videogularApi.getDefaultMedia().subscriptions.canPlayThrough.subscribe(
         () => {
@@ -36,7 +32,6 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
           console.log("StoryOnlyPlayMode: subscriptions.ended");
           // this.storage.incrementListenedStories().then(() => {
           this.playNext();
-
           // });
         }
       ));
@@ -47,11 +42,15 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
     // let listenedStoryCount = await this.storage.listenedStories || 0;
     if (!this.routeValues.purchased && this.routeValues.listenedStoryIndex > 1) {
       this.paymentUtils.buy(this.params.route.id).then((data) => {
-        this.routeValues.purchased = true;
-        this.pushStoryAudio();
+        if(data){
+          this.routeValues.purchased = true;
+          this.pushStoryAudio();
+        }
       }).catch((error) => {
+        this.routeValues.listenedStoryIndex = 1; 
+        this.storage.updateRouteValues(this.params.route.id, this.routeValues);
         this.events.publish("load", false);
-      })
+      });
     } else {
       await this.pushStoryAudio();
     }
@@ -87,6 +86,8 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
       ++this.routeValues.listenedStoryIndex;
       this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
         this.playStory()
+      }).catch((error) => {
+        console.log(error);
       });
     }
   }
@@ -96,6 +97,8 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
       --this.routeValues.listenedStoryIndex;
       this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
         this.playStory()
+      }).catch((error) => {
+        console.log(error);
       });
     }
   }

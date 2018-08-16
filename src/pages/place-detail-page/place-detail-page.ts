@@ -138,44 +138,42 @@ export class PlaceDetailPage extends BasePage {
     document.getElementsByTagName('html')[0].className = 'ion-tab-fix';
   }
 
-  initLocalStorage() {
-    Promise.all([
-      this.storage.lang
-    ]).then(([
-      lang
-    ]) => {
-      this.lang = lang;
-      this.loadPlace();
-    });
+  async initLocalStorage() {
+    this.lang = await this.storage.lang;
+    this.loadPlace();
   }
 
   async loadPlace() {
     // let listenedPoisCount = await this.storage.listenedPois || 0;
     if (!this.routeValues.purchased && this.routeValues.listenedPOI.length > 1) {
-      this.paymentUtils.buy(this.params.route.id).then((purchase) => {
-        // this.paymentUtils.showPromoCodePrompt(this.route.id, () => {
-        this.routeValues.purchased = true;
-        this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
+      this.paymentUtils.buy(this.route.id).then((data) => {
+        if(data){
           this.pushPlaceAudio();
-        });
+          this.api.play();
+          this.routeValues.purchased = true;
+        }
       }).catch((error) => {
+        this.routeValues.listenedStoryIndex = 1;
         this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
           // this.events.publish("load", false);
           this.goRoutes();
-        });
+        }).catch(error => console.log(error) );
       });
     } else {
       this.pushPlaceAudio();
     }
   }
 
-  private pushPlaceAudio() {
-    this.place = this.navParams.data.place;
-    this.routeValues.listenedPOI.push(this.place.id);
-    this.storage.updateRouteValues(this.route.id, this.routeValues).then(() => {
-      let audioPOIURL = this.navParams.data.place["audio_" + this.lang].name();
-      this.audio = [this.getFileURL(audioPOIURL)];
-    });
+async pushPlaceAudio() {
+    let place = this.navParams.data.place;
+    this.routeValues.listenedPOI.push(place.id);
+    if(place["audio_" + this.lang] && place["audio_" + this.lang].name()){
+      let audioURL = place["audio_" + this.lang].name();
+      this.audio = await [this.getFileURL(audioURL)];
+      await this.storage.updateRouteValues(this.route.id, this.routeValues);
+    }else{
+      alert(this.translate.instant('NOT_AUDIO'));
+    }
   }
 
   //-----Auto Play player-------
@@ -207,6 +205,8 @@ export class PlaceDetailPage extends BasePage {
 
     this.navPageBack.pop().then(() => {
       this.events.publish("onPlayerStateChanged", "ended", this.place);
+    }).catch((error) => {
+      console.log(error);
     });
     // }
   }

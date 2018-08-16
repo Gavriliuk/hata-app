@@ -1,11 +1,4 @@
 page-bundles {
-  // .itemButton{
-  //   border: solid 1px #f4f4fa !important;
-  // }
-  .itemRoute{
-    border: 0.55px solid #c8c7cc;
-    margin-top: -1px;
-  }
   .cardRoute{
      padding:3px;
      margin-top: 1em;
@@ -33,10 +26,6 @@ page-bundles {
   .bundleButtonAct {
     padding-left: 1.4em;
   }
-  .textRoute{
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
   .priceRoute{
     top: 1px;
     position: relative;
@@ -53,8 +42,9 @@ page-bundles {
     border-radius: 3px;
   }
   .textRoute{
-    padding-top: 0.3em;
-    // word-break: break-all;
+    font-size: 1.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: normal;
   }
   .divRoute{

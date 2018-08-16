@@ -36,12 +36,11 @@
     </ion-list>
   </div>
 
-  <div *ngIf="!bundleValues.purchased">
+  <div *ngIf="!bundleValues.purchased" class="bundleDiscount">
     <ion-row no-padding>
       <ion-col text-center>
         <button class="bundleButtonNotAct" ion-button clear color="danger" icon-start>
           <ion-label class="labelDiscount">{{ "BUNDLE_DISCOUNT_ACTIVATED" | translate }} :</ion-label>
-
         </button>
       </ion-col>
     </ion-row>

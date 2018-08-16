@@ -2,8 +2,8 @@ import { AbstractPlayMode } from './abstract-play-mode';
 import { StoryOnlyPlayMode } from './story-only-play-mode';
 import { StoryPoiPlayMode } from './story-poi-play-mode';
 import { PoiOnlyPlayMode } from './poi-only-play-mode';
-import { StoryPoiPlayModeMock } from './mock-story-poi-play-mode';
-import { PoiOnlyPlayModeMock } from './mock-poi-only-play-mode';
+// import { StoryPoiPlayModeMock } from './mock-story-poi-play-mode';
+// import { PoiOnlyPlayModeMock } from './mock-poi-only-play-mode';
 
 export class PlayMode {
 

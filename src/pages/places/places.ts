@@ -83,6 +83,12 @@ export class PlacesPage extends BasePage {
     });
 
     this.events.publish("load", true, this.translate.instant("LOADING_ROUTE"));
+
+    this.events.subscribe('purchased', (purchasedItem) => {
+        if (purchasedItem.includes(this.params.route.id.toLocaleLowerCase())) {
+          this.routeValues.purchased = true;
+        }
+    });
   }
 
   getEventsSubscription(): any {
@@ -182,7 +188,11 @@ export class PlacesPage extends BasePage {
     this.initLocalStorage().then(() => {
       this.loadRoutePlaces().then(() => {
         this.changePlayMode(this.playMode);
-      })
+      }).catch((error) => {
+        console.log(error);
+      });
+    }).catch((error) => {
+      console.log(error);
     });
   }
   /**
@@ -242,6 +252,8 @@ export class PlacesPage extends BasePage {
     this.map.one(GoogleMapsEvent.MAP_READY).then(() => {
       this.map.setMyLocationEnabled(true);
       this.refreshMarkers();
+    }).catch((error) => {
+      console.log(error);
     });
   }
 
@@ -336,6 +348,8 @@ export class PlacesPage extends BasePage {
             let place = mrk.get("place");
             this.goToPlace(place);
           });
+        }).catch((error) => {
+          console.log(error);
         });
         points.push(target);
       }
@@ -347,6 +361,8 @@ export class PlacesPage extends BasePage {
           padding: 40  // default = 20px
         });
       }
+    }).catch((error) => {
+      console.log(error);
     });
 
   }
@@ -404,10 +420,12 @@ export class PlacesPage extends BasePage {
     this.paymentUtils.buy(this.params.route.id).then((data) => {
       if(data){
         this.routeValues.purchased = true;
+        this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
+        }).catch((error) => { console.log(error) });
       }
-      this.storage.updateRouteValues(this.params.route.id, this.routeValues).then(() => {
-      });
-    })
+    }).catch((error)=>{
+      console.log(error);
+    });
   }
 
   filterPois(ev: any) {

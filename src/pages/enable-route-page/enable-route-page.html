@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar color="primary" text-center>
+  <ion-navbar color="primary">
     <ion-title text-center class="titleReview"> {{ "ROUTE_INFO" | translate }}</ion-title>
   </ion-navbar>
 </ion-header>
@@ -7,7 +7,7 @@
 <ion-content class="card-background-page">
   <ion-card>
     <ion-card-content>
-      <ion-card-title class="cardTitle">
+      <ion-card-title class="cardTitle" text-center>
         {{routeModal['title_' + lang]}}
       </ion-card-title>
 
@@ -18,7 +18,7 @@
         </div>
         <ion-row no-padding>
           <ion-col text-center>
-            <button ion-button round icon-left (tap)="purchaseByIAP()">
+            <button ion-button round icon-left (tap)="purchaseByIAP()" text-center>
               <ion-icon name="md-checkmark"></ion-icon>
               <span class="activateButton"> {{ "ROUTE_ACTIVATE" | translate }} </span>
               <span> {{ routeModal.productData.price }} </span>
@@ -31,8 +31,8 @@
             <ion-title class="itemTitle">
               <h3 style="color:#3f7a04;" text-center> {{ "BY_BUNDLE"|translate }} :</h3>
             </ion-title>
-            <button class="itemButton" ion-item *ngFor="let bundle of bundles" (tap)="goToBundle(bundle)">
-              <ion-label> {{ bundle["title_"+lang] }} </ion-label>
+            <button class="itemButton" ion-item *ngFor="let bundle of bundles" (tap)="goToBundle(bundle)" text-center>
+              <ion-label text-left> {{ bundle["title_"+lang] }} </ion-label>
               <ion-note item-end *ngIf="!bundle.purchased"> {{ bundle.productData ? bundle.productData.price : bundle.sum }} </ion-note>
               <ion-icon class="iconRoute" color="{{bundle.purchased ? 'balanced' : ''}}" name="{{bundle.purchased ? 'ios-unlock' : 'ios-lock'}}"
                 item-end></ion-icon>

@@ -124,7 +124,9 @@
         "API_KEY_FOR_ANDROID": "AIzaSyB96xR27BmtCwOrTHXzbZvgMxU-96tMTxE",
         "API_KEY_FOR_IOS": "AIzaSyB96xR27BmtCwOrTHXzbZvgMxU-96tMTxE",
         "PLAY_SERVICES_VERSION": "12.0.0",
-        "ANDROID_SUPPORT_V4_VERSION": "24.1.0"
+        "ANDROID_SUPPORT_V4_VERSION": "24.1.0",
+        "LOCATION_WHEN_IN_USE_DESCRIPTION": "This app wants to get your location while this app runs only.",
+        "LOCATION_ALWAYS_USAGE_DESCRIPTION": "This app wants to get your location always, even this app runs in background."
       },
       "cordova-plugin-uniquedeviceid": {},
       "cordova-plugin-inapppurchase": {}

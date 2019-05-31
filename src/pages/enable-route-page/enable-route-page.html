@@ -33,7 +33,7 @@
             </ion-title>
             <button class="itemButton" ion-item *ngFor="let bundle of bundles" (tap)="goToBundle(bundle)" text-center>
               <ion-label text-left> {{ bundle["title_"+lang] }} </ion-label>
-              <ion-note item-end *ngIf="!bundle.purchased"> {{ bundle.productData ? bundle.productData.price : bundle.sum }} </ion-note>
+              <ion-note item-end *ngIf="!bundle.purchased"> {{ bundle.productData?.price }} </ion-note>
               <ion-icon class="iconRoute" color="{{bundle.purchased ? 'balanced' : ''}}" name="{{bundle.purchased ? 'ios-unlock' : 'ios-lock'}}"
                 item-end></ion-icon>
             </button>

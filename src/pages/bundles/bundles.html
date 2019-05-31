@@ -49,7 +49,7 @@
       <ion-col text-center>
         <button class="bundleButtonAct" ion-button round icon-left (tap)="purchaseBundleByIAP()">
           <ion-icon name="md-checkmark"></ion-icon>
-          {{ "BUNDLE_ACTIVATE" | translate }} {{bundle.productData && bundle.productData.price ? bundle.productData.price : bundle.sum}}
+          {{ "BUNDLE_ACTIVATE" | translate }} {{bundle.productData?.price}}
         </button>
       </ion-col>
     </ion-row>

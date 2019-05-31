@@ -3,44 +3,44 @@ import Parse from 'parse';
 
 @Injectable()
 export class Bundle extends Parse.Object {
-
   constructor() {
     super('Bundle');
   }
 
   static load(): Promise<Bundle[]> {
-
     return new Promise((resolve, reject) => {
       let query = new Parse.Query(this);
       query.include('story');
-      query.find().then(data => {
-        resolve(data);
-      }, error => {
-        reject(error);
-      });
+      query.find().then(
+        (data: Bundle[]) => {
+          resolve(data);
+        },
+        error => {
+          reject(error);
+        }
+      );
     });
   }
 
+  // static apply(code, deviceId) {
+  //   return new Promise((resolve, reject) => {
+  //     Parse.Cloud.run('applyBundle', { bundle: code, deviceId: deviceId }).then(data => {
+  //       resolve(data);
+  //     }, error => {
+  //       reject(error);
+  //     });
+  //   });
+  // }
 
-  static apply(code, deviceId) {
-    return new Promise((resolve, reject) => {
-      Parse.Cloud.run('applyBundle', { bundle: code, deviceId: deviceId }).then(data => {
-        resolve(data);
-      }, error => {
-        reject(error);
-      });
-    });
-  }
-
-  static validate(code, routeId) {
-    return new Promise((resolve, reject) => {
-      Parse.Cloud.run('validateBundle', { bundle: code, routeId: routeId }).then(data => {
-        resolve(data);
-      }, error => {
-        reject(error);
-      });
-    });
-  }
+  // static validate(code, routeId) {
+  //   return new Promise((resolve, reject) => {
+  //     Parse.Cloud.run('validateBundle', { bundle: code, routeId: routeId }).then(data => {
+  //       resolve(data);
+  //     }, error => {
+  //       reject(error);
+  //     });
+  //   });
+  // }
 
   get title_ru(): string {
     return this.get('title_ru');

@@ -45,8 +45,8 @@
     "cordova-plugin-device": "^1.1.7",
     "cordova-plugin-disable-ios11-statusbar": "^1.0.0",
     "cordova-plugin-file": "^6.0.1",
-    "cordova-plugin-geolocation": "^2.4.3",
-    "cordova-plugin-googlemaps": "^2.3.8",
+    "cordova-plugin-geolocation": "2.4.3",
+    "cordova-plugin-googlemaps": "2.3.8",
     "cordova-plugin-googlemaps-sdk": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps-sdk.git#2.7.0",
     "cordova-plugin-headercolor": "^1.0.0",
     "cordova-plugin-inapppurchase": "^1.2.0",
@@ -120,6 +120,8 @@
       "cordova-plugin-media": {
         "KEEP_AVAUDIOSESSION_ALWAYS_ACTIVE": "NO"
       },
+      "cordova-plugin-uniquedeviceid": {},
+      "cordova-plugin-inapppurchase": {},
       "cordova-plugin-googlemaps": {
         "API_KEY_FOR_ANDROID": "AIzaSyB96xR27BmtCwOrTHXzbZvgMxU-96tMTxE",
         "API_KEY_FOR_IOS": "AIzaSyB96xR27BmtCwOrTHXzbZvgMxU-96tMTxE",
@@ -127,13 +129,11 @@
         "ANDROID_SUPPORT_V4_VERSION": "24.1.0",
         "LOCATION_WHEN_IN_USE_DESCRIPTION": "This app wants to get your location while this app runs only.",
         "LOCATION_ALWAYS_USAGE_DESCRIPTION": "This app wants to get your location always, even this app runs in background."
-      },
-      "cordova-plugin-uniquedeviceid": {},
-      "cordova-plugin-inapppurchase": {}
+      }
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

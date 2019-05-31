@@ -134,7 +134,7 @@ export class EnableRoutePage extends BasePage {
 
     this.paymentUtils.getProductsBundles(this.bundles).then((productsData) => {
       this.bundles.forEach((bundle) => {
-        bundle.productData = productsData.filter((product) => product.productId.includes(bundle.id.toLocaleLowerCase()))[0];
+        bundle.productData = productsData.filter((product) => product.productId.toLocaleLowerCase().includes(bundle.id.toLocaleLowerCase()))[0];
       });
     }).catch((err) => {
       console.log(err);

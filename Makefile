@@ -1,7 +1,7 @@
 .PHONY: run
 
 # certs and output
-OUTPUT_FILE=DROMOS-V4.9.16.apk
+OUTPUT_FILE=DROMOS-V6.0.0.apk
 # CHECK IF APP IS NOT IN SIMULATOR MODE!!!!!!!!!!
 ALIAS=dromos
 KEYPASS=dromos
@@ -20,7 +20,7 @@ PACKAGE='eu.innovapp.app.dromos'
 rm-add-android:
 	ionic cordova platform rm android
 	rm -rf platforms/android
-	ionic cordova platform add android
+	ionic cordova platform add android@7.0.0
 
 # update ios platform
 rm-add-ios:
@@ -30,7 +30,7 @@ rm-add-ios:
 
 rm-add-node:
 	rm -rf node_modules
-	npm i
+	npm i --no-package-lock
 
 full-update: rm-add-node rm-add-android rm-add-ios
 
@@ -58,7 +58,7 @@ execute:
 
 # install a signed apk on a device
 install:
-	adb install -r ${OUTPUT_FILE}
+	adb install -r ./build/${OUTPUT_FILE}
 
 # monitor logs and filter by package name
 log:

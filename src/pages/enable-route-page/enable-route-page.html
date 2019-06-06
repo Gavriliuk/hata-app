@@ -18,10 +18,12 @@
         </div>
        
         <ion-row no-padding>
-          <ion-col text-center> 
-            <button class="btnGoToBundle" ion-button round icon-left *ngFor="let bundle of bundles" (tap)="goToBundle(bundle)" text-center>
-              <span class="activateButton" text-left> {{ "Buy"|translate }} {{ bundle["title_"+lang].toLocaleLowerCase() }} {{ "for"|translate}} </span>
-              <span item-end *ngIf="!bundle.purchased"> {{ bundle.productData?.price }} </span>
+          <ion-col text-center>
+            <button class="btnGoToBundle" ion-button round icon-left *ngFor="let bundle of bundles" (tap)="purchaseBundleByIAP(bundle)" text-center>
+              <ion-icon name="md-checkmark"></ion-icon>
+              <span class="activateButton"> {{ "Buy"|translate }} {{ bundle["title_"+lang].toLocaleLowerCase() }}
+                {{ "for"|translate}}</span>
+              <span> {{ bundle.productData?.price }} </span>
             </button>
           </ion-col>
         </ion-row>

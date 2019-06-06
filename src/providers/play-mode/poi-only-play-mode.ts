@@ -6,7 +6,7 @@ import { StoryPoiPlayMode } from './story-poi-play-mode';
 export class PoiOnlyPlayMode extends StoryPoiPlayMode {
 
   async start() {
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id,this.params.route);
     super.onMove();
   }
   async playNext() {

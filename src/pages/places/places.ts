@@ -145,7 +145,7 @@ export class PlacesPage extends BasePage {
 
   async changePlayMode(playMode) {
     console.log(" playModeChanged: ", playMode);
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id,this.params.route);
     this.routeValues.playMode = playMode;
     this.storage.updateRouteValues(this.params.route.id, this.routeValues);
     this.playMode = playMode;
@@ -215,7 +215,7 @@ export class PlacesPage extends BasePage {
   }
 
   async initLocalStorage() {
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id,this.params.route);
     this.mapStyle = await this.storage.mapStyle;
     let savedPlayMode = this.routeValues.playMode;
     this.playMode = savedPlayMode ? savedPlayMode : this.params.route.defaultPlayMode;

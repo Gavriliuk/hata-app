@@ -69,7 +69,7 @@ export class StoryOnlyPlayMode extends AbstractPlayMode {
   async init(params) {
     await super.init(params);
     this.lang = await this.storage.lang;
-    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id);
+    this.routeValues = await this.storage.getRouteAllValues(this.params.route.id,this.params.route);
     this.sortedStories = !this.sortedStories ? await this.loadSortedStories() : this.sortedStories;
     this.playBackRateIndex = await this.storage.playBackRateIndex;
     this.playBackRateValues = await this.storage.playBackRateValues;

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.innapp.dromos" version="6.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.innapp.dromos" version="6.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Dromos</name>
     <description />
     <author email="valentinbragaru@gmail.com" href="http://innapp.com/">QuanLabs</author>
@@ -126,6 +126,10 @@
     <plugin name="cordova-plugin-googlemaps" spec="2.3.8">
         <variable name="API_KEY_FOR_ANDROID" value="AIzaSyB96xR27BmtCwOrTHXzbZvgMxU-96tMTxE" />
         <variable name="API_KEY_FOR_IOS" value="AIzaSyB96xR27BmtCwOrTHXzbZvgMxU-96tMTxE" />
+        <variable name="PLAY_SERVICES_VERSION" value="15.0.1" />
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="26.1.0" />
+        <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="This app wants to get your location while this app runs only." />
+        <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="This app wants to get your location always, even this app runs in background." />
     </plugin>
     <allow-navigation href="http://192.168.100.124:8100" />
     <engine name="ios" spec="4.5.5" />

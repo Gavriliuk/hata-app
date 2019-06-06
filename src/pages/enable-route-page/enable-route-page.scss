@@ -15,12 +15,6 @@ page-enable-route-page {
   .toolbar-ios ion-title {
     padding: 0 30px 1px;
   }
-  .textAddReviw{
-    padding-left: 7px;
-    white-space: normal;
-    text-align: justify;
-    color: #fff;
-  }
   .itemButton {
     border: solid 1px #f4f4fa;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -62,5 +56,10 @@ page-enable-route-page {
   }
   .iconRoute{
     margin-right: auto !important;
+  }
+  .btnGoToBundle {
+    color:#fff !important;
+    margin: -0.5rem;
+    padding: 0 0.6rem !important;
   }
 }

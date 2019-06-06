@@ -131,5 +131,7 @@
   "restore_purchases":"Восстановить покупки",
   "restored_purchases_title":"Восстановление покупок",
   "restored_purchases_description":"Восстановлено {{ restored }} покупок.",
-  "NOT_AUDIO":"У этого объекта нет аудио !!!"
+  "NOT_AUDIO":"У этого объекта нет аудио !!!",
+  "Buy":"Купить",
+  "for":"за"
 }

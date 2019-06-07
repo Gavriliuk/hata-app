@@ -338,7 +338,8 @@ export class PlacesPage extends BasePage {
           icon: icon,
           place: place,
           styles: {
-            maxWidth: '60%'
+            maxWidth: '60%',
+            'z-index':'997 !important'
           },
         };
 

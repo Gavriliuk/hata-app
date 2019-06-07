@@ -114,13 +114,14 @@
     }
 
     .sliderDate {
+        z-index: 1000 !important;
         line-height: 3em;
         width: 65px !important;
         border-right: solid 1px rgba(0, 0, 0, 0.06);
     }
 
     .dateSlider {
-        z-index: 112 !important;
+        z-index: 998 !important;
         width: 100%;
         height: 4em !important;
         display: block;

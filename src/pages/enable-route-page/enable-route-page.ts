@@ -163,13 +163,6 @@ export class EnableRoutePage extends BasePage {
     });
     this.navigateTo('BundlesPage', { bundle: bundle, routes: this.routesAll });
   };
-  // async goToBundle(bundle) {
-  //   bundle.routes = bundle.route.map((routeId) => {
-  //     let bundleRoute = this.routesAll.filter(route => route.id.includes(routeId));
-  //     return bundleRoute[0];
-  //   });
-  //   this.navigateTo('BundlesPage', { bundle: bundle, routes: this.routesAll });
-  // };
 
   async purchaseBundleByIAP(bundle) {
     await this.paymentUtils.buyBundle(bundle).then((data) => {

@@ -21,9 +21,8 @@
           <ion-col text-center>
             <button class="btnGoToBundle" ion-button round icon-left *ngFor="let bundle of bundles" (tap)="purchaseBundleByIAP(bundle)" text-center>
               <ion-icon name="md-checkmark"></ion-icon>
-              <span class="activateButton"> {{ "Buy"|translate }} {{ bundle["title_"+lang].toLocaleLowerCase() }}
-                {{ "for"|translate}}</span>
-              <span> {{ bundle.productData?.price }} </span>
+              <span class="activateButton"> {{ "Buy"|translate }} {{ bundle["title_"+lang].toLocaleLowerCase() }}</span>
+              <span> {{ bundle && bundle.productData?.price }} </span>
             </button>
           </ion-col>
         </ion-row>

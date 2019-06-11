@@ -1,7 +1,7 @@
 .PHONY: run
 
 # certs and output
-OUTPUT_FILE=DROMOS-V6.0.0.apk
+OUTPUT_FILE=DROMOS-V6.4.0.apk
 # CHECK IF APP IS NOT IN SIMULATOR MODE!!!!!!!!!!
 ALIAS=dromos
 KEYPASS=dromos
@@ -41,6 +41,11 @@ build-android:
 	jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore ${KEYSTORE} -storepass ${KEYPASS} ${UNSIGNED} ${ALIAS}
 	${ANDROID_PATH}/build-tools/22.0.0/zipalign -v 4 ${UNSIGNED} ./build/${OUTPUT_FILE}
 
+build-android-for-Andrey:
+	rm -f ./build/${OUTPUT_FILE}
+	ionic cordova build android --release
+	jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore ${KEYSTORE} -storepass ${KEYPASS} ${UNSIGNED} ${ALIAS}
+	/usr/local/share/android-sdk/build-tools/22.0.0/zipalign -v 4 ${UNSIGNED} ./build/${OUTPUT_FILE}
 # run android
 run-android:
 	ionic cordova run android --livereload

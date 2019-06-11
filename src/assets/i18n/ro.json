@@ -127,6 +127,5 @@
   "restored_purchases_title":"Восстановление покупок",
   "restored_purchases_description":"Восстановлено {{ restored }} покупок.",
   "NOT_AUDIO":"Nu există niciun sunet în această locație !!!",
-  "Buy":"Cumpara",
-  "for":"cu"
+  "Buy":"Cumpara"
 }

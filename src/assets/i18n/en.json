@@ -131,6 +131,5 @@
   "restored_purchases_title":"Restoring purchases",
   "restored_purchases_description":"Restored {{ restored }} purchases.",
   "NOT_AUDIO":"There is no audio in this location !!!",
-  "Buy":"Купить",
-  "for":"for"
+  "Buy":"Купить"
 }

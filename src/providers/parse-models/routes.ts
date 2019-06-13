@@ -111,7 +111,9 @@ export class Route extends Parse.Object {
   get defaultPlayMode() {
     return this.get('defaultPlayMode');
   }
-
+  get free(): boolean {
+    return this.get('free');
+  }
 }
 
 Parse.Object.registerSubclass('Route', Route);

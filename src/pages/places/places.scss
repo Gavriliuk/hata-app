@@ -37,7 +37,7 @@
     }
 
        #map {
-        background-image: url("/assets/img/slide-5.png");
+        // background-image: url("/assets/img/slide-5.png");
         height: 92vh;
         position: initial;
         z-index: 1 !important;
@@ -101,7 +101,7 @@
         box-shadow: 0 0 10px #999;
         font-size: 31px;
         border-radius: 70%;
-        margin-bottom: 0.4em !important;
+        margin-bottom: 0.6em !important;
     }
 
     .playPlaces {
@@ -114,13 +114,14 @@
     }
 
     .sliderDate {
+        z-index: 1000 !important;
         line-height: 3em;
         width: 65px !important;
         border-right: solid 1px rgba(0, 0, 0, 0.06);
     }
 
     .dateSlider {
-        z-index: 112 !important;
+        z-index: 998 !important;
         width: 100%;
         height: 4em !important;
         display: block;

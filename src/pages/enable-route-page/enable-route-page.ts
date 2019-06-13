@@ -17,6 +17,7 @@ export class EnableRoutePage extends BasePage {
 
   routeModal: any = [];
   bundles: any = [];
+  bundle: any = {};
   // review: any = {};
   markers: any;
   waypoints: any;
@@ -121,7 +122,7 @@ export class EnableRoutePage extends BasePage {
 
   async loadDataBundles() {
     this.lang = await this.storage.lang;
-    this.routeValues = await this.storage.getRouteAllValues(this.routeModal.id);
+    this.routeValues = await this.storage.getRouteAllValues(this.routeModal.id,this.routeModal);
     this.onRefreshComplete();
   };
 
@@ -163,5 +164,15 @@ export class EnableRoutePage extends BasePage {
     this.navigateTo('BundlesPage', { bundle: bundle, routes: this.routesAll });
   };
 
+  async purchaseBundleByIAP(bundle) {
+    await this.paymentUtils.buyBundle(bundle).then((data) => {
+      if(data){
+        bundle.purchased = true;
+        this.routeValues.purchased = true;
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
 }
 

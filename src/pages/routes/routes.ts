@@ -91,7 +91,7 @@ export class RoutesPage extends BasePage {
     this.lang = await this.storage.lang;
     this.routes = await Route.load();
     this.routes.forEach((route) => {
-      this.storage.getRouteAllValues(route.id).then((values) => {
+      this.storage.getRouteAllValues(route.id, route).then((values) => {
         route["purchased"] = values["purchased"];
       }).catch((error) => {
           console.log(error);

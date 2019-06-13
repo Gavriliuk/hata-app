@@ -16,29 +16,16 @@
           <ion-icon name='md-close'></ion-icon>
           {{ "ROUTE_NOT_ACTIVATED" | translate }}
         </div>
+       
         <ion-row no-padding>
           <ion-col text-center>
-            <button ion-button round icon-left (tap)="purchaseByIAP()" text-center>
+            <button class="btnGoToBundle" ion-button round icon-left *ngFor="let bundle of bundles" (tap)="purchaseBundleByIAP(bundle)" text-center>
               <ion-icon name="md-checkmark"></ion-icon>
-              <span class="activateButton"> {{ "ROUTE_ACTIVATE" | translate }} </span>
-              <span> {{ routeModal.productData.price }} </span>
+              <span class="activateButton"> {{ "Buy"|translate }} {{ bundle["title_"+lang].toLocaleLowerCase() }}</span>
+              <span> {{ bundle && bundle.productData?.price }} </span>
             </button>
           </ion-col>
         </ion-row>
-
-        <ion-list>
-          <ion-item-group class="itemGroupBundle">
-            <ion-title class="itemTitle">
-              <h3 style="color:#3f7a04;" text-center> {{ "BY_BUNDLE"|translate }} :</h3>
-            </ion-title>
-            <button class="itemButton" ion-item *ngFor="let bundle of bundles" (tap)="goToBundle(bundle)" text-center>
-              <ion-label text-left> {{ bundle["title_"+lang] }} </ion-label>
-              <ion-note item-end *ngIf="!bundle.purchased"> {{ bundle.productData?.price }} </ion-note>
-              <ion-icon class="iconRoute" color="{{bundle.purchased ? 'balanced' : ''}}" name="{{bundle.purchased ? 'ios-unlock' : 'ios-lock'}}"
-                item-end></ion-icon>
-            </button>
-          </ion-item-group>
-        </ion-list>
       </div>
 
       <div *ngIf="routeValues.purchased">
@@ -63,3 +50,27 @@
     <img *ngIf="!routePlaces.length" src="{{routeModal.image.url()}}">
   </ion-card>
 </ion-content>
+
+
+ <!-- <ion-row no-padding>
+          <ion-col text-center>
+            <button ion-button round icon-left (tap)="purchaseByIAP()" text-center>
+              <ion-icon name="md-checkmark"></ion-icon>
+              <span class="activateButton"> {{ "ROUTE_ACTIVATE" | translate }} </span>
+              <span> {{ routeModal.productData.price }} </span>
+            </button>
+          </ion-col>
+        </ion-row> 
+        <ion-list>
+          <ion-item-group class="itemGroupBundle">
+            <ion-title class="itemTitle">
+              <h3 style="color:#3f7a04;" text-center> {{ "BY_BUNDLE"|translate }} :</h3>
+            </ion-title>
+            <button class="itemButton" ion-item *ngFor="let bundle of bundles" (tap)="goToBundle(bundle)" text-center>
+              <ion-label text-left> {{ bundle["title_"+lang] }} </ion-label>
+              <ion-note item-end *ngIf="!bundle.purchased"> {{ bundle.productData?.price }} </ion-note>
+              <ion-icon class="iconRoute" color="{{bundle.purchased ? 'balanced' : ''}}" name="{{bundle.purchased ? 'ios-unlock' : 'ios-lock'}}"
+                item-end></ion-icon>
+            </button>
+          </ion-item-group>
+        </ion-list>-->

@@ -35,7 +35,7 @@
   </ion-toolbar>
 
   <div *ngIf="playMode!='storyOnly'" id="map" showWhen="android,ios"></div>
-  <div *ngIf="playMode=='storyOnly'">
+  <div *ngIf="playMode=='storyOnly'" id="map">
       <ion-card>
           <img src="{{params.route.image.url()}}">
           <ion-card-content>

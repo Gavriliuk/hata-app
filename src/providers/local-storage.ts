@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { Route } from './parse-models/routes';
 // import { AsyncPipe } from '@angular/common';
 
 
@@ -113,15 +114,16 @@ export class LocalStorage {
     return await this.storage.get(routeId.toLocaleLowerCase())[key];
   }
 
-  async getRouteAllValues(routeId): Promise<any> {
+  async getRouteAllValues(routeId, route: Route | any={'free': false}): Promise<any> {
+    const fromStorage = await this.storage.get(routeId.toLocaleLowerCase());
     //TODO get selectedYear from route
-    return await this.storage.get(routeId.toLocaleLowerCase()) || {
+    return fromStorage ? {...fromStorage,purchased: fromStorage.purchased || route.free} : {
       listenedPOI: [],
       listenedStories: [],
       listenedStoryIndex: 0,
       selectedYear: "",
       playMode: null,
-      purchased: false
+      purchased: route.free || false
     };
   }
 

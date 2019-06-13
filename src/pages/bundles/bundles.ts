@@ -42,7 +42,7 @@ export class BundlesPage extends BasePage {
     this.bundleValues = await this.storage.getBundleAllValues(this.bundle.id);
     
     this.bundle.routes.forEach((bundlRoute) => {
-        this.storage.getRouteAllValues(bundlRoute.id).then((values) => {
+        this.storage.getRouteAllValues(bundlRoute.id,bundlRoute).then((values) => {
           bundlRoute["purchased"] = values["purchased"];
         }).catch((error) => {
           console.log(error);

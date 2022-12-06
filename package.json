@@ -75,7 +75,7 @@
     "zone.js": "0.8.12"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "1.3.7",
+    "@ionic/app-scripts": "3.2.4",
     "@types/core-js": "^0.9.43",
     "@types/parse": "1.2.32",
     "typescript": "2.3.4"
